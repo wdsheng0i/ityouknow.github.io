@@ -253,7 +253,7 @@ comments_provider: gitalk
 #        client_id: 61bfc53d957e74e78f8f
 #        client_secret: 31c61e66cdcc9ada8db2267ee779d0bdafac434c
 # https://github.com/gitalk/gitalk#install
-gitalk:
+#gitalk:
 #    owner: ityouknow
 #    repo: blog-comments
 #    clientID: 61bfc53d957e74e78f8f
