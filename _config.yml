@@ -6,19 +6,18 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title:  码农学写博客
-subtitle: 分享技术，品味人生
-name: 码农学写博客 
+title:  码农学技术
+subtitle: 学习技术，思考人生
+name: 码农学技术 
 email: 953103022@qq.com
-description: 本站是我的技术分享博客。内容涵盖生活故事、Java后端技术、Spring Boot、Spring Cloud、微服务架构、大数据演进、高可用架构、中间件使用、系统监控等相关的研究与知识分享。
-keywords: Spring,Spring Boot,Spring Cloud,MongoDB,Jvm,Docker,生活故事,架构,大数据,一线,FastDFS,开发者,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,IT技术博客,Java,Python,
+description: 本站是我的技术分享博客。内容涵盖 Java后端技术、Spring Boot、Spring Cloud、微服务架构、大数据演进、高可用架构、中间件使用、系统监控等相关的研究与知识分享
+keywords: Java,Jvm,Spring,Spring Boot,Spring Cloud,Redis,Mq,MongoDB,FastDFS,Docker,架构,大数据,Python
 encoding: "utf-8"
 favicon: favicon.ico 
 
 repository: wdsheng0i/wdsheng0i.github.io
 github_url: https://github.com/wdsheng0i
 url: http://www.wdsheng0i.github.io
-# enforce_ssl: ityouknow.com
 
 ## Gem
 plugins:
@@ -54,7 +53,10 @@ paginate_path: 'page:num'
 
 # Navigation. top menu list
 menus:
-
+  -
+    href: /life.html
+    label: 故事
+    target: _self
   -
     href: /link.html
     label: 友链
@@ -98,7 +100,7 @@ navs:
     target: _self
     
   -
-    href: /architecture.html
+    href: /arch.html
     label: 架构
     target: _self
 
@@ -127,33 +129,8 @@ navs:
 labels:
 
   -
-    href: /payment.html
-    label: Pay     
-    target: _self
-
-  -
-    href: /fastdfs.html
-    label: FastDFS
-    target: _blank
-
-  -
-    href: /mongodb.html
-    label: MongoDB
-    target: _blank
-
-  -
-    href: /docker.html
-    label: Docker
-    target: _blank
-
-  -
     href: /open-source.html
     label: Code  
-    target: _blank
-
-  -
-    href: /gitchat.html
-    label: Chat
     target: _blank
 
 
@@ -161,19 +138,9 @@ labels:
 classes:
 
   -
-    href: /cartoon.html
-    name: 不会笑青年
-    describe: 内心沉稳 ，放荡不羁。
-
-  -
     href: /life.html
     name: 我的故事
     describe: 生活就是故事，故事就是生活
-
-  -
-    href: /it.html
-    name: IT行业深度报道
-    describe: IT大佬，互联网知名公司的故事
 
 
 
