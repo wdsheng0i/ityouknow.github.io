@@ -56,31 +56,6 @@ paginate_path: 'page:num'
 menus:
 
   -
-    href: http://itmooc.tech/
-    label: IDEA破解
-    target: _blank  
-
-  -
-    href: /money.html
-    label: 挣钱
-    target: _self   
-
-  -
-    href: /it.html
-    label: 深度
-    target: _self
-
-  -
-    href: /life.html
-    label: 故事
-    target: _self
-
-  -
-    href: /arch.html
-    label: 架构
-    target: _self
-
-  -
     href: /link.html
     label: 友链
     target: _self
@@ -98,25 +73,6 @@ navs:
     label: Home
 
   -
-    href: http://laughyouth.com/
-    label: Comics
-    target: _blank
-
-  -
-    href: /spring-boot.html
-    label: Spring Boot
-    target: _self
-    subnav:
-
-      -
-        subHref: /spring-boot.html
-        subLabel: Spring Boot
-
-      -
-        subHref: /spring-cloud.html
-        subLabel: Spring Cloud
-
-  -
     href: http://www.justdojava.com
     label: Java
     target: _blank
@@ -132,7 +88,21 @@ navs:
         target: _blank
 
   -
+    href: /spring-boot.html
+    label: Spring Boot
+    target: _self
     
+  -
+    href: /spring-cloud.html
+    label: Spring Cloud
+    target: _self
+    
+  -
+    href: /architecture.html
+    label: 架构
+    target: _self
+
+  -
     href: /python.html
     label: Python
     subnav:
@@ -185,11 +155,6 @@ labels:
     href: /gitchat.html
     label: Chat
     target: _blank
-
-  -
-    href: http://favorites.ren/stock.html
-    label: 股票
-    target: _blank  
 
 
 # selected articles
