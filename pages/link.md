@@ -8,7 +8,10 @@ permalink: /link
 ---
 
 ## 友情链接
-
+- [ityouknow](http://www.ityouknow.com/) - 个人独立博客
+- [ityouknow | 博客园](https://www.cnblogs.com/ityouknow/) - 博客园推荐博客，排名前十五
+- [ityouknow | CSDN](http://blog.csdn.net/ityouknow)  - 博客专家，同步公号内容
+- [ityouknow | 51CTO](http://blog.51cto.com/ityouknow) - 51CTO 推荐博客，排名前十
 - [小白学堂](http://www.itmind.net/) - 学的不仅是技术，更是前程！
 - [不会笑青年](http://laughyouth.com/) - 全网唯二以程序员为主题的漫画网站
 - [Python 技术](http://www.justdopython.com/) - 专业的 Python 学习网站
@@ -45,22 +48,5 @@ permalink: /link
 - [小柒博客](https://blog.52itstyle.vip) - 小柒博客，一个主JAVA，次架构，偶尔聊聊生活的地方。
 - [飞哥专栏](https://www.ffeeii.com) - 关注技术开发和工程效率
 
-
-## 个人链接
-
-- [ityouknow](http://www.ityouknow.com/) - 个人独立博客
-- [github](https://github.com/ityouknow) -  我分享代码的地方
-- [微博](http://weibo.com/ityouknow) -  我的微博
-- [知乎](https://www.zhihu.com/people/ityouknow) - 个人知乎地址，回答一些问题
-- [博客园](https://www.cnblogs.com/ityouknow/) - 博客园推荐博客，排名前十五
-- [CSDN](http://blog.csdn.net/ityouknow)  - 博客专家，同步公号内容
-- [51CTO](http://blog.51cto.com/ityouknow) - 51CTO 推荐博客，排名前十
-
-## 其它  
-
-*需要展示你的网站，就在本页下面留言吧，也算是一种宣传方式。格式要求如下：*
-
-- 网站名称：ityouknow  
-- 网站链接：http://www.ityouknow.com  
-- 网站描述：neo 的个人博客，分享技术，分享生活  
+  
 

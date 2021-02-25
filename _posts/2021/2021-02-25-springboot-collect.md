@@ -5,7 +5,7 @@ category: springboot
 tags: [springboot]
 ---
 
-收集 Spring Boot 相关的学习资料，[Spring Cloud点这里](http://www.ityouknow.com/springcloud/2016/12/30/springcloud-collect.html)
+收集 Spring Boot 相关的学习资料
 
 
 **重点推荐：[Spring Boot 中文索引](http://springboot.fun/)**
@@ -13,12 +13,12 @@ tags: [springboot]
 ## 推荐博客
 
 - [纯洁的微笑-Spring Boot系列文章](http://www.ityouknow.com/spring-boot.html)  
+- [方志朋-SpringBoot 非官方教程](http://blog.csdn.net/column/details/15397.html) 
 - [林祥纤-从零开始学Spring Boot](http://412887952-qq-com.iteye.com/category/356333)   
 - [Mkyong-Spring Boot教程（国外）](http://www.mkyong.com/tutorials/spring-boot-tutorials/)
 - [baeldung-Spring Boot教程（国外）](https://www.baeldung.com/spring-boot)  
 - [liaokailin的专栏-Spring Boot实战](http://blog.csdn.net/liaokailin/article/category/5765237)
-- [catoop的专栏-Spring Boot 学习](http://blog.csdn.net/column/details/spring-boot.html)  
-- [方志朋-SpringBoot 非官方教程](http://blog.csdn.net/column/details/15397.html)  
+- [catoop的专栏-Spring Boot 学习](http://blog.csdn.net/column/details/spring-boot.html)   
 - [嘟嘟-Spring-Boot干货系列](http://tengj.top/categories/Spring-Boot%E5%B9%B2%E8%B4%A7%E7%B3%BB%E5%88%97/)  
 - [小柒-SpringBoot开发案例](https://blog.52itstyle.com/category/springBoot/)  
 - [江南一点雨-关于Spring Boot](http://blog.csdn.net/column/details/13987.html)  
