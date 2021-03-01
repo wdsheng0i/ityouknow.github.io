@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Java 人 
+title: Java 基础 
 titlebar: java
-subtitle: <span class="mega-octicon octicon-clippy"></span> &nbsp;&nbsp; Java 人的精神家园。>&nbsp;&nbsp;>&nbsp;&nbsp;<a href ="http://www.justdojava.com/" target="_blank" ><font color="#EB9439">点我直达 justdojava</font></a>
+subtitle: jdk8 &nbsp;&nbsp; 集合 &nbsp;&nbsp; 泛型 &nbsp;&nbsp; 反射  &nbsp;&nbsp; IO/NIO &nbsp;&nbsp; 网络编程 &nbsp;&nbsp; 异常  &nbsp;&nbsp; 调试
 menu: java
 css: ['blog-page.css']
 permalink: /java
@@ -14,7 +14,7 @@ permalink: /java
 
         <ul id="posts-list">
             {% for post in site.posts %}
-                {% if post.category=='java' or post.category=='jvm' or post.keywords contains 'java' %}
+                {% if post.category=='java' or post.keywords contains 'java' %}
                 <li class="posts-list-item">
                     <div class="posts-content">
                         <span class="posts-list-meta">{{ post.date | date: "%Y-%m-%d" }}</span>

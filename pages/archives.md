@@ -2,7 +2,7 @@
 layout: page
 title: All articles are here
 titlebar: archives
-subtitle: <span class="mega-octicon octicon-calendar"></span>&nbsp;&nbsp;专题系列： &nbsp;&nbsp; <a href ="https://wdsheng0i.github.io/life.html"><font color="#EB9439">故事</font></a>&nbsp;&nbsp; 
+subtitle: <span class="mega-octicon octicon-calendar"></span>&nbsp;&nbsp;专题系列： &nbsp;&nbsp; <a href ="https://wdsheng0i.github.io/spring-boot.html"><font color="#EB9439">Spring Boot</font></a>&nbsp;&nbsp; 
 menu: archives
 css: ['blog-page.css']
 permalink: /archives.html

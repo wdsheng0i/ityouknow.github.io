@@ -57,19 +57,20 @@ menus:
 #    href: /life.html
 #    label: 生活
 #    target: _self
+
   -
     href: /link.html
-    label: 友情链接
+    label: 推荐链接
     target: _self
 
   -
     href: /about.html
     label: 关于作者
     target: _self
-  
+
   -
     href: https://github.com/wdsheng0i
-    label: github
+    label: Github
     target: _self 
 
 # Navigation. main menu list
@@ -80,11 +81,50 @@ navs:
     label: Home
 
   -
-    href: /java.html
-    label: Java开发
-    target: _blank
+    href: /database.html
+    label: 计算机基础
+    target: _self
     subnav:
-        
+
+      -
+        subHref: /database.html
+        subLabel: 数据库
+        target: _self
+
+      - subHref: /operate-system.html
+        subLabel: 操作系统
+        target: _self
+
+      - subHref: /net.html
+        subLabel: 网络
+        target: _self
+
+      - subHref: /data-structure.html
+        subLabel: 数据结构
+        target: _self
+
+      - subHref: /algorithm.html
+        subLabel: 算法
+        target: _self
+
+      - subHref: /computer-compose.html
+        subLabel: 计算机组成原理
+        target: _self
+
+      - subHref: /compile.html
+        subLabel: 编译原理
+        target: _self
+
+      - subHref: /office.html
+        subLabel: Office
+        target: _self
+
+  -
+    href: /java-basic.html
+    label: Java开发
+    target: _self
+    subnav:
+
       -
         subHref: /java-basic.html
         subLabel: Java基础
@@ -105,25 +145,34 @@ navs:
         subLabel: 设计原则&设计模式
         target: _self
 
+      - subHref: /mybatis.html
+        subLabel: mybatis
+        target: _self
+
       -
         subHref: /spring.html
-        subLabel: Spring
+        subLabel: Spring & SpringMVC
         target: _self
 
       -
         subHref: /spring-boot.html
         subLabel: Spring Boot
         target: _self
-        
+
       -
         subHref: /spring-cloud.html
         subLabel: Spring Cloud
         target: _self
-  
-  -
-    href: /arch.html
-    label: 架构
-    target: _self
+
+      -
+        subHref: /component.html
+        subLabel: 组件
+        target: _self
+
+      -
+        subHref: /arch.html
+        subLabel: 架构&设计
+        target: _self
 
   -
     href: /dev-ops.html
@@ -131,8 +180,23 @@ navs:
     target: _self
 
   -
-    href: /python.html
-    label: Python
+    href: /web.html
+    label: 前端开发
+    target: _self
+
+  -
+    href: /mobile.html
+    label: 移动端开发
+    target: _self
+
+  -
+    href: /acide.html
+    label: ACIDE
+    target: _self
+
+  -
+    href: /dev-manage.html
+    label: 研发管理
     target: _self
 
   -
@@ -155,8 +219,8 @@ navs:
 classes:
 
   -
-    href: /java.html
-    name: java开发
+    href: /spring-boot.html
+    name: spring-boot
     describe: just do java
 
 
