@@ -100,7 +100,7 @@ navs:
         subLabel: 网络
         target: _self
 
-      - subHref: /data-structure.html
+      - subHref: /data-struct.html
         subLabel: 数据结构
         target: _self
 
@@ -190,7 +190,7 @@ navs:
     label: 移动端开发
     target: _self
 
-  - href: /acide.html
+  - href: /ai.html
     label: ACIDE
     target: _self
     subnav:

@@ -17,7 +17,7 @@ tags: [springcloud]
 - [纯洁的微笑 Spring Cloud 系列文章](http://www.ityouknow.com/spring-cloud) 
 - [方志朋 Spring Cloud 专栏](http://blog.csdn.net/column/details/15197.html)  
 - [方志鹏博客 《深入理解SpringCloud与微服务构建.pdf》](https://www.fangzhipeng.com/spring-cloud.html)
-- [方志鹏 史上最简单的 SpringCloud 教程|终章](https://blog.csdn.net/forezp/article/details/70148833)
+- [方志鹏 史上最简单的 SpringCloud 教程-终章](https://blog.csdn.net/forezp/article/details/70148833)
 - [翟永超 Spring Cloud 从入门到精通](http://blog.didispace.com/spring-cloud-learning/)  
 - [周立博客 Spring Cloud系列教程](http://itmuch.com/spring-cloud/spring-cloud-index/)
 - [江南一点雨 Spring Cloud ](https://wangsong.blog.csdn.net/column/info/17373)  

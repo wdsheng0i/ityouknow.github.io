@@ -43,11 +43,11 @@ permalink: /link
 - [抖音视频下载](https://free-tiktok.com/) - 抖音、Youtube、instagram视频去水印下载
 
 ## Github高校开源分享
--  北京大学课程资料整理：  https://github.com/lib-pku/libpku
--  浙江大学课程攻略共享计划：  https://github.com/QSCTech/zju-icicles
--  清华大学计算机系课程攻略：  https://github.com/PKUanonym/REKCARC-TSC-UHT
--  中国科学技术大学课程资源：  https://github.com/USTC-Resource/USTC-Course
--  上海交通大学课程分享：  https://github.com/CoolPhilChen/SJTU-Courses/
+-  [北京大学课程资料整理](https://github.com/lib-pku/libpku)：  https://github.com/lib-pku/libpku
+-  [浙江大学课程攻略共享计划](https://github.com/QSCTech/zju-icicles)：  https://github.com/QSCTech/zju-icicles
+-  [清华大学计算机系课程攻略](https://github.com/PKUanonym/REKCARC-TSC-UHT)：  https://github.com/PKUanonym/REKCARC-TSC-UHT
+-  [中国科学技术大学课程资源](https://github.com/USTC-Resource/USTC-Course)：  https://github.com/USTC-Resource/USTC-Course
+-  [上海交通大学课程分享](https://github.com/CoolPhilChen/SJTU-Courses/)：  https://github.com/CoolPhilChen/SJTU-Courses/
 
 ## Github 开源项目分享
 - [ruoyi](https://github.com/yangzongzhuan/RuoYi) -http://doc.ruoyi.vip/   
@@ -70,7 +70,7 @@ permalink: /link
 - [hutool：一个Java基础工具类](https://hutool.cn) -https://hutool.cn/docs/#/
 
 ## 微信公众号-技术文章汇总
-- [java进阶架构师|2020.7.3 | Java进阶架构师30大专题,共600篇优质文章合集！](https://mp.weixin.qq.com/s/xartth4HCMgBroIozW29kw)  
+- [java进阶架构师-2020.7.3-Java进阶架构师30大专题,共600篇优质文章合集！](https://mp.weixin.qq.com/s/xartth4HCMgBroIozW29kw)  
 - [方志朋 2018年文章汇总](https://mp.weixin.qq.com/s/uDTvTHM2gJMRsDAOdRDXuA)  
 - [ImportNew 史上最全的开发和设计资源大全](https://mp.weixin.qq.com/s/cjaj_-gX6MhqMXSrqchFbg)
 
@@ -90,7 +90,7 @@ permalink: /link
     - https://springboot.io/  
     - https://spring.io/projects/spring-boot
 - mybatis中文官方 - https://mybatis.org/mybatis-3/zh/index.html   
-- [深入浅出MyBatis](https://blog.csdn.net/hupanfeng/category_1443955.html)
+    - [深入浅出MyBatis](https://blog.csdn.net/hupanfeng/category_1443955.html)
 - Jquery API 文档 - https://www.jquery123.com/
 - Jquery EasyUI 文档 - http://www.jeasyui.net/
 - VUE.JS 社区 - https://cn.vuejs.org/ 
@@ -102,7 +102,7 @@ permalink: /link
 - Mongodb - https://www.mongodb.org.cn/  
     - MongoDB中文社区：https://mongoing.com/  
     - MongoDB中文网手册：https://mongodb.net.cn/manual/  
-    - MongoDB中文手册|官方文档中文版: https://docs.mongoing.com/
+    - MongoDB中文手册-官方文档中文版: https://docs.mongoing.com/
  - kafka - http://kafka.apache.org/  
      - https://kafka.apachecn.org/documentation.html
 - zookeeper - https://zookeeper.apache.org/  
