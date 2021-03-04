@@ -53,10 +53,6 @@ paginate_path: 'page:num'
 
 # Navigation. top menu list
 menus:
-#  -
-#    href: /life.html
-#    label: 生活
-#    target: _self
 
   -
     href: /link.html
@@ -72,6 +68,11 @@ menus:
     href: https://github.com/wdsheng0i
     label: Github
     target: _self 
+
+  -
+    href: /archives.html
+    label: Archives
+    target: _self
 
 # Navigation. main menu list
 navs:
@@ -120,13 +121,13 @@ navs:
         target: _self
 
   -
-    href: /java-basic.html
+    href: /java.html
     label: Java开发
     target: _self
     subnav:
 
       -
-        subHref: /java-basic.html
+        subHref: /java.html
         subLabel: Java基础
         target: _self
 
@@ -174,10 +175,10 @@ navs:
         subLabel: 架构&设计
         target: _self
 
-  -
-    href: /dev-ops.html
-    label: Dev&Ops
-    target: _self
+      -
+        subHref: /dev-ops.html
+        subLabel: Dev&Ops
+        target: _self
 
   -
     href: /web.html
@@ -189,31 +190,42 @@ navs:
     label: 移动端开发
     target: _self
 
-  -
-    href: /acide.html
+  - href: /acide.html
     label: ACIDE
     target: _self
+    subnav:
+
+      - subHref: /ai.html
+        subLabel: AI&机器学习
+        target: _self
+
+      - subHref: /cloud.html
+        subLabel: 云计算
+        target: _self
+
+      - subHref: /iot.html
+        subLabel: 物联网
+        target: _self
+
+      - subHref: /big-data.html
+        subLabel: 大数据
+        target: _self
+
+      - subHref: /edge.html
+        subLabel: 边缘计算
+        target: _self
+
+      - subHref: /block.html
+        subLabel: 区块链&以太坊
+        target: _self
 
   -
     href: /dev-manage.html
     label: 研发管理
     target: _self
 
-  -
-    href: /archives.html
-    label: Archives
-    target: _self
-
-
-
 # labels. my blog key words
 #labels:
-
-#  -
-#    href: /open-source.html
-#    label: Code  
-#    target: _blank
-
 
 # selected articles
 classes:

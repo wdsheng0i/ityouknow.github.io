@@ -37,7 +37,7 @@ permalink: /link
 - [MD工具](http://relatos.top/md/) - markdown转发html在线工具  
 - [htmlToMD工具](http://relatos.top/2md/) - 在线将页面转发为markdown工具  
 - [公众号编辑器](http://md.ityouknow.com/) - 可以以优雅的方式在微信公众号去发布markdown文章
-- [在线 | 格式转换&加解密工具](http://www.jsons.cn/img2base64/)
+- [在线 格式转换&加解密工具](http://www.jsons.cn/img2base64/)
     - https://www.sojson.com/encrypt_md5.html
     - http://www.bejson.com/enc/md5/
 - [抖音视频下载](https://free-tiktok.com/) - 抖音、Youtube、instagram视频去水印下载
@@ -71,8 +71,8 @@ permalink: /link
 
 ## 微信公众号-技术文章汇总
 - [java进阶架构师|2020.7.3 | Java进阶架构师30大专题,共600篇优质文章合集！](https://mp.weixin.qq.com/s/xartth4HCMgBroIozW29kw)  
-- [方志朋 | 2018年文章汇总](https://mp.weixin.qq.com/s/uDTvTHM2gJMRsDAOdRDXuA)  
-- [ImportNew | 史上最全的开发和设计资源大全](https://mp.weixin.qq.com/s/cjaj_-gX6MhqMXSrqchFbg)
+- [方志朋 2018年文章汇总](https://mp.weixin.qq.com/s/uDTvTHM2gJMRsDAOdRDXuA)  
+- [ImportNew 史上最全的开发和设计资源大全](https://mp.weixin.qq.com/s/cjaj_-gX6MhqMXSrqchFbg)
 
  
 ## IT官网汇总
@@ -118,7 +118,7 @@ permalink: /link
 - [GitHub上的免费书籍](https://github.com/ruanyf/free-books):https://github.com/ruanyf/free-books
 - [互联网 Java 工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)：https://github.com/doocs/advanced-java
 - [Java学习+面试指南](https://github.com/Snailclimb/JavaGuide)：https://github.com/Snailclimb/JavaGuide
-- [资源汇总|平头哥](https://blog.csdn.net/z694644032/article/details/100084287)：https://blog.csdn.net/z694644032/article/details/100084287
+- [资源汇总-平头哥](https://blog.csdn.net/z694644032/article/details/100084287)：https://blog.csdn.net/z694644032/article/details/100084287
 - [我会尽力将 LeetCode 上所有的题目都用动画的形式演示出来](https://github.com/MisterBooo/LeetCodeAnimation)
 - [动态演示数据结构的网址，有助于理解各种树](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html) 
 - [极客时间 IT 20+ 张 各架构 高清技能图谱](https://blog.csdn.net/chenyao1994/article/details/89331952)

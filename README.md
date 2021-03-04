@@ -1,6 +1,6 @@
 # 个人博客
 
-这是我的个人博客项目，里面会记录生活和技术的点点滴滴。
+这是我的个人博客项目，里面会记录技术学习的点滴。
 
 
 访问地址：[https://wdsheng0i.github.io/](https://wdsheng0i.github.io/)
