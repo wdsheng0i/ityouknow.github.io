@@ -8,7 +8,7 @@ permalink: /bookmark
 ---
 
 ## 书签
-- [百度网盘超能搜](https://www.chaonengso.com/)  
+- [百度网盘](https://pan.baidu.com/)
 - [teambition网盘](https://www.teambition.com/)  
     cymm3 = cymm1 + 首字母大写
 - [阿里网盘](https://aliyundrive.com/)   
@@ -21,8 +21,6 @@ permalink: /bookmark
     sjhm/cymm1    
 - [leetcode](https://leetcode-cn.com/u/wdsheng0i/)    
     sjhm/cymm1    
-- [Cookbook-leetcode  在线版](https://books.halfrost.com/leetcode/)    
-    https://github.com/halfrost/LeetCode-Go    
 - [CSDN](https://blog.csdn.net/ )    
     sjhm/cymm2  
 - [博客园](https://www.cnblogs.com/)  
@@ -35,7 +33,6 @@ permalink: /bookmark
 - [简书](https://www.jianshu.com/)
 - [掘金网](https://juejin.im/)
 - [51CTO 博客](https://blog.51cto.com/)  
-    https://www.51cto.com/ 
  
  
 

@@ -10,12 +10,16 @@ tags: [springcloud]
 > 学习 Spring Cloud 首先需要了解 Spring Boot，不了解 Spring Boot 的同学戳这里[Spring Boot学习资料汇总](https://wdsheng0i.github.io/springboot/2021/02/25/springboot-collect.html)
 
 
-**重点推荐：[Spring Cloud 中文索引](http://springcloud.fun/)**
+**重点推荐：**    
+- [Spring Cloud 中文索引](http://springcloud.fun/)  
+- [微服务架构技术栈选型手册](https://www.infoq.cn/article/micro-service-technology-stack/)
+- [微服务全链路解析](https://blog.csdn.net/beyondself_77/article/details/80212992)
+- [微服务架构设计实践](https://blog.csdn.net/beyondself_77/article/details/79841358)
+- [从零搭建 Spring Cloud 服务（超详细）]( https://mp.weixin.qq.com/s/S2LA_RbnJKzpZxWEhhCp5A)
 
 
 ## 推荐博客
 - [纯洁的微笑 Spring Cloud 系列文章](http://www.ityouknow.com/spring-cloud) 
-- [方志朋 Spring Cloud 专栏](http://blog.csdn.net/column/details/15197.html)  
 - [方志鹏博客 《深入理解SpringCloud与微服务构建.pdf》](https://www.fangzhipeng.com/spring-cloud.html)
 - [方志鹏 史上最简单的 SpringCloud 教程-终章](https://blog.csdn.net/forezp/article/details/70148833)
 - [翟永超 Spring Cloud 从入门到精通](http://blog.didispace.com/spring-cloud-learning/)  

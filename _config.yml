@@ -78,10 +78,6 @@ menus:
 navs:
 
   -
-    href: /
-    label: Home
-
-  -
     href: /database.html
     label: 计算机基础
     target: _self

@@ -33,6 +33,18 @@ permalink: /link
 
 
 ## 工具网站
+- [百度网盘超能搜](https://www.chaonengso.com/)
+- [电影网站]()
+	- [http://www.hao6v.com/](http://www.hao6v.com/)
+	- [http://www.yingshidaquan.cc/html/dianying.html](http://www.yingshidaquan.cc/html/dianying.html)
+	- [https://www.66s.cc](https://www.66s.cc)
+	- [https://www.qiqi321.com](https://www.qiqi321.com) 
+	- [http://www.dodo8.com](http://www.dodo8.com)
+- [Cookbook-leetcode  在线版](https://books.halfrost.com/leetcode/)    
+    - https://github.com/halfrost/LeetCode-Go
+- [中华古典文集数据库](https://github.com/chinese-poetry/chinese-poetry) 
+
+
 - [jetbrains全家桶注册码](http://itmooc.tech/) - IntelliJ IDEA 破解码网站
 - [MD工具](http://relatos.top/md/) - markdown转发html在线工具  
 - [htmlToMD工具](http://relatos.top/2md/) - 在线将页面转发为markdown工具  
@@ -119,15 +131,12 @@ permalink: /link
 - [互联网 Java 工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)：https://github.com/doocs/advanced-java
 - [Java学习+面试指南](https://github.com/Snailclimb/JavaGuide)：https://github.com/Snailclimb/JavaGuide
 - [资源汇总-平头哥](https://blog.csdn.net/z694644032/article/details/100084287)：https://blog.csdn.net/z694644032/article/details/100084287
+
+
 - [我会尽力将 LeetCode 上所有的题目都用动画的形式演示出来](https://github.com/MisterBooo/LeetCodeAnimation)
 - [动态演示数据结构的网址，有助于理解各种树](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html) 
 - [极客时间 IT 20+ 张 各架构 高清技能图谱](https://blog.csdn.net/chenyao1994/article/details/89331952)
 - [知乎-各类教程网站推荐](https://www.zhihu.com/question/24044511)
 - [安利 40 款 Intellij IDEA 常用插件](https://mp.weixin.qq.com/s/3TQa1OMKUS4TnlIEXiTQZw) 
-- [中华古典文集数据库](https://github.com/chinese-poetry/chinese-poetry) 
-- [电影网站]()
-	- http://www.hao6v.com/
-	- http://www.yingshidaquan.cc/html/dianying.html
-	- https://www.66s.cc
-	- https://www.qiqi321.com 
-	- http://www.dodo8.com
+
+  
