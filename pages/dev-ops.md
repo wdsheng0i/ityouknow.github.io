@@ -2,7 +2,7 @@
 layout: page
 title: Dev&Ops
 titlebar: dev-ops
-subtitle: Maven &nbsp;&nbsp; Git &nbsp;&nbsp; Docker &nbsp;&nbsp; K8s &nbsp;&nbsp; Jenkins &nbsp;&nbsp; Yapi &nbsp;&nbsp; JIRA &nbsp;&nbsp; Sonar  ...
+subtitle: JDK &nbsp;&nbsp;Maven &nbsp;&nbsp; Git &nbsp;&nbsp; Docker &nbsp;&nbsp; K8s &nbsp;&nbsp; Jenkins &nbsp;&nbsp; Yapi &nbsp;&nbsp; JIRA &nbsp;&nbsp; Sonar  ...
 menu: dev-ops
 css: ['blog-page.css']
 permalink: /dev-ops
@@ -18,7 +18,7 @@ permalink: /dev-ops
                 <li class="posts-list-item">
                     <div class="posts-content">
                         <span class="posts-list-meta">{{ post.date | date: "%Y-%m-%d" }}</span>
-                        <a class="posts-list-name bubble-float-left" href="{{ site.url }}{{ post.url }}">{{ post.title }}</a>
+                        <a class="posts-list-name bubble-float-left" href="{{ post.url }}">{{ post.title }}</a>
                         <span class='circle'></span>
                     </div>
                 </li>
