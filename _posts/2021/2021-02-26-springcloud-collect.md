@@ -11,7 +11,6 @@ tags: [springcloud]
 
 
 **重点推荐：**    
-- [Spring Cloud 中文索引](http://springcloud.fun/)  
 - [微服务架构技术栈选型手册](https://www.infoq.cn/article/micro-service-technology-stack/)
 - [微服务全链路解析](https://blog.csdn.net/beyondself_77/article/details/80212992)
 - [微服务架构设计实践](https://blog.csdn.net/beyondself_77/article/details/79841358)

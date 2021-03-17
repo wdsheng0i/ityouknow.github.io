@@ -7,11 +7,10 @@ tags: [springboot]
 
 收集 Spring Boot 相关的学习资料  
 
-**重点推荐：[Spring Boot 中文索引](http://springboot.fun/)**
-
 SpringBoot 启动原理：https://mp.weixin.qq.com/s/Yr-RKHeR9PFEd_wtYkvLmg  
 Spring Boot 注解大全：https://mp.weixin.qq.com/s/gVP0BCWK58UFk9aLGyLzjQ  
 SpringBoot常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q  
+
 
 ## 推荐博客
 
