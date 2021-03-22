@@ -36,7 +36,6 @@ SpringBoot常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q
 
 - [纯洁的微笑 Spring Boot 示例](https://github.com/ityouknow/spring-boot-examples)
 - [Spring Boot 官方示例](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples)  
-- [Spring Boot开源软件 云收藏](https://github.com/cloudfavorites/favorites-web)  
 - [Docker+SpringBoot+Mybatis+thymeleaf等技术实现的Java博客系统](https://github.com/ZHENFENG13/My-Blog)  
 - [Spring boot & Shiro 权限管理系统](https://github.com/wuyouzhuguli/FEBS)  
 - [Spring Boot实现支付服务：支付宝，微信...](https://gitee.com/52itstyle/spring-boot-pay)  
@@ -70,8 +69,7 @@ SpringBoot常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q
 
 
 ## 网站
- 
-- [云收藏](http://favorites.ren/lookAround)  
+
 - [Spring boot 官网](http://projects.spring.io/spring-boot/)  
 - [Spring Boot 参考指南- 英文版](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)  
 - [网易云课堂Spring Boot视频](http://study.163.com/courses-search?keyword=Spring%20Boot)   

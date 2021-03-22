@@ -16,7 +16,6 @@ permalink: /link
 - [江南一点雨](https://www.javaboy.org/) - 专注于 Spring Boot + 微服务
 - [沉默王二](http://www.itwanger.com) - 一个有趣的程序员
 - [小白学堂](http://www.itmind.net/) - 学的不仅是技术，更是前程！
-- [程序员导航网站](http://tooool.org/) - 程序员的导航网站 
 - [技术博客联盟](http://techblog.pub/) - 原创技术博客作者交流的地方
 - [荒蛮故事](http://relatos.top/) - 一个分享故事的网站
 - [良许Linux教程网](https://www.lxlinux.net/) - 专注分享Linux干货
@@ -33,6 +32,7 @@ permalink: /link
 
 
 ## 工具网站
+- [程序员导航网站](http://tooool.org/) - 程序员的导航网站 
 - [百度网盘超能搜](https://www.chaonengso.com/)
 - [电影网站]()
 	- [http://www.hao6v.com/](http://www.hao6v.com/)
