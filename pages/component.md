@@ -2,7 +2,7 @@
 layout: page
 title: 组件 
 titlebar: component
-subtitle: Redis &nbsp;&nbsp; Kafka &nbsp;&nbsp; MongoDB &nbsp;&nbsp; ES &nbsp;&nbsp; zookeeper ...
+subtitle: Nginx &nbsp;&nbsp; Redis &nbsp;&nbsp; Kafka &nbsp;&nbsp; MongoDB &nbsp;&nbsp; ES &nbsp;&nbsp; Zookeeper ...
 menu: component
 css: ['blog-page.css']
 permalink: /component

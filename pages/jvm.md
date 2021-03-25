@@ -2,7 +2,7 @@
 layout: page
 title: jvm  
 titlebar: jvm
-subtitle: <span class="mega-octicon octicon-clippy"></span> &nbsp;&nbsp; Java 人的精神家园。>&nbsp;&nbsp;>&nbsp;&nbsp;<a href ="http://www.justdojava.com/" target="_blank" ><font color="#EB9439">点我直达 justdojava</font></a>
+subtitle: <span class="mega-octicon octicon-clippy"></span> 类加载机制 &nbsp;&nbsp; JMM内存模型 &nbsp;&nbsp; 内存区域分配 &nbsp;&nbsp; 垃圾回收机制 &nbsp;&nbsp; GC调优
 menu: jvm
 css: ['blog-page.css']
 permalink: /jvm
