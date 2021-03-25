@@ -371,15 +371,17 @@ tags: [arch]
 ### redis源码分析
 
 ## 9.性能调优
-### mysql性能调优  
+### Mysql性能调优  
 
-### java数据结构算法 
+### JVM性能调优  
 
-### JVM性能调优   
+### Java数据结构算法优化  
 
-### web调优
+### Web调优
 
-### tomcat调优
+### Tomcat调优
+
+### Linux服务器调优
 
 ## 10.工程化Dev & Ops
 ### Nexus搭建maven私服
@@ -400,6 +402,8 @@ tags: [arch]
 ### Docker & k8s部署、使用
 
 ### ELK 部署、使用
+
+### APM 部署、使用
 
 ## 11.Linux 服务器环境
 

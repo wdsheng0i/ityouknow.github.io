@@ -9,7 +9,8 @@ tags: [springboot]
 
 SpringBoot 启动原理：https://mp.weixin.qq.com/s/Yr-RKHeR9PFEd_wtYkvLmg  
 Spring Boot 注解大全：https://mp.weixin.qq.com/s/gVP0BCWK58UFk9aLGyLzjQ  
-SpringBoot常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q  
+SpringBoot 常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q  
+Spring Boot 启动时，让方法自动执行的 4 种方法：https://mp.weixin.qq.com/s/QLC2YY00-p28pTkOKiK2Gw
 
 
 ## 推荐博客
