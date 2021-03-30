@@ -311,6 +311,7 @@ tags: [arch]
 - Hystrix服务熔断降级方式
 - Zuul实现服务网关
 - Config分布式统一配置中心
+- actuator服务监控组件
 - Sieuth调用链路跟踪
 - BUS消息总线 
 
@@ -405,23 +406,25 @@ tags: [arch]
 
 ### APM 部署、使用
 
-## 11.Linux 服务器环境
+### 11.Linux服务器 & 中间件
 
-### centos 系统安装
+#### centos 系统安装
 
-### jdk 安装、配置
+#### jdk 安装、配置
 
-### tomcat 安装、配置
+#### tomcat 安装、配置
 
-### Mysql 安装、配置
+#### Mysql 安装、配置
 
-### zookeeper 安装、配置
+#### zookeeper 安装、配置
 
-### redis 安装、配置
+#### redis 安装、配置
 
-### kafka 安装、配置
+#### kafka 安装、配置
 
-### mongodb 安装、配置
+#### mongodb 安装、配置
+
+#### nginx 安装、配置
 
 ## 12、架构师主要工作
 ### 设计、搭建

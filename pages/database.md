@@ -2,7 +2,7 @@
 layout: page
 title: 数据库 
 titlebar: database
-subtitle: 数据库基础知识 &nbsp;&nbsp; DB选型 &nbsp;&nbsp; 数据库设计规范  &nbsp;&nbsp; Mysql &nbsp;&nbsp; 执行计划 &nbsp;&nbsp; sql优化 &nbsp;&nbsp; 分库分表  &nbsp;&nbsp; 事务  ...
+subtitle: 数据库基础知识 &nbsp;&nbsp; DB选型 &nbsp;&nbsp; 数据库设计规范  &nbsp;&nbsp; Mysql &nbsp;&nbsp; 执行计划 &nbsp;&nbsp; sql优化 &nbsp;&nbsp; 分库分表 &nbsp;&nbsp; 事务 &nbsp;&nbsp; 锁机制 ...
 menu: database
 css: ['blog-page.css']
 permalink: /database

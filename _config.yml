@@ -168,7 +168,7 @@ navs:
 
       -
         subHref: /arch.html
-        subLabel: 架构&设计
+        subLabel: 架构&设计&性能
         target: _self
 
       -
