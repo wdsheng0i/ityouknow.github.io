@@ -5,7 +5,8 @@ category: component
 tags: [component]
 ---
 
-Keepalived 原理与实战、双机主备、双主热备
+Keepalived 原理与实战、双机主备、双主热备  
+[java架构直通车-第6周 LVS+Nginx实现高可用集群](https://class.imooc.com/sale/javaarchitect)
 
 ## 推荐资料 
 
