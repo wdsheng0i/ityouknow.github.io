@@ -22,7 +22,7 @@ LVS + keepalived + Nginx实现负载均衡、高可用集群
 - 现在 LVS 已经是 Linux 内核标准的一部分。    
 - 使用 LVS 可以达到的技术目标是：通过 LVS 达到的负载均衡技术和 Linux 操作系统实现一个高性能高可用的 Linux 服务器集群，它具有良好的可靠性、可扩展性和可操作性。从而以低廉的成本实现最优的性能。    
 - LVS 是一个实现负载均衡集群的开源软件项目，LVS架构从逻辑上可分为调度层、Server集群层和共享存储。  
-![](../../assets/images/2021/lvs/lvs.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/lvs/lvs.png)   
 
 ## 2 为什么要使用 LVS + Nginx？ 
 - LVS基于四层，工作效率高
@@ -32,12 +32,12 @@ LVS + keepalived + Nginx实现负载均衡、高可用集群
 
  
 ## 3 LVS的三种模式  
-![NAT-基于网络地址转换](../../assets/images/2021/lvs/nat.png)  
-![TUN-ip隧道](../../assets/images/2021/lvs/tun.png)
-![DR-direact router](../../assets/images/2021/lvs/dr.png)  
+![NAT-基于网络地址转换](https://wdsheng0i.github.io/assets/images/2021/lvs/nat.png)  
+![TUN-ip隧道](https://wdsheng0i.github.io/assets/images/2021/lvs/tun.png)
+![DR-direact router](https://wdsheng0i.github.io/assets/images/2021/lvs/dr.png)  
 
 ## 4-5 搭建LVS-DR模式- 配置LVS节点与ipvsadm安装 
-![](../../assets/images/2021/lvs/dip.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/lvs/dip.png)   
 1.服务器与ip规划：
 ```
 LVS - 1台  
@@ -186,7 +186,7 @@ man ipvsadm
 [lvs的DR模式详细部署](https://www.linkops.cn/sm/552.html)
 
 ## 13 搭建Keepalived+Lvs+Nginx高可用集群负载均衡 - 配置Master  
-![](../../assets/images/2021/lvs/lvs-kp.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/lvs/lvs-kp.png)  
 1.前置准备：
 ```
 服务器与ip规划：

@@ -11,7 +11,7 @@ Keepalived 原理与实战、双机主备、双主热备
 ## 推荐资料 
 
 ## keepalived和Nginx高可用
-![](../../assets/images/2021/keepalived/ha.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/keepalived/ha.png)   
 - Keepalived能够解决单点故障，实现HA高可用机制
 - 只有当主节点宕机，备用节点采用启用；主节点重新可用时，备节点会自动退出(主节点会向备节点发送心跳)。  
 - 构建有多个路由器(nginx)的master backup路由器组, 监测nginx状态
@@ -23,8 +23,8 @@ VRRP广泛应用在边缘网络中，它的设计目标是支持特定情况下I
 
 ## 1 高可用集群架构 Keepalived 双机主备原理 
 - 主备节点硬件配置保持相同，才能有相同的抗压能力，保证高可用 
-![](../../assets/images/2021/keepalived/kpl.png)  
-![](../../assets/images/2021/keepalived/vip.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/keepalived/kpl.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/keepalived/vip.png)  
 
 ## 2-3 Keepalived安装 
 1.下载[Keepalived](https://www.keepalived.org/download.html)
@@ -75,9 +75,12 @@ vrrp_instance VI_1 {
         192.168.1.161 
     } 
 }
+```  
+
+2.启动keepalived    
 ```
-2.启动keepalived  
-```./keepalived```
+./keepalived
+```
 
 ## 6 把Keepalived 注册为系统服务 
 1.拷贝文件
@@ -106,7 +109,9 @@ systemctl restart keepalived.service
 ```
 
 3.查看进程  
-```ps -ef|grep keepalived```
+```
+ps -ef|grep keepalived  
+```
 
 ## 7-8 Keepalived实现双机主备高可用-(配置 Keepalived-备)
 1.通过命令 vim keepalived.conf 打开配置文件    
@@ -158,7 +163,9 @@ if [ $A -eq 0 ];then
 fi
 ```
 2.增加运行权限    
-```chmod +x /etc/keepalived/check_nginx_alive_or_not.sh```
+```
+chmod +x /etc/keepalived/check_nginx_alive_or_not.sh
+```
 
 3.配置keepalived监听nginx脚本  
 ``` 
@@ -177,11 +184,13 @@ track_script {
 ```
 
 5.重启Keepalived使得配置文件生效  
-```systemctl restart keepalived```
+```
+systemctl restart keepalived
+```
 
 ## 11 高可用集群架构 Keepalived 双主热备原理 
 互为主备  
-![](../../assets/images/2021/keepalived/2master.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/keepalived/2master.png)  
 
 ## 12 云服务的DNS解析配置与负载均衡 
 用户请求经dns轮询发送给虚拟ip进行处理   
