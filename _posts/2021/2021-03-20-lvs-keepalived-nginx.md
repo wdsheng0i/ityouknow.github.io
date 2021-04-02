@@ -53,10 +53,14 @@ Nginx - 2台（RealServer）
 systemctl stop NetworkManager 
 systemctl disable NetworkManager
 ```
+
 3.进入到网卡配置目录，找到ens33：    
+
 4.拷贝并且创建子接口：  
-```cp ifcfg-ens33 ifcfg-ens33:1 * 注：`数字1`为别名，可以任取其他数字都行``` 
+```cp ifcfg-ens33 ifcfg-ens33:1 * 注：`数字1`为别名，可以任取其他数字都行```   
+
 5.修改子接口配置： vim ifcfg-ens33:1     
+
 6.配置参考如下：    
 ```
 BOOTPROTO="static"
@@ -187,6 +191,7 @@ man ipvsadm
 
 ## 13 搭建Keepalived+Lvs+Nginx高可用集群负载均衡 - 配置Master  
 ![](https://wdsheng0i.github.io/assets/images/2021/lvs/lvs-kp.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/lvs/lvs-kp-2.png)
 1.前置准备：
 ```
 服务器与ip规划：
