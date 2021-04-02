@@ -183,13 +183,174 @@ man ipvsadm
 ```
 
 ## 12 搭建LVS-DR模式- 验证DR模式，探讨LVS的持久化机制 
-
+[lvs的DR模式详细部署](https://www.linkops.cn/sm/552.html)
 
 ## 13 搭建Keepalived+Lvs+Nginx高可用集群负载均衡 - 配置Master  
+![](../../assets/images/2021/lvs/lvs-kp.png)  
+1.前置准备：
+```
+服务器与ip规划：
+LVS - 1台  
+    VIP（虚拟IP）：192.168.1.150  
+    DIP（转发者IP/内网IP）：192.168.1.151  
+Nginx - 2台（RealServer）  
+    RIP（真实IP/内网IP）：192.168.1.171  
+    RIP（真实IP/内网IP）：192.168.1.172
 
+配置LVS节点
+
+为两台RealServer配置虚拟IP 
+
+安装keepalived、ipvsadm    
+
+switch绑定VIP域名：192.168.1.150  www.lvs.com
+
+```  
+2.keepalived.conf配置VIP、RIP节点信息  
+```
+global_defs { 
+    router_id lvs_151
+}
+vrrp_instance VI_1 { 
+    state MASTER 
+    interface ens33 
+    virtual_router_id 41 
+    priority 100 
+    advert_int 1 
+    authentication { 
+        auth_type PASS 
+        auth_pass 1111 
+    }
+    virtual_ipaddress { 
+        192.168.1.150 
+    } 
+}
+#定义对外提供服务的LVS的VIP(集群地址访问的ip)以及port
+virtual_server 192.168.1.150 80 {
+    delay_loop 6 # 设置健康检查时间，单位是秒
+    lb_algo rr # 设置负载调度的算法为轮询
+    lb_kind DR # 设置LVS实现负载的机制
+    #persistence_timeout 5 #设置会话持久化时间，添加后就持久化
+    protocol TCP #协议
+
+    ## 负载均衡的真实服务器，即nginx节点的真实IP地址
+    real_server 192.168.1.171 80 {  # 指定real server1的IP地址
+        weight 1   # 配置节点权值，数字越大权重越高
+        #对后端节点进行健康检测
+        TCP_CHECK { 
+            connect_timeout 3 #超时时间
+            nb_get_retry 3 #重试次数
+            delay_before_retry 3 #多长时间重试
+            connect_port 80
+        }
+    }
+    real_server 192.168.1.172 80 {
+        weight 1
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 80
+        }
+     }
+}
+```
+3.清理现有负载均衡规则  
+```
+ipvsadm -C
+
+ipvsadm -Ln
+```
+
+4.重启keepalived 检查集群信息   
+```
+systemctl restart keepalived 
+
+ipvsadm -Ln
+```  
 
 ## 14 搭建Keepalived+Lvs+Nginx高可用集群负载均衡 - 配置Backup 
+1.前置准备：
+```
+安装keepalived、ipvsadm  
+配置/etc/keepalived/keepalived.conf
+```  
+2.配置  
+```
+global_defs { 
+    router_id lvs_152
+}
+vrrp_instance VI_1 { 
+    state BACKUP 
+    interface ens33 
+    virtual_router_id 41 
+    priority 50
+    advert_int 1 
+    authentication { 
+        auth_type PASS 
+        auth_pass 1111 
+    }
+    virtual_ipaddress { 
+        192.168.1.150 
+    } 
+}
+#定义对外提供服务的LVS的VIP(集群地址访问的ip)以及port
+virtual_server 192.168.1.150 80 {
+    delay_loop 6 # 设置健康检查时间，单位是秒
+    lb_algo rr # 设置负载调度的算法为轮询
+    lb_kind DR # 设置LVS实现负载的机制
+    #persistence_timeout 5 #设置会话持久化时间，添加后就持久化
+    protocol TCP #协议
 
+    ## 负载均衡的真实服务器，即nginx节点的真实IP地址
+    real_server 192.168.1.171 80 {  # 指定real server1的IP地址
+        weight 1   # 配置节点权值，数字越大权重越高
+        #对后端节点进行健康检测
+        TCP_CHECK { 
+            connect_timeout 3 #超时时间
+            nb_get_retry 3 #重试次数
+            delay_before_retry 3 #多长时间重试
+            connect_port 80
+        }
+    }
+    real_server 192.168.1.172 80 {
+        weight 1
+        TCP_CHECK {
+            connect_timeout 3
+            nb_get_retry 3
+            delay_before_retry 3
+            connect_port 80
+        }
+     }
+}
+```
+3.清理现有负载均衡规则  
+```
+ipvsadm -C
+
+ipvsadm -Ln
+```
+
+4.重启keepalived 检查集群信息   
+```
+systemctl restart keepalived 
+
+ipvsadm -Ln
+``` 
+
+5.验证
+``` 
+1.浏览器访问 www.lvs.com, 轮序171  172
+
+2.停掉master keepalived，访问www.lvs.com正常，轮序171  172，ip addr 显示backup节点
+
+3.恢复master keepalived，访问www.lvs.com正常，轮序171  172，ip addr 显示master节点
+
+4.停掉一个real server Nginx服务， 访问www.lvs.com正常，仅172提供服务
+
+5.恢复real server Nginx服务， 访问www.lvs.com正常，轮序171  172，ip addr 显示master节点
+
+```
 
 ## 15 附：LVS的负载均衡算法
 静态算法：根据LVS本身自由的固定的算法分发用户请求。  
