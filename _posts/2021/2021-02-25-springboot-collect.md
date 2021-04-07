@@ -7,10 +7,11 @@ tags: [springboot]
 
 收集 Spring Boot 相关的学习资料  
 
-SpringBoot 启动原理：https://mp.weixin.qq.com/s/Yr-RKHeR9PFEd_wtYkvLmg  
 Spring Boot 注解大全：https://mp.weixin.qq.com/s/gVP0BCWK58UFk9aLGyLzjQ  
 SpringBoot 常用注解：https://mp.weixin.qq.com/s/Yxb6xnWGN5Vm1Tls053Z_Q  
+SpringBoot 启动原理：https://mp.weixin.qq.com/s/Yr-RKHeR9PFEd_wtYkvLmg  
 Spring Boot 启动时，让方法自动执行的 4 种方法：https://mp.weixin.qq.com/s/QLC2YY00-p28pTkOKiK2Gw
+Spring Boot 接口参数加密解密？：https://mp.weixin.qq.com/s/YDR4DxSz0KFbIewQkmwxpw
 
 
 ## 推荐博客
