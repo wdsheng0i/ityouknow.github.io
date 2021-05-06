@@ -15,7 +15,6 @@ permalink: /link
 - [方志朋的专栏](https://www.fangzhipeng.com/)
 - [江南一点雨](https://www.javaboy.org/) - 专注于 Spring Boot + 微服务
 - [沉默王二](http://www.itwanger.com) - 一个有趣的程序员
-- [小白学堂](http://www.itmind.net/) - 学的不仅是技术，更是前程！
 - [技术博客联盟](http://techblog.pub/) - 原创技术博客作者交流的地方
 - [荒蛮故事](http://relatos.top/) - 一个分享故事的网站
 - [良许Linux教程网](https://www.lxlinux.net/) - 专注分享Linux干货
@@ -27,8 +26,6 @@ permalink: /link
 - [王登科-DK博客](http://www.wdk.pw) - 一个技术创业者  
 - [rickiyeat的博客](http://blog.csdn.net/rickiyeat) - hadoop、spring boot/cloud技术博客   
 - [cmsblogs](http://cmsblogs.com/) - chenssy记录、分享JAVA技术
-- [小柒博客](https://blog.52itstyle.vip) - 小柒博客，一个主JAVA，次架构，偶尔聊聊生活的地方。
-- [飞哥专栏](https://www.ffeeii.com) - 关注技术开发和工程效率
 
 
 ## 工具网站
@@ -109,6 +106,7 @@ permalink: /link
 - React.JS 中文社区 - http://react.html.cn/   
 - Angular.JS 中文社区 - https://angular.cn/  
 - Elasticsearch 权威指南 - https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html
+- Nginx - http://nginx.org/en/download.html
 - Reids 中文官方 - http://www.redis.cn/   
     - https://www.redis.com.cn/
 - Mongodb - https://www.mongodb.org.cn/  

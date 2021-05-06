@@ -8,7 +8,8 @@ tags: [springcloud]
 收集 Spring Cloud 相关的学习资料
 
 > 学习 Spring Cloud 首先需要了解 Spring Boot，不了解 Spring Boot 的同学戳这里[Spring Boot学习资料汇总](https://wdsheng0i.github.io/springboot/2021/02/25/springboot-collect.html)
-
+> [Springcloud版本对应springboot](https://blog.csdn.net/qq120631157/article/details/86569898)  
+> [Spring Cloud 版本 version 命名说明](https://blog.csdn.net/weixin_44259720/article/details/104531575)  
 
 **重点推荐：**    
 - [微服务架构技术栈选型手册](https://www.infoq.cn/article/micro-service-technology-stack/)

@@ -15,7 +15,7 @@ Keepalived 原理与实战、双机主备、双主热备
 - Keepalived能够解决单点故障，实现HA高可用机制
 - 只有当主节点宕机，备用节点采用启用；主节点重新可用时，备节点会自动退出(主节点会向备节点发送心跳)。  
 - 构建有多个路由器(nginx)的master backup路由器组, 监测nginx状态
-- 虚拟IP-VIP（virtual IP Address）
+- 虚拟IP-VIP（virtual IP Address）:linux安装后，网卡下有两个ip，一个ip，一个vip
 - 基于**VRRP**：虚拟路由冗余协议(Virtual Router Redundancy Protocol，简称VRRP)  
 
 是由IETF提出的解决局域网中配置静态网关出现单点失效现象的路由协议。
@@ -47,7 +47,7 @@ https://www.keepalived.org/download.html
 
 ## 4 Keepalived核心配置文件 keepalived.conf
 
-## 5 Keepalived实现双机主备高可用-（配置 Keepalived-主） 
+## 5 Keepalived实现双机主备（两keepalived绑同一个vip）高可用-（配置 Keepalived-主） 
 1.通过命令 vim keepalived.conf 打开配置文件  
 ```
 global_defs { 
@@ -57,7 +57,7 @@ global_defs {
 vrrp_instance VI_1 { 
     # 表示状态是MASTER主机还是备用机BACKUP 
     state MASTER 
-    # 该实例绑定的网卡 
+    # 该实例绑定的网卡 ，查看网卡ip addr
     interface ens33 
     # 保证主备节点一致即可 
     virtual_router_id 51 
@@ -113,7 +113,7 @@ systemctl restart keepalived.service
 ps -ef|grep keepalived  
 ```
 
-## 7-8 Keepalived实现双机主备高可用-(配置 Keepalived-备)
+## 7-8 Keepalived实现双机主备（两keepalived绑同一个vip）高可用-(配置 Keepalived-备)
 1.通过命令 vim keepalived.conf 打开配置文件    
 ```
 global_defs { 
@@ -195,10 +195,10 @@ systemctl restart keepalived
 ## 12 云服务的DNS解析配置与负载均衡 
 用户请求经dns轮询发送给虚拟ip进行处理   
  
-## 13-14 配置实现keepalived双主热备 
+## 13-14 配置实现keepalived双主热备 （2keepalived分别绑两个虚拟ip）
 规则：以一个虚拟ip分组归为同一个路由  
 
-**主节点配置：**
+**vip1主、vip2备节点配置：**
 ```
 global_defs { 
     router_id keep_171 
@@ -233,7 +233,7 @@ vrrp_instance VI_2 {
 }
 ```
 
-**备用节点配置**
+**vip2主、vip1备节点配置**
 ```
 global_defs { 
     router_id keep_172 

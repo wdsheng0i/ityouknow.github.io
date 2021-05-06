@@ -6,9 +6,10 @@ tags: [arch]
 ---
 
 LVS + keepalived + Nginx实现负载均衡、高可用集群  
-[java架构直通车-第6周 LVS+Nginx实现高可用集群](https://class.imooc.com/sale/javaarchitect)  
+[java架构直通车-第6周 LVS+keepalived+Nginx实现高可用集群](https://class.imooc.com/sale/javaarchitect)  
+keepalived就是为lvs设计的，结合使用，通过keepalived可以配置lvs和nginx关系：实现主备高可用、负载均衡算法、健康检查、持久化链接
 
-## 1 LVS(Linux Virtual Server)简介  
+## 1 LVS(Linux Virtual Server)负载均衡器  
 推荐: https://blog.51cto.com/13958408/2312052?source=dra
 
 单个nginx往往是不够的，因为并发量还是有限，所以很多企业会采用LVS，LVS是四层负载，LVS涉及到NAT|TUN|DR这三种模式。    
@@ -16,10 +17,9 @@ LVS + keepalived + Nginx实现负载均衡、高可用集群
 作为架构师，对lvs集群的负载算法有一定的了解即可，因为你要和运维人员进行有效沟通；    
 作为运维, 是要深入钻研LVS了，一个项目如果发展到使用到LVS了，那么业务量是十分巨大的，需要有专门的运维团队来负责网络架构的。
 
-
 - LVS是 Linux Virtual Server 的简称，也就是Linux虚拟服务器。  
 - LVS是一个由章文嵩博士发起的一个开源项目，它的官方网是 http://www.linuxvirtualserver.org   
-- 现在 LVS 已经是 Linux 内核标准的一部分。    
+- LVS（核心ipvs） 已经是 Linux 内核标准的一部分。    
 - 使用 LVS 可以达到的技术目标是：通过 LVS 达到的负载均衡技术和 Linux 操作系统实现一个高性能高可用的 Linux 服务器集群，它具有良好的可靠性、可扩展性和可操作性。从而以低廉的成本实现最优的性能。    
 - LVS 是一个实现负载均衡集群的开源软件项目，LVS架构从逻辑上可分为调度层、Server集群层和共享存储。  
 ![](https://wdsheng0i.github.io/assets/images/2021/lvs/lvs.png)   
@@ -27,9 +27,8 @@ LVS + keepalived + Nginx实现负载均衡、高可用集群
 ## 2 为什么要使用 LVS + Nginx？ 
 - LVS基于四层，工作效率高
 - 单个Nginx承受不了，需要集群
-- LVS充当Nginx集群的调度者
+- LVS充当Nginx集群的调度者，负载均衡器
 - Nginx接受请求来回，LVS可以只接受不响应
-
  
 ## 3 LVS的三种模式  
 ![NAT-基于网络地址转换](https://wdsheng0i.github.io/assets/images/2021/lvs/nat.png)  
