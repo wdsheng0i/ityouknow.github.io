@@ -14,16 +14,8 @@ permalink: /link
 - [ityouknow-51CTO](http://blog.51cto.com/ityouknow) - 纯洁的微笑 51CTO 推荐博客，排名前十
 - [方志朋的专栏](https://www.fangzhipeng.com/)
 - [江南一点雨](https://www.javaboy.org/) - 专注于 Spring Boot + 微服务
-- [沉默王二](http://www.itwanger.com) - 一个有趣的程序员
-- [技术博客联盟](http://techblog.pub/) - 原创技术博客作者交流的地方
-- [荒蛮故事](http://relatos.top/) - 一个分享故事的网站
-- [良许Linux教程网](https://www.lxlinux.net/) - 专注分享Linux干货
-- [IT码农](https://tanqingbo.cn) - 一个专注于程序员成长的网站
-- [人工智能教程博客](http://www.captainbed.net/blog-neo) - 一个幽默的系列课程
-- [闷瓜蛋子的博客](https://fookwood.com) - 八年博客，大公司小公司游荡多年，目前为自由职业
-- [匠心零度博客](http://www.jiangxinlingdu.com/) - 以匠心，铸非凡！
-- [麦田技术博客](http://blog.itmyhome.com/) - 将来的你，一定会感激现在拼命努力的自己。 
-- [王登科-DK博客](http://www.wdk.pw) - 一个技术创业者  
+- [沉默王二](http://www.itwanger.com) - 一个有趣的程序员  
+- [人工智能教程博客](http://www.captainbed.net/blog-neo) - 一个幽默的系列课程   
 - [rickiyeat的博客](http://blog.csdn.net/rickiyeat) - hadoop、spring boot/cloud技术博客   
 - [cmsblogs](http://cmsblogs.com/) - chenssy记录、分享JAVA技术
 
