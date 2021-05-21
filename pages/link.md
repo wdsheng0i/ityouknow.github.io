@@ -18,6 +18,7 @@ permalink: /link
 - [人工智能教程博客](http://www.captainbed.net/blog-neo) - 一个幽默的系列课程   
 - [rickiyeat的博客](http://blog.csdn.net/rickiyeat) - hadoop、spring boot/cloud技术博客   
 - [cmsblogs](http://cmsblogs.com/) - chenssy记录、分享JAVA技术
+- [JAVA1234免费资源汇总](http://www.java1234.com/zy.html)
 
 
 ## 工具网站
@@ -82,7 +83,7 @@ permalink: /link
 - mysql下载  - https://dev.mysql.com/downloads/mysql/
 - Maven 仓库 - https://mvnrepository.com/
 - Tomcat下载 - https://tomcat.apache.org/download-80.cgi
--  Eclipse下载 - https://www.eclipse.org/downloads/packages/
+- Eclipse下载 - https://www.eclipse.org/downloads/packages/
 - IDEA 下载  - https://www.jetbrains.com/zh-cn/idea/   
     - [JetBrain](https://www.jetbrains.com/zh-cn/?utm_source=baidu&utm_medium=cpc&utm_campaign=cn-bai-br-brand-ex-pc&utm_content=brand-pure&utm_term=jetbrains)
 - Spring 社区 - https://spring.io/projects  
@@ -112,6 +113,7 @@ permalink: /link
 - Dubbo - https://dubbo.apache.org/zh-cn/
 - Docker - https://www.docker.org.cn/
 - Python - https://docs.python.org/zh-cn/3/
+- Hadoop - https://hadoop.apache.org 
  
 
 ## 其他
