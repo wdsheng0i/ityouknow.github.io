@@ -35,7 +35,6 @@ tags: [springcloud]
 - [从零搭建SpringCloud服务（史上最详细）](https://blog.csdn.net/qq_29519041/article/details/85238270)
 - [Spring Cloud 入门总结](https://mp.weixin.qq.com/s/BOaA3ecRjh9nw_3J0UjNbw)
 
-
 ## 开源
 
 - [纯洁的微笑的 Spring Cloud 示例](https://github.com/ityouknow/spring-cloud-examples)  
@@ -53,7 +52,6 @@ tags: [springcloud]
 - [XxPay 使用Spring Cloud实现的聚合支付](https://gitee.com/jmdhappy/xxpay-master)  
 - [FCat项目基于 Angular 4 + Spring Cloud 的企业级基础功能框架](https://gitee.com/xfdm/FCat)  
 - [基于Spring Cloud、oAuth2.0开发基于Vue前后分离的开发平台](https://gitee.com/log4j/pig)  
-
 
 ## 网站
 

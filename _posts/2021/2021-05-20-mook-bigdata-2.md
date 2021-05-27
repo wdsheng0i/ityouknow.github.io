@@ -1,0 +1,927 @@
+---
+layout: post
+title: 《大数据开发工程师》阶段二【慕课网】
+category: big-data
+tags: [big-data]
+---
+
+Flume + Hive + PB级离线数据计算分析方案 
+
+## 阶段二：Flume + Hive + PB级离线数据计算分析方案  
+### 第6周   Hadoop之初识YARN资源调度（拿来就用的企业级解决方案）
+- Hadoop的HDFS和MapReduce都是针对大数据文件来设计的，在小文件的处理上不但效率低下，而且十分消耗内存资源
+- 针对HDFS而言，每一个小文件在namenode中都会占用150字节的内存空间，最终会导致集群中虽然存储了很多个文件，但是文件的体积并不大，这样就没有意义了。
+- 针对MapReduce而言，每一个小文件都是一个Block，都会产生一个InputSplit，最终每一个小文件都会 产生一个map任务，这样会导致同时启动太多的Map任务，Map任务的启动是非常消耗性能的，但是启动了以后执行了很短时间就停止了，因为小文件的数据量太小了，这样就会造成任务执行消耗的时间还没有启动任务消耗的时间多，这样也会影响MapReduce执行的效率。
+
+针对这个问题,解决办法通常是选择一个容器，将这些小文件组织起来统一存储
+
+1、小文件问题之SequenceFile  
+- SequeceFile是Hadoop 提供的一种二进制文件，这种二进制文件直接将小文件的文件名作为key，文件内容作为value序列化到大文件中
+- 但是这个文件有一个缺点，就是它需要一个合并文件的过程，最终合并的文件会比较大，并且合并后的文件查看起来不方便，必须通过遍历才能查看里面的每一个小文件
+- 所以这个SequenceFile 其实可以理解为把很多小文件压缩成一个大的压缩包了。
+
+```
+/**
+ * 小文件解决方案之SequenceFile
+ * Created by 
+ */
+public class SmallFileSeq {
+    public static void main(String[] args) throws Exception {
+        //生成SequenceFile文件
+        write("D:\\smallFile", "/seqFile");
+        //读取SequenceFile文件
+        read("/seqFile");
+    }
+
+    /**
+     * 生成SequenceFile文件
+     *
+     * @param inputDir   输入目录-windows目录
+     * @param outputFile 输出文件-hdfs文件
+     * @throws Exception
+     */
+    private static void write(String inputDir, String outputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出文件
+        fileSystem.delete(new Path(outputFile), true);
+        //构造opts数组，有三个元素
+         /*
+         第一个是输出路径
+         第二个是key类型
+         第三个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                SequenceFile.Writer.file(new Path(outputFile)),
+                SequenceFile.Writer.keyClass(Text.class),
+                SequenceFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        SequenceFile.Writer writer = SequenceFile.createWriter(conf, opts);
+        //指定要压缩的文件的目录
+        File inputDirPath = new File(inputDir);
+        if (inputDirPath.isDirectory()) {
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key, value);
+            }
+        }
+        writer.close();
+    }
+
+
+     /**
+     * 读取SequenceFile文件
+     *
+     * @param inputFile SequenceFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //创建阅读器
+        SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFi
+                Text key = new Text();
+        Text value = new Text();
+        //循环读取数据
+        while (reader.next(key, value)) {
+            //输出文件名称
+            System.out.print("文件名:" + key.toString() + ",");
+            //输出文件的内容
+            System.out.println("文件内容:" + value.toString());
+        }
+        reader.close();
+    }
+}
+```
+
+2、小文件问题之MapFile  
+- MapFile是排序后的SequenceFile,MapFile由两部分组成，分别是index和data
+- index作为文件的数据索引，记录每个Record的key值，及该Record在文件中的偏移位置。MapFile被访问时,索引文件会被加载到内存，通过索引映射关系可迅速定位到指定Record所在文件位置，因此，相对SequenceFile而言，MapFile的检索效率是高效的，缺点是会消耗一部分内存来存储index数据。
+
+```
+/**
+ * 小文件解决方案之MapFile
+ * Created by 
+ */
+public class SmallFileMap {
+    public static void main(String[] args) throws Exception{
+        //生成MapFile文件
+        write("D:\\smallFile","/mapFile");
+        //读取MapFile文件
+        read("/mapFile");
+    }
+
+    /**
+     * 生成MapFile文件
+     * @param inputDir 输入目录-windows目录
+     * @param outputDir 输出目录-hdfs目录
+     * @throws Exception
+     */
+    private static void write(String inputDir,String outputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出目录
+        fileSystem.delete(new Path(outputDir),true);
+        //构造opts数组，有两个元素
+         /*
+         第一个是key类型
+         第二个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                MapFile.Writer.keyClass(Text.class),
+                MapFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        MapFile.Writer writer = new MapFile.Writer(conf,new Path(outputDir),o
+                //指定要压缩的文件的目录
+                File inputDirPath = new File(inputDir);
+        if(inputDirPath.isDirectory()){
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key,value);
+            }
+        }
+        writer.close();
+    }
+    /**
+     * 读取MapFile文件
+     * @param inputDir MapFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //创建阅读器
+        MapFile.Reader reader = new MapFile.Reader(new Path(inputDir),conf);
+        Text key = new Text();
+        //循环读取数据
+        while(reader.next(key,value)){
+            //输出文件名称
+            System.out.print("文件名:"+key.toString()+",");
+            //输出文件的内容
+            System.out.println("文件内容:"+value.toString());
+        }
+        reader.close();
+    }
+}
+```
+3、案例：小文件存储和计算 
+```
+/**
+ * 需求：读取SequenceFile文件
+ * Created by  
+ */
+public class WordCountJobSeq {
+    public static class MyMapper extends Mapper<Text, Text, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyMapper.class);
+        /**
+         * 需要实现map函数
+         * 这个map函数就是可以接收<k1,v1>，产生<k2，v2>
+         *
+         * @param k1
+         * @param v1
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void map(Text k1, Text v1, Context context)
+                throws IOException, InterruptedException {
+            //输出k1,v1的值
+            System.out.println("<k1,v1>=<" + k1.toString() + "," + v1.toString() + ">
+                    //logger.info("<k1,v1>=<"+k1.get()+","+v1.toString()+">");
+                    //k1 代表的是每一行数据的行首偏移量，v1代表的是每一行内容
+                    //对获取到的每一行数据进行切割，把单词切割出来
+                    String[]words = v1.toString().split(" ");
+            //迭代切割出来的单词数据
+            for (String word : words) {
+                //把迭代出来的单词封装成<k2,v2>的形式
+                Text k2 = new Text(word);
+                LongWritable v2 = new LongWritable(1L);
+                //把<k2,v2>写出去
+                context.write(k2, v2);
+            }
+        }
+    }
+
+    /**
+     * Reduce阶段
+     */
+    public static class MyReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyReducer.class);
+        /**
+         * 针对<k2,{v2...}>的数据进行累加求和，并且最终把数据转化为k3,v3写出去
+         *
+         * @param k2
+         * @param v2s
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void reduce(Text k2, Iterable<LongWritable> v2s, Context cocontext>) throws IOException, InterruptedException {
+            //创建一个sum变量，保存v2s的和
+            long sum = 0L;
+            //对v2s中的数据进行累加求和
+            for (LongWritable v2 : v2s) {
+                //输出k2,v2的值
+                //System.out.println("<k2,v2>=<"+k2.toString()+","+v2.get()+"
+                //logger.info("<k2,v2>=<"+k2.toString()+","+v2.get()+">");
+                sum += v2.get();
+            }
+            //组装k3,v3
+            Text k3 = k2;
+            LongWritable v3 = new LongWritable(sum);
+            //输出k3,v3的值
+            //System.out.println("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            //logger.info("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            context.write(k3, v3);
+        }
+    }
+
+    /**
+     * 组装Job=Map+Reduce
+     */
+    public static void main(String[] args) {
+        try {
+            if (args.length != 2) {
+                //如果传递的参数不够，程序直接退出
+                System.exit(100);
+            }
+            //指定Job需要的配置参数
+            Configuration conf = new Configuration();
+            //创建一个Job
+            Job job = Job.getInstance(conf);
+            //注意了：这一行必须设置，否则在集群中执行的时候是找不到WordCountJob这个
+            job.setJarByClass(WordCountJobSeq.class);
+            //指定输入路径（可以是文件，也可以是目录）
+            FileInputFormat.setInputPaths(job, new Path(args[0]));
+            //指定输出路径(只能指定一个不存在的目录)
+            FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            //指定map相关的代码
+            job.setMapperClass(MyMapper.class);
+            //指定k2的类型
+            job.setMapOutputKeyClass(Text.class);
+            //指定v2的类型
+            job.setMapOutputValueClass(LongWritable.class);
+            //设置输入数据处理类
+            job.setInputFormatClass(SequenceFileInputFormat.class);
+            //指定reduce相关的代码
+            job.setReducerClass(MyReducer.class);
+            //指定k3的类型
+            job.setOutputKeyClass(Text.class);
+            //指定v3的类型
+            job.setOutputValueClass(LongWritable.class);
+            //提交job
+            job.waitForCompletion(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+4、 数据倾斜问题分析  
+提高MapReduce的执行效率  
+- 默认情况下Map任务个数和InputSplit相关，InputSplit个数和Block块有关，所以可认为Map任务个数和数据的block块个数有关
+- 默认情况下reduce的个数是1个，可以考虑增加reduce任务个数，这样就可以实现数据分流了，提高计算效率
+
+5、数据倾斜案例实战 
+思路：把倾斜的数据打散
+```
+//1.map阶段，打散倾斜数据
+map{
+    String key = words[0];
+         if("5".equals(key)){
+         //把倾斜的key打散，分成10份
+         key = "5"+"_"+random.nextInt(10);
+    }
+    
+}
+
+//2.job设置多个reduce任务
+main(){
+    //设置reduce任务个数
+   job.setNumReduceTasks(Integer.parseInt(args[2]));
+}
+
+//3.结果不符合要求：1 10；... 5_1  1000; 5_2  2000;...
+再开发一个map-reduce任务，把5_*的求和下
+
+```
+ 
+6、YARN资源调度器 
+YARN不仅仅支持MapReduce，还支持Spark、Flink等计算引擎
+ 
+主要负责集群资源的管理和调度，支持主从结构  
+![](../../assets/images/2021/big-data/yarn.png)  
+- 主节点（ResourceManager）进程主要负责集群资源的管理和分配,并处理客户端请求,启动和监控AppMaster, NodeManager  
+- 从节点（NodeManager）主要负责单节点资源管理,处理ResourceManager, AppMaster 的命令 
+- AppMaster：负责某个具体应用程序的调度和协调,为应用程序申请资源,并对任务进行监控
+- Container：YARN中的一个动态资源分配的概念，其拥有一定的内存，核数 
+
+YARN资源管理模型
+- YARN主要管理内存和CPU这两种资源类型
+- NodeManager启动时会向ResourceManager注册，注册信息中包含该节点可分配的CPU和内存总量
+- yarn.nodemanager.resource.memory-mb：单节点可分配的物理内存总量，默认是8MB*1024，即8G
+- yarn.nodemanager.resource.cpu-vcores：单节点可分配的虚拟CPU个数，默认是8
+
+7、YARN中的调度器分析   
+![](../../assets/images/2021/big-data/yarn-schedule.png)  
+- FIFO Scheduler:先进先出(first in, first out)调度策略
+- CapacityScheduler:可以看作是FifoScheduler的多队列版本。
+- FairScheduler:多队列，多用户共享资源。
+ 
+8、案例：YARN多资源队列配置和使用   
+```
+1：capacity-scheduler.xml 增加online队列和offline队列 ，并根据预估实际使用调整比例
+  <property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>default,online,offline</value>
+    <description>
+      The queues at the this level (root is the root queue).
+    </description>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>70</value>
+    <description>Default queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
+    <value>70</value>
+    <description>
+      The maximum capacity of the default queue. 
+    </description>
+ </property>
+   <!--新增-->
+ <property>
+    <name>yarn.scheduler.capacity.root.online.capacity</name>
+    <value>10</value>
+    <description>online queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.offline.capacity</name>
+    <value>20</value>
+    <description>offline queue target capacity.</description>
+  </property>
+<property>
+    <name>yarn.scheduler.capacity.root.online.maximum-capacity</name>
+    <value>10</value>
+    <description>
+      The maximum capacity of the online queue. 
+    </description>
+ </property>
+<property>
+    <name>yarn.scheduler.capacity.root.offline.maximum-capacity</name>
+    <value>20</value>
+    <description>
+      The maximum capacity of the offline queue. 
+    </description>
+ </property> 
+
+2：向offline队列提交任务
+//组装job
+main（String[] args）{
+    //解析命令行中通过-D传递过来的参数，添加到conf中
+    String[] remainingArgs = new GenericOptionParser(conf, args).getRemainingArgs();
+}
+
+执行命令：hadoop jar db_hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.wds.wordcountQueue -Dmapreduce.job.queuename=offline /hello.dat /out 10
+```
+ 
+9、Hadoop官方文档使用指北
+  
+10、Hadoop在CDH中的使用  
+
+11、Hadoop在HDP中的使用  
+   
+### 第7周   数据采集工具-Flume   
+1、快速了解Flume及应用场景    
+Flume是一个高可用，高可靠，分布式的海量日志采集、聚合和传输的系统，能够有效的收集、聚合、移动大量的日志数据。  
+通俗一点来说就是Flume是一个很靠谱，很方便、很强的日志采集工具。    
+![](../../assets/images/2021/big-data/flume-1.png)
+
+Flume特性：  
+- 它有一个简单、灵活的基于流的数据流结构，这个其实就是刚才说的Agent内部有三大组件，数据通
+过这三大组件流动的
+- 具有负载均衡机制和故障转移机制，这个后面我们会详细分析
+- 一个简单可扩展的数据模型(Source、Channel、Sink)，这几个组件是可灵活组合的
+
+Flume高级应用场景：  
+- Flume的多路输出： 就是将采集到的一份数据输出到多个目的地中，不同目的地的数据对应不同的业务场景。  
+![](../../assets/images/2021/big-data/flume-2.png)  
+注意了，Flume中多个Agent之间是可以连通的，只需要让前面Agent的sink组件把数据写到下一 个Agent的source组件中即可  
+
+- flume的汇聚功能：就是多个Agent采集到的数据统一汇聚到一 个Agent    
+![](../../assets/images/2021/big-data/flume-3.png)  
+
+2、Flume的三大核心组件    
+Source：数据源，通过source组件可以指定让Flume读取哪里的数据，然后将数据传递给后面的channel      
+Flume内置支持读取很多种数据源，基于文件、目录、TCP\UDP端口、HTTP、Kafka的等；也是支持自定义的。  
+- Exec Source：实现文件监控，可以实时监控文件中的新增内容，类似于linux中的tail -f 效果
+- NetCat TCP/UDP Source： 采集指定端口(tcp、udp)的数据，可以读取流经端口的每一行数据
+- Spooling Directory Source：采集文件夹里新增的文件
+- Kafka Source：从Kafka消息队列中采集数据
+
+Channel：临时存储数据的管道，接受Source发出的数据   
+Channel的类型有很多：内存、文件，内存+文件、JDBC等    
+- Memory Channel：使用内存作为数据的存储（效率高，的agent挂了数据就丢了、内存有限）
+- File Channel：使用文件来作为数据的存储（数据不会丢，效率相对慢一些，常用）
+- Spillable Memory Channel：使用内存和文件作为数据存储，先把数据存内存，内存中数据达到阈值再flush到文件中
+   
+Sink：从Channel中读取数据并存储到指定目的地    
+Sink的表现形式有很多：打印到控制台、HDFS、Kafka等  
+- Logger Sink：将数据作为日志处理，可打印到控制台或写到文件中，这个主要在测试的时候使用
+- HDFS Sink：将数据传输到HDFS中，比较常见的，主要针对离线计算的场景
+- Kafka Sink：将数据发送到kafka消息队列中，也是比较常见的，主要针对实时计算场景，数据不落盘，实时传输，最后使用实时计算框架直接处理。
+
+注意：Channel中的数据直到进入目的地才会被删除，当Sink写入目的地失败后，可以自动重写，不会造成数据丢失，这块是有一个事务保证的。
+
+3、Flume安装部署  
+```
+1.环境准备：虚拟机、ip-192.168.145.131、防火墙、jdk
+
+2.下载、上传、解压：http://flume.apache.org/download.html
+
+3.修改盘flume的env环境变量配置文件：在flume的conf目录，修改flume-env.sh.template名字，去掉后缀template
+cd apache-flume/conf
+mv flume-env.sh.template flume-env.sh
+
+4.这个时候我们不需要启动任何进程，只有在配置好采集任务之后才需要启动Flume
+```
+
+4、Flume的Hello World案例 -- 采集TCP链接输入信息 
+```
+// 1.在conf目录下新建采集任务配置example.conf, 编辑内容如下
+# example.conf: A single-node Flume configuration
+
+# Name the components on this agent
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+# Describe/configure the source
+a1.sources.r1.type = netcat
+# 配置localhost ip时，只能严格通过 localhost ip链接，配置0.0.0.0，即可通过 localhost 或 ip链接
+a1.sources.r1.bind = 0.0.0.0 
+a1.sources.r1.port = 44444
+
+# Describe the sink
+a1.sinks.k1.type = logger
+
+# Use a channel which buffers events in memory
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+//2.Agent配置好了以后就可以启动
+ bin/flume-ng agent --name a1 --conf conf --conf-file example.conf -Dflume.root.logger=INFO,console
+
+这里面使用flume-ng命令， 后面指定agent，表示启动一个Flume的agent代理
+--name：指定agent的名字
+--conf：指定flume配置文件的根目录
+--conf-file：指定Agent对应的配置文件(包含source、channel、sink配置的文件)
+-D：动态添加一些参数，在这里是指定了flume的日志输出级别和输出位置，INFO表示日志
+
+//3. 客户端连接测试
+安装：telnet：yum install -y telnet
+链接： telnet 192.168.145.131 44444
+链接成功后即可输入信息hello world，再flume控制台对应可以看到输出hello world
+
+//4.后台启动
+nohup bin/flume-ng agent --name a1 --conf conf --conf-file example.conf &
+```
+
+5、Flume文件数据采集案例：采集文件内容上传至HDFS   
+需求：采集目录中已有的文件内容，存储到HDFS   
+分析：source是要基于目录的，channel建议使用file，可以保证不丢数据，sink使用hdfs
+
+```
+// 1.新建Agent任务：file-to-hdfs.conf
+# Name the components on this agent
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+a1.sources.r1.type = spooldir
+a1.sources.r1.spoolDir = /data/log/studentDir
+
+a1.channels.c1.type = file
+a1.channels.c1.checkpointDir = /data/soft/apache-flume-1.9.0-bin/data/studentDir/checkpoint
+a1.channels.c1.dataDirs = /data/soft/apache-flume-1.9.0-bin/data/studentDir/data
+
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = hdfs://192.168.145.128:9000/flume/studentDir
+a1.sinks.k1.hdfs.filePrefix = stu-
+a1.sinks.k1.hdfs.fileSuffix = dat
+a1.sinks.k1.hdfs.fileType = DataStream
+a1.sinks.k1.hdfs.writeFormat = Text
+a1.sinks.k1.hdfs.rollInterval = 3600
+a1.sinks.k1.hdfs.rollSize = 134217728
+a1.sinks.k1.hdfs.rollCount = 0
+
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+//2.初始化source目录、测试数据
+[root@bigdata131 studentDir]#mkdir -p /data/log/studentDir
+[root@bigdata131 studentDir]#cd /data/log/studentDir
+[root@bigdata131 studentDir]# more class1.dat 
+jack 18 male
+jessic 20 female
+tom 17 male
+
+//3.启动Hadoop集群 
+[root@bigdata128 ~]# cd /data/soft/hadoop-3.2.0
+[root@bigdata128 hadoop-3.2.0]# sbin/start-all.sh
+
+//4.启动Agent，
+bin/flume-ng agent --name a1 --conf conf --conf-file file-to-hdfs.conf -Dflume.root.logger=INFO,console
+问题：会报错提示找不到SequenceFile、No FileSystem for scheme: hdfs等
+解决：把flume节点设置为hadoop集群的一个客户端节点： 把hadoop目录拷贝到flume主机131上，并配置hadoop环境变量
+
+//5.查看结果
+hdfs dfs -ls hdfs://192.168.145.128:9000/flume/studentDir
+```
+
+- Flume会不会重复读取同一个文件的数据？ 不会，读过的文件被加了一个后缀 .COMPLETED 
+
+6、Flume文件数据采集案例：采集网站日志上传至HDFS
+![](../../assets/images/2021/big-data/flume-example.png)  
+需求：    
+- 1.将A和B两台机器实时产生的日志数据汇总到机器C中   
+- 2.通过机器C将数据统一上传至HDFS的指定目录中  
+- 3.HDFS中的目录是按天生成的，每天一个目录
+
+分析：
+- 使用bigdata02和bigdata03采集当前机器上产生的实时日志数据，统一汇总到bigdata04机器上
+- bigdata02和bigdata03中的source使用基于file的source，ExecSource，实时读取文件中的新增数据
+- channel使用基于内存的channel，因为是采集网站的访问日志，就算丢一两条数据对整体结果影响也不大，采集到的数据可以快读进入hdfs中
+- bigdata02和bigdata03的数据需要快速发送到bigdata04中，通过网络直接传输，sink建议使用avrosink
+- bigdata04的source使用avrosource，avrosink的数据可以直接发送给avrosource，所以他们可以无缝衔接。
+- channel还是基于内存的channel，sink就使用hdfssink，因为是要向hdfs中写数据
+
+实现：
+- 3台主机上安装flume，配置相应的Agent
+- bigdata02和bigdata03中配置的a1.sinks.k1.port 的值45454需要和bigdata04中配置的a1.sources.r1.port的值45454一样
+- 启动的时候需要注意先后顺序，先启动bigdata04上面的，再启 动bigdata02和bigdata03上面的agent
+- 依次停止bigdata02、bigdata03中的服务，最后停止bigdata04中的服务
+
+```
+// agent-bigdata02
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
+# 配置source组件
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F /data/log/access.log
+# 配置channel组件
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+# 配置sink组件
+a1.sinks.k1.type = avro
+a1.sinks.k1.hostname = 192.168.145.131
+a1.sinks.k1.port = 45454
+# 把组件连接起来
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+// agent-bigdata03
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
+# 配置source组件
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F /data/log/access.log
+# 配置channel组件
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+# 配置sink组件
+a1.sinks.k1.type = avro
+a1.sinks.k1.hostname = 192.168.145.131
+a1.sinks.k1.port = 45454
+# 把组件连接起来
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+// agent-bigdata04
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
+# 配置source组件
+a1.sources.r1.type = avro
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 45454
+# 配置channel组件
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+# 配置sink组件
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = hdfs://192.168.145.131:9000/access/%Y%m%d
+a1.sinks.k1.hdfs.filePrefix = access
+a1.sinks.k1.hdfs.fileType = DataStream
+a1.sinks.k1.hdfs.writeFormat = Text
+a1.sinks.k1.hdfs.rollInterval = 3600
+a1.sinks.k1.hdfs.rollSize = 134217728
+a1.sinks.k1.hdfs.rollCount = 0
+# path目录拼接时间，时间值来源
+a1.sinks.k1.hdfs.useLocalTimeStamp = true
+# 把组件连接起来
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+```
+
+7、Flume高级组件之Source Interceptors  
+Source可以指定一个或者多个拦截器按先后顺序依次对采集到的数据进行处理  
+  
+系统中已经内置提供了很多Source Interceptors：  
+- Timestamp Interceptor：向event中的header里面添加timestamp 时间戳信息
+- Host Interceptor：向event中的header里面添加host属性，host的值为当前机器的主机名或者ip
+- Search and Replace Interceptor：根据指定的规则查询Event中body里面的数据，然后进行替换，这个拦截器会修改event中body的值，也就是会修改原始采集到的数据内容
+- Static Interceptor：向event中的header里面添加固定的key和value
+- Regex Extractor Interceptor：根据指定的规则从Event中的body里面抽取数据，生成key和value，再把key和value添加到header中
+
+使用：  
+```
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
+# 配置source组件
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F /data/log/moreType.log
+# 配置拦截器 [多个拦截器按照顺序依次执行]
+a1.sources.r1.interceptors = i1 i2 i3 i4
+a1.sources.r1.interceptors.i1.type = search_replace
+a1.sources.r1.interceptors.i1.searchPattern = "type":"video_info"
+a1.sources.r1.interceptors.i1.replaceString = "type":"videoInfo"
+a1.sources.r1.interceptors.i2.type = search_replace
+a1.sources.r1.interceptors.i2.searchPattern = "type":"user_info"
+a1.sources.r1.interceptors.i2.replaceString = "type":"userInfo"
+a1.sources.r1.interceptors.i3.type = search_replace
+a1.sources.r1.interceptors.i3.searchPattern = "type":"gift_record"
+a1.sources.r1.interceptors.i3.replaceString = "type":"giftRecord"
+a1.sources.r1.interceptors.i4.type = regex_extractor
+a1.sources.r1.interceptors.i4.regex = "type":"(\\w+)"
+a1.sources.r1.interceptors.i4.serializers = s1
+# 通过source的拦截器可以向event的header中添加key-value
+a1.sources.r1.interceptors.i4.serializers.s1.name = logType
+# 配置channel组件
+a1.channels.c1.type = file
+a1.channels.c1.checkpointDir = /data/soft/apache-flume-1.9.0-bin/data/moreType
+a1.channels.c1.dataDirs = /data/soft/apache-flume-1.9.0-bin/data/moreType/dat
+# 配置sink组件
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = hdfs://192.168.145.128:9000/moreType/%Y%m%d/%{logType}
+a1.sinks.k1.hdfs.fileType = DataStream
+a1.sinks.k1.hdfs.writeFormat = Text
+a1.sinks.k1.hdfs.rollInterval = 3600
+a1.sinks.k1.hdfs.rollSize = 134217728
+a1.sinks.k1.hdfs.rollCount = 0
+a1.sinks.k1.hdfs.useLocalTimeStamp = true
+#增加文件前缀和后缀
+a1.sinks.k1.hdfs.filePrefix = data
+a1.sinks.k1.hdfs.fileSuffix = .log
+# 把组件连接起来
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+```
+8、Flume高级组件之Channel Selectors  
+Source发往多个Channel的策略设置，如果source后面接了多个channel，到底是给所有的channel都发，还是根据规则发送到不同channel，这些是由Channel Selectors来控制的
+
+Channel Selectors类型包括：    
+- Replicating Channel Selector 是默认的channel 选择器，它会将Source采集过来的Event发往所有Channel
+- Multiplexing Channel Selector，它表示会根据Event中header里面的值将Event发往不同的Channel
+
+示例：  
+```
+a1.sources = r1
+a1.channels = c1 c2 c3 c4
+a1.sources.r1.selector.type = multiplexing
+a1.sources.r1.selector.header = state
+a1.sources.r1.selector.mapping.CZ = c1
+a1.sources.r1.selector.mapping.US = c2 c3
+a1.sources.r1.selector.default = c4
+```
+在这个例子的配置中，指定了4个channel,c1、c2、c3、c4  
+source采集到的数据具体会发送到哪个channel中，会根据event中header里面的state属性的值，这个是通过selector.header控制的  
+如果state属性的值是CZ，则发送给c1  
+如果state属性的值是US，则发送给c2 c3  
+如果state属性的值是其它值，则发送给c4  
+
+案例一：多Channel之Replicating Channel Selector   
+![](../../assets/images/2021/big-data/flume-channel-1.png)  
+需求：把一份数据采集过来以后，分别存储到不同的存储介质中，不同存储介质的特点和应用场景是不一样的，典型的就是hdfssink 和kafkasink，
+- 通过hdfssink实现离线数据落盘存储，方便后面进行离线数据计算
+- 通过kafkasink实现实时数据存储，方便后面进行实时计算，在这里先使用loggersink代替
+
+实现:  
+```
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1 c2
+a1.sinks = k1 k2
+# 配置source组件
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 44444
+# 配置channle选择器[默认就是replicating，所以可以省略]
+a1.sources.r1.selector.type = replicating
+# 配置channel组件
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+a1.channels.c2.type = memory
+a1.channels.c2.capacity = 1000
+a1.channels.c2.transactionCapacity = 100
+# 配置sink组件
+a1.sinks.k1.type = logger
+a1.sinks.k2.type = hdfs
+a1.sinks.k2.hdfs.path = hdfs://192.168.145.128:9000/replicating
+a1.sinks.k2.hdfs.fileType = DataStream
+a1.sinks.k2.hdfs.writeFormat = Text
+a1.sinks.k2.hdfs.rollInterval = 3600
+a1.sinks.k2.hdfs.rollSize = 134217728
+a1.sinks.k2.hdfs.rollCount = 0
+a1.sinks.k2.hdfs.useLocalTimeStamp = true
+a1.sinks.k2.hdfs.filePrefix = data
+a1.sinks.k2.hdfs.fileSuffix = .log
+# 把组件连接起来
+a1.sources.r1.channels = c1 c2
+a1.sinks.k1.channel = c1
+a1.sinks.k2.channel = c2
+```
+
+案例二：多Channel之Multiplexing Channel Selector  
+需求 ： 分别输出到两个sink
+{"name":"jack","age":19,"city":"bj"}   
+{"name":"tom","age":26,"city":"sh"}
+  
+实现：
+``` 
+# agent的名称是a1
+# 指定source组件、channel组件和Sink组件的名称
+a1.sources = r1
+a1.channels = c1 c2
+a1.sinks = k1 k2
+# 配置source组件
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 44444
+# 配置source拦截器
+a1.sources.r1.interceptors = i1
+a1.sources.r1.interceptors.i1.type = regex_extractor
+a1.sources.r1.interceptors.i1.regex = "city":"(\\w+)"
+a1.sources.r1.interceptors.i1.serializers = s1
+a1.sources.r1.interceptors.i1.serializers.s1.name = city
+# 配置channle选择器
+a1.sources.r1.selector.type = multiplexing
+a1.sources.r1.selector.header = city
+a1.sources.r1.selector.mapping.bj = c1
+a1.sources.r1.selector.default = c2
+# 配置channel组件
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+a1.channels.c2.type = memory
+a1.channels.c2.capacity = 1000
+a1.channels.c2.transactionCapacity = 100
+# 配置sink组件
+a1.sinks.k1.type = logger
+a1.sinks.k2.type = hdfs
+a1.sinks.k2.hdfs.path = hdfs://192.168.145.128:9000/multiplexing
+a1.sinks.k2.hdfs.fileType = DataStream
+a1.sinks.k2.hdfs.writeFormat = Text
+a1.sinks.k2.hdfs.rollInterval = 3600
+a1.sinks.k2.hdfs.rollSize = 134217728
+a1.sinks.k2.hdfs.rollCount = 0
+a1.sinks.k2.hdfs.useLocalTimeStamp = true
+a1.sinks.k2.hdfs.filePrefix = data
+a1.sinks.k2.hdfs.fileSuffix = .log
+# 把组件连接起来
+a1.sources.r1.channels = c1 c2
+a1.sinks.k1.channel = c1
+a1.sinks.k2.channel = c2
+```
+
+9、Flume高级组件之Sink Processors  
+Sink 发送数据的策略设置，一个channel后面可以接多个sink，channel中的数据是被哪个sink获取，这个是由Sink Processors控制的  
+
+Sink Processors类型包括这三种： 
+- Default Sink Processor：是默认的，一个channel后面接一个sink的形式
+- Load balancing Sink Processor：负载均衡处理器，一个channle后可接多个sink，多个sink属于一个sink group，根据指定的算法进行轮询或者随机发送，减轻单个sink的压力
+- Failover Sink Processor：故障转移处理器，一个channle后可接多个sink，多个sink属于一个sink group，按照sink的优先级，默认先让优先级高的sink来处理数据，如果这个sink出现了故障，则用优先级低一点的sink处理数据
+
+案例一：负载均衡Sink Processor
+![](../../assets/images/2021/big-data/flume-sink-1.pmg.png)  
+
+案例一：负载均衡Sink Processor
+![](../../assets/images/2021/big-data/flume-sink-2.png)  
+
+9-2、扩展：Event
+Event是Flume传输数据的基本单位，也是事务的基本单位，在文本文件中，通常一行记录就是一个Event
+
+Event中包含header和body；
+- body是采集到的那一行记录的原始内容
+- header类型为Map<String, String>，里面可以存储一些属性信息，方便后面使用
+
+我们可以在Source中给每一条数据的header中增加key-value，在Channel和Sink中使用header中的值了。
+
+10、各种自定义组件  
+
+11、Flume优化  
+
+12、Flume进程监控  
+
+  
+### 第8周   数据仓库Hive从入门到小牛  
+1、快速了解Hive  
+
+2、数据库和数据仓库的区别  
+
+3、Hive安装部署  
+
+4、Hive使用方式之命令行方式  
+
+5、Hive使用方式之JDBC方式  
+
+6、Set命令的使用  
+
+7、Hive的日志配置  
+
+8、Hive中数据库的操作  
+
+9、Hive中表的操作  
+
+10、Hive中数据类型的应用  
+
+11、Hive表类型之内部表+外部表  
+
+12、Hive表类型之内部分区表  
+
+13、Hive表类型之外部分区表  
+
+14、Hive表类型之桶表+视图  
+
+15、Hive数据处理综合案例  
+
+16、Hive高级函数之分组排序取TopN  
+
+17、Hive高级函数之行转列  
+
+18、Hive高级函数之列转行  
+
+19、Hive的排序函数  
+
+20、Hive的分组和去重函数  
+
+21、一个SQL语句分析  
+
+22、Hive的Web工具-HUE  
+
+  

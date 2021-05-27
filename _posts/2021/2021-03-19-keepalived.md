@@ -143,7 +143,6 @@ vrrp_instance VI_1 {
 
 ``` 
 
-
 ## 9-10 Keepalived配置Nginx自动重启，实现7x24不间断服务 
 为了保证nginx自动重启，提供7x24的不间断服务，需要自行添加脚本使得keepalived对nginx进行检测。
 
@@ -195,6 +194,7 @@ systemctl restart keepalived
 ## 12 云服务的DNS解析配置与负载均衡 
 用户请求经dns轮询发送给虚拟ip进行处理   
  
+
 ## 13-14 配置实现keepalived双主热备 （2keepalived分别绑两个虚拟ip）
 规则：以一个虚拟ip分组归为同一个路由  
 

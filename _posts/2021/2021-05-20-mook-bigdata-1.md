@@ -1,0 +1,736 @@
+---
+layout: post
+title: 《大数据开发工程师》阶段一【慕课网】
+category: big-data
+tags: [big-data]
+---
+
+## 资料
+- [快速入门Hadoop3.0大数据处理-【慕课网】](https://www.imooc.com/learn/1159) 
+- [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)
+- [大数据开发工程师-【慕课网】](https://class.imooc.com/sale/bigdata) 
+- 官网：https://hadoop.apache.org 
+- Hadoop文档: http://hadoop.apache.org/docs/r1.0.4/cn/index.html  
+- 《HADOOP权威指南》  
+- [史上最详细的Hadoop环境搭建](https://blog.csdn.net/hliq5399/article/details/78193113/)  
+- [使用docker搭建hadoop分布式集群](https://blog.csdn.net/xu470438000/article/details/50512442)  
+
+Cloudera Hadoop 环境搭建（离线安装）：  
+[Cloudera Hadoop 环境搭建（离线安装）](https://www.cnblogs.com/nbfujx/p/7826037.html)  
+[CDH搭建Hadoop集群(Centos7)](https://www.cnblogs.com/frankdeng/p/10136230.html)    
+[Hadoop系列之（三）：使用Cloudera部署，管理Hadoop集群](https://www.cnblogs.com/ee900222/p/hadoop_3.html)  
+
+基于hortonworks的大数据集群环境部署  
+[基于hortonworks的大数据集群环境部署流水](https://www.cnblogs.com/wcwen1990/p/9743536.html)    
+[hortonworks data platform 安装配置文档](https://blog.csdn.net/houxusen123/article/details/40984521)  
+[hortonworks测试环境离线安装与配置](https://max.book118.com/html/2017/0522/108258870.shtm)  
+[Hadoop 发行版本 Hortonworks 安装详解](https://www.cnblogs.com/pandalee-oct/p/8215298.html)  
+
+## 阶段一：走进大数据  
+![](../../assets/images/2021/big-data/big-data.png)
+
+### 第1周   学好大数据先攻克Linux  
+1、掌握Linux虚拟机的安装和配置  
+2、使用ScecureCRT连接Linux虚拟机  
+3、掌握Linux中常见高级命令(vi、wc、sort、date、jps、kill等命令)的使用  
+4、掌握Linux中三剑客(grep、sed、awk)的常见用法  
+5、掌握Linux的高级配置(ip、hostname、防火墙)  
+6、掌握Shell脚本的开发  
+7、掌握Shell中变量、循环和判断的使用  
+8、掌握Shell中的扩展内容  
+9、掌握Linux中crontab定时器的使用  
+10、了解认识什么是大数据  
+- 百度实时路况
+- 推荐（购物、新闻、关注）
+
+11、大数据产生的背景
+- 海量数据的产生
+- 云计算的兴起 
+ 
+12、大数据的4V特征  
+- Volume（大量）：
+- Velocity（高速）：
+- Variety（多样）： 结构型的数据，也可能是非结构行的文本，图片，视频，语音，日志，邮件等
+- Value（低价值密度）： 
+
+13、大数据的行业应用  
+  
+### 第2周   大数据起源之初识Hadoop  
+1、什么是[Hadoop](https://baike.baidu.com/item/Hadoop/3526507?fr=aladdin)  
+PB级别海量数据存储和计算的平台;  
+Hadoop是由java语言编写的，在分布式服务器集群上存储海量数据并运行分布式分析应用的开源框架，其核心部件是HDFS与MapReduce。  
+
+1-2、Hadoop能干什么   
+[Hadoop到底是干什么用的？](https://www.zhihu.com/question/333417513)    
+https://blog.csdn.net/qq_32649581/article/details/82892861    
+Hadoop是专为离线和大规模数据分析而设计的，并不适合那种对几个记录随机读写的在线事务处理模式。   
+- 大数据存储：分布式存储
+- 日志处理：擅长日志分析 (实际应用：Flume+Logstash+Kafka+Spark Streaming进行实时日志处理分析)
+- ETL:数据抽取到oracle、mysql、DB2、mongdb及主流数据库
+- 机器学习: 比如Apache Mahout项目
+- 搜索引擎:Hadoop + lucene实现
+- 数据挖掘：目前比较流行的广告推荐，个性化广告推荐
+
+2、Hadoop发行版介绍：   
+- 官方版本：Apache hadoop，开源，集群、安装维护较麻烦
+- CDH版本：Cloudera hadoop，商用版本，部分功能开源，使用cloudera Manager 安装维护方便
+- HDP版本：HortonWorks hadoop，开源，使用Ambari安装维护方便
+
+3、Hadoop版本演变历史    
+1.X -> 2.X -> 3.X 
+![](../../assets/images/2021/big-data/hadoop-v.png)
+
+
+4、Hadoop3.x的细节优化  
+- Java改为支持8及以上
+- 多重服务默认端口变更
+- MR任务级本地优化
+- HDFS支持纠删码 
+- HDFS支持多NameNode  
+
+5、Hadoop三大核心组件介绍 
+- HDFS: （海量数据）分布式数据存储, HDFS理解为一个分布式的，有冗余备份的，可以动态扩展的用来存储大规模数据的大硬盘。
+- MapReduce: （海量数据）分布式计算, MapReduce理解成为一个计算引擎，按照MapReduce的规则编写Map计算/Reduce计算的程序，可以完成计算任务。
+- Yarn: 集群资源管理, 能监控服务器的资源使用，分配跟踪程序运行；    
+
+6、分布（3台虚拟机）集群安装部署   
+1).基础环境准备    
+ip设置    
+```
+//配置静态（固定）ip
+1.虚拟机网卡设置：NAT
+
+2.打开这个文件，修改里面的一些参数就行了。
+/etc/sysconfig/network-scripts/ifcfg-ens33
+BOOTPROTO="static"
+//取值：vmware编辑-虚拟网络编辑器-NAT-配置
+IPADDR=192.168.145.128
+GATEWAY=192.168.145.2
+DNS1=192.168.145.2
+
+3.重启网卡服务：service network restart
+```
+主机名hostname设置（临时+永久）    
+```
+[root@bigdata128 hadoop]# hostname bigdata128
+[root@bigdata128 hadoop]# vi /etc/hostname，填写 bigdata128 
+```
+hosts文件修改（ip和主机名的映射关系,3台主机都要添加）    
+```
+[root@bigdata128 hadoop]# vi /etc/hosts
+ip1 hostname1
+ip2 hostname2
+ip3 hostname3
+```
+关闭防火墙（临时+永久）  
+```
+关闭防火墙 systemctl stop firewalld 
+关闭开机启动项：systemctl disable firewalld
+```
+ssh免密登录    
+```
+[root@bigdata128 hadoop]# ssh-keygen -t rsa //一路回车
+[root@bigdata128 hadoop]# cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+//验证
+$ ssh bigdata128
+
+//配置免密登录从节点
+$ ssh-copy-id -i bigdata129
+$ ssh-copy-id -i bigdata130
+```
+jdk安装:  
+```
+解压、配置环境变量、生效 
+``` 
+克隆出129、130 
+```
+1.vm128-右键-管理-克隆-当前状态-创建完整克隆
+
+2.克隆完成后修改配置
+ipa ddr 查看ip、mac地址
+...
+# link/ether 00:0c:29:b0:26:ab brd ff:ff:ff:ff:ff:ff
+# inet 192.168.145.130/24 brd 192.168.145.255 scope global dynamic eno16777736
+
+vi /etc/sysconfig/network-scripts/idcfg-eno16777736
+HWADDR=00:0c:29:b0:26:ab
+IPADDR=192.168.145.130
+
+3.service network restart
+``` 
+
+集群节点之间时间同步
+```
+yum install -y ntpdate
+ntpdate -u ntp.sjtu.edu.cn
+
+// 建议把这个同步时间的操作添加到linux的crontab定时器中，每分钟执行一次
+vi /etc/crontab
+* * * * * root /usr/sbin/ntpdate -u ntp.sjtu.edu.cn
+```
+
+2).下载hadoop: https://hadoop.apache.org/releases.html  
+
+3).上传、解压  
+
+4).配置修改  
+```
+// hadoop-env.sh :在文件末尾增加环境变量信息
+	cd hadoop-3.2.0/etc/hadoop/
+	vi hadoop-env.sh 
+	export JAVA_HOME=/opt/jdk1.8.0_171
+	export HADOOP_LOG_DIR=/data/hadoop_repo/logs/hadoop
+
+// core-site.xml :注意fs.defaultFS属性中的主机名需要和主节点的主机名保持一致
+	vi /data/soft/hadoop-3.2.0/etc/hadoop/core-site.xml
+	<configuration>
+		<property>
+			<name>fs.defaultFS</name>
+			<value>hdfs://bigdata128:9000</value>
+		</property>
+		<property>
+			<name>hadoop.tmp.dir</name>
+		<value>/data/hadoop_repo</value>
+		</property>
+	</configuration>
+
+// hdfs-site.xml :把hdfs中文件副本的数量设置为2，最多为2，因为现在集群中有两个从节点，还有secondaryNamenode进程所在的节点信息
+<configuration>
+	<property>
+		<name>dfs.replication</name>
+		<value>2</value>
+	</property>
+	<property>
+		<name>dfs.namenode.secondary.http-address</name>
+		<value>bigdata128:50090</value>
+	</property>
+</configuration>
+
+// mapred-site.xml  :设置mapreduce使用的资源调度框架
+<configuration>
+	<property>
+		<name>mapreduce.framework.name</name>
+		<value>yarn</value>
+	</property>
+</configuration>
+
+// yarn-site.xml :设置yarn上支持运行的服务和环境变量白名单 
+针对分布式集群在这个配置文件中还需要设置resourcemanager的hostname，否则nodemanager找不到resourcemanager节点。
+<configuration>
+	<property>
+		<name>yarn.nodemanager.aux-services</name>
+		<value>mapreduce_shuffle</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.env-whitelist</name>
+		<value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+	</property>
+	<property>
+		<name>yarn.resourcemanager.hostname</name>
+		<value>bigdata128</value>
+	</property>
+</configuration>
+
+// workers:
+vi workers
+bigdata129
+bigdata130
+```
+
+5).shell脚本修改  
+修改 start-dfs.sh ， stop-dfs.sh 这两个脚本文件，，在文件前面增加如下内容  
+```
+cd /data/soft/hadoop-3.2.0/sbin
+	
+[root@bigdata128 sbin]# vi start-dfs.sh
+HDFS_DATANODE_USER=root
+HDFS_DATANODE_SECURE_USER=hdfs
+HDFS_NAMENODE_USER=root
+HDFS_SECONDARYNAMENODE_USER=root
+
+[root@bigdata128 sbin]# vi stop-dfs.sh
+HDFS_DATANODE_USER=root
+HDFS_DATANODE_SECURE_USER=hdfs
+HDFS_NAMENODE_USER=root
+HDFS_SECONDARYNAMENODE_USER=root
+```
+    
+修改 start-yarn.sh ， stop-yarn.sh 这两个脚本文件，在文件前面增加如下内容  
+```
+vi start-yarn.sh
+YARN_RESOURCEMANAGER_USER=root
+HADOOP_SECURE_DN_USER=yarn
+YARN_NODEMANAGER_USER=root
+
+[root@bigdata128 sbin]# vi stop-yarn.sh
+YARN_RESOURCEMANAGER_USER=root
+HADOOP_SECURE_DN_USER=yarn
+YARN_NODEMANAGER_USER=root
+```
+
+6).把bigdata128节点上将修改好配置的安装包拷贝到其他两个从节点
+```
+[root@bigdata128 sbin]# cd /data/soft/
+[root@bigdata128 soft]# scp -rq hadoop-3.2.0 bigdata129:/data/soft/
+[root@bigdata128 soft]# scp -rq hadoop-3.2.0 bigdata130:/data/soft/
+```
+ 
+7).在bigdata128节点上格式化HDFS  
+```
+[root@bigdata128 soft]# cd /data/soft/hadoop-3.2.0  
+[root@bigdata128 hadoop-3.2.0]# bin/hdfs namenode -format  
+
+如果在后面的日志信息中能看到这一行，则说明namenode格式化成功。  
+common.Storage: Storage directory /data/hadoop_repo/dfs/name has been successf
+
+失败的话：修改配置，同步修改从节点配置，再执行一次
+成功后，想重复格式化：清空/data/hadoop_repo目录，再格式化
+```
+   
+8).启动集群，在bigdata128节点上执行下面命令
+```
+[root@bigdata128 hadoop-3.2.0]# sbin/start-all.sh  
+```
+
+9).验证集群: 查看进程、浏览器访问
+```
+在bigdata128、bigdata129、bigdata130节点执行
+[root@bigdata128 hadoop-3.2.0]# jps
+192.168.145.128:9870  
+192.168.145.128:8088
+```
+
+10).停止集群
+```
+在bigdata128节点上执行停止命令
+[root@bigdata128 hadoop-3.2.0]# sbin/stop-all.sh
+```
+**问题记录**   
+```
+hadoop从节点jsp没有datanode进程？    
+查看从节点日志，是不是报错了，然后根据报错信息修改配置
+```
+
+附：Hadoop的官网文档:    
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html  
+ 
+8、Hadoop的客户端节点（相同配置即可） 
+![](../../assets/images/2021/big-data/client.png)  
+直接操作集群节点是不安全的，所以一般在业务机上安装hadoop客户端，再业务机上操作hadoop集群  
+
+建议在业务机器上安装Hadoop，只需要保证业务机器上的Hadoop的配置和集群中的配置保持一致即
+可，这样就可以在业务机器上操作Hadoop集群了，此机器就称为是Hadoop的客户端节点
+
+Hadoop的客户端节点可能会有多个，理论上是我们想要在哪台机器上操作hadoop集群就可以把这台机
+器配置为hadoop集群的客户端节点。
+
+   
+### 第3周   Hadoop之HDFS（hadoop distributed file system）分布式存储  
+1、Hadoop中的分布式存储架构 -- 生活场景引入：”小明租房”案例一步一步引入    
+HDFS是一种允许文件通过网络在多台主机上分享的文件系统，可以让多机器上多用户分享文件和存储空间;  
+- 通透性
+- 容错性
+- 不适合存储小文件  
+  
+2、HDFS的Shell介绍    
+使用格式: bin/hdfs dfs -xxx schema://authority/ path  
+- HDFS的schema是hdfs, 
+- authority是NameNode的节点ip:port，
+- path是我们要操作的路径信息
+
+3、HDFS的常见Shell操作  
+hdfs命令配置环境变量：
+```
+vi /etc/profile  
+export HADOOP_HOME=/data/soft/hadoop-3.2.0
+export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$PATH
+source /etc/profile
+```
+
+- -ls: 查询指定路径信息: hdfs dfs -ls hdfs://bigdata128:9000/
+- -mkdir [-p]:创建文件夹: hdfs dfs -mkdir hdfs://bigdata128:9000/test
+- -put: 从本地.上传文件: hdfs dfs -put readme.txt hdfs://bigdata128:9000/test
+- -get: 下载文件到本地: hdfs dfs -get /test/readme.txt readme.txt.bak
+- -cat: 查看HDFS文件内容: hdfs dfs -cat /test/readme.txt
+- -rm [-r]: 删除文件/文件夹 
+- -p 递归创建多级目录，需要指定-p参数: hdfs dfs -mkdir -p /abc/xyz
+- -R 递归显示所有目录的信息: hdfs dfs -ls -R /
+
+5、Java代码操作HDFS 
+```
+1.添加依赖
+<dependency>
+ <groupId>org.apache.hadoop</groupId>
+ <artifactId>hadoop-client</artifactId>
+ <version>3.2.0</version>
+</dependency>
+
+2.上传：执行代码，发现报错，提示权限拒绝，说明windows中的这个用户没有权限向HDFS中写入数据
+解决办法有两个
+第一种：去掉hdfs的用户权限检验机制，通过在hdfs-site.xml中配置dfs.permissions.enabled为false即可
+第二种：把代码打包到linux中执行
+/**
+ * Java代码操作HDFS
+ * 文件操作：上传文件、下载文件、删除文件
+ * Created by 
+ */
+public class HdfsOp {
+ public static void main(String[] args) throws Exception{
+ //创建一个配置对象
+ Configuration conf = new Configuration();
+ //指定HDFS的地址
+ conf.set("fs.defaultFS","hdfs://bigdata128:9000");
+ //获取操作HDFS的对象
+ FileSystem fileSystem = FileSystem.get(conf);
+ put(fileSystem);
+ }
+
+ /**
+ * 文件上传
+ * @param fileSystem
+ * @throws IOException
+ */
+ private static void put(FileSystem fileSystem) throws IOException {
+ //获取HDFS文件系统的输出流
+ FSDataOutputStream fos = fileSystem.create(new Path("/user.txt"));
+ //获取本地文件的输入流
+ FileInputStream fis = new FileInputStream("D:\\user.txt");
+ //上传文件：通过工具类把输入流拷贝到输出流里面，实现本地文件上传到HDFS
+ IOUtils.copyBytes(fis,fos,1024,true);
+ }
+}
+
+/**
+ * 下载文件
+ * @param fileSystem
+ * @throws IOException
+ */
+private static void get(FileSystem fileSystem) throws IOException{
+ //获取HDFS文件系统的输入流
+ FSDataInputStream fis = fileSystem.open(new Path("/README.txt"));
+ //获取本地文件的输出流
+ FileOutputStream fos = new FileOutputStream("D:\\README.txt");
+ //下载文件
+ IOUtils.copyBytes(fis,fos,1024,true);
+}
+
+/**
+ * 删除文件
+ * @param fileSystem
+ * @throws IOException
+ */
+private static void delete(FileSystem fileSystem) throws IOException{
+ //删除文件，目录也可以删除
+ //如果要递归删除目录，则第二个参数需要设置为true
+ //如果是删除文件或者空目录，第二个参数会被忽略
+ boolean flag = fileSystem.delete(new Path("/LICENSE.txt"),true);
+ if(flag){
+ System.out.println("删除成功！");
+ }else{
+ System.out.println("删除失败！");
+ }
+}
+
+``` 
+6、HDFS的高级Shell命令  
+
+7、HDFS读数据过程分析  
+
+8、HDFS写数据过程分析  
+
+9、HDFS写数据源码分析  
+   
+### 第4周   Hadoop之HDFS核心进程剖析    
+![](../../assets/images/2021/big-data/hdfs-s.png)   
+
+HDFS支持主从结构：
+- 主节点支持多个NameNode；从节点支持多个DataNode
+- NameNode负责接受读写请求、维护文件系统目录树结构；DataNode负责存储数据
+
+1、NameNode介绍   
+主要包含以下文件：    
+- fsimage（内存数据快照，元数据文件）、
+- edits（修改操作记录）、
+- seed_txid（事务id即edits的id）、
+- version（版本信息）
+
+维护两份关系  
+- 第一份关系file与block list关系，存储在fsimage、edits中
+- 第二份关系dataNode和block关系，dataNode启动时，会把当前节点信息+节点上block信息 上报给NameNode
+
+3、SecondaryNameNode（主节点上）介绍  
+- 主要负责把edits文件的内容合并到fsimage中
+- 这个合并操作成为checkpoint，合并时会对edits内容进行转换，生成新的内容保存到fsimage中
+
+**注意**：在nameNode的HA架构中是没有SecondaryNameNode进程的，这时文件合并操作时由standby NameNode负责实现的
+
+4、DataNode（从节点上）介绍  
+- 提供真实文件数据存储服务
+- hdfs会按照固定大小顺序对文件进行编号，划分的每一块block，默认大小128M
+- 如果一个数据块大小小于128M，不会占用整个数据block
+
+
+- Replication：多副本机制，HDFS默认副本数量为3
+- 通过dfs.replication属性控制
+
+5、HDFS的回收站   
+- HDFS为每个用户创建一个回收站目录：/user/用户名/.Trash/ 
+- 回收站中的数据都会有一个默认保存周期，过期未恢复则会被HDFS自动彻底删除
+
+注意：HDFS的回收站默认是没有开启的，需要修改core-site.xml中的 fs.trash.interval 属性
+
+6、HDFS的安全模式详解   
+集群刚启动时HDFS会进入安全模式，此时无法执行写操作  
+- 查看安全模式：hdfs dfsadmin -safemode get 
+- 离开安全模式：hdfs dfsadmin -safemode leave
+ 
+7、实战：定时上传数据至HDFS  
+需求分析：  
+在实际工作中会有定时上传数据到HDFS的需求，我们有一个web项目每天都会产生日志文件，日 志文件的格式为access_2020_01_01.log这种格式的，每天产生一个，我们需要每天凌晨将昨天生
+成的日志文件上传至HDFS上，按天分目录存储，HDFS上的目录格式为20200101  
+
+开发一个shell脚本，方便定时调度执行  
+日志目录：/data/log  
+脚本目录：/data/shell
+```
+// uploadLogData.sh
+# 第四步：要考虑到脚本重跑，补数据的情况 获取昨天日期字符串
+yesterday=$1
+if [ "$yesterday" = "" ]
+then
+ yesterday=`date +%Y_%m_%d --date="1 days ago"`
+fi
+# 第一步：拼接日志文件路径信息
+logPath=/data/log/access_${yesterday}.log
+# 将日期字符串中的_去掉
+hdfsPath=/log/${yesterday//_/}
+# 第二步：在hdfs上创建目录
+hdfs dfs -mkdir -p ${hdfsPath}
+# 第三步：将数据上传到hdfs的指定目录中
+hdfs dfs -put ${logPath} ${hdfsPath}
+```   
+第五步：配置crontab任务
+```
+vi /etc/crontab 
+0 1 * * * root sh /data/shell/uploadLogData.sh >> /data/shell/uploadLogData.l
+```
+第六步：手动执行任务：
+```
+sh -x uploadLogData.sh
+sh -x uploadLogData.sh 2020_01_01   //补传数据
+```
+
+8、HDFS的高可用机制分析    
+![](../../assets/images/2021/big-data/hdfs.png)  
+![](../../assets/images/2021/big-data/HA.png)      
+- HDFS的HA，表示一个集群中存在多个NameNode，只有一个NameNode是 Active 状态，其它的是 Standby 状态
+- ActiveNameNode(ANN)负责所有客户端的操作，StandbyNameNode(SNN)用来同步ANN的状态信息，以提供快速故障恢复能力
+- 使用HA的时候，不能启动SecondaryNameNode，会出错
+
+9.HDFS的高扩展
+![](../../assets/images/2021/big-data/F-HA.png)   
+Federation可解决单一命名空间的一些问题，提供以下特性，使用多个NameNode，每个NameNode负责一个命令空间
+- HDFS集群扩展性 ：多个NameNode分管一部分目录，使得一个集群可以扩展到更多节点，不再因内存的限制制约文件存储数目。
+- 性能更高效 ：多个NameNode管理不同的数据，且同时对外提供服务，将为用户提供更高的读写吞吐率。
+- 良好的隔离性： 用户可根据需要将不同业务数据交由不同NameNode管理，这样不同业务之间影响很小
+   
+### 第5周   Hadoop之初识MapReduce分布式计算  
+![](../../assets/images/2021/big-data/mobile-cal.png)    
+1、MapReduce介绍  
+MapReduce是一个分布式计算模型，主要负责海量数据计算，主要有两个阶段组成：map和reduce  
+- Map阶段是一个独立程序，会在很多节点同时执行，每个节点处理一部分数据
+- Reduce阶段也是独立程序，可以理解为一个单独的聚合程序
+- 框架有默认实现，用户只需要覆盖map()和reduce()两个函数，即可实现分布式计算
+
+2、MapReduce执行原理  
+![](../../assets/images/2021/big-data/m-r.png)  
+![](../../assets/images/2021/big-data/map-reduce.png)    
+![](../../assets/images/2021/big-data/map-reduce-2.png)  
+
+2-2、shuffle过程分析  
+![](../../assets/images/2021/big-data/shuffle.png)   
+框架对多个map任务的输出，按照不同的分区，通过网络copy到不同的reduce节点，这个过程称作shuffle
+
+3、实战：WordCount案例图解 
+![](../../assets/images/2021/big-data/word-count.png)  
+![](../../assets/images/2021/big-data/word-count2.png)  
+![](../../assets/images/2021/big-data/word-count3.png)
+
+4、实战：WordCount案例开发  
+1).开发Map阶段代码
+```
+/**
+     * 创建自定义mapper类
+     */
+    public static class MyMapper extends Mapper<LongWritable,Text,Text,LongWritable>{
+        /**
+         * 需要实现map函数
+         * 这个map函数就是可以接收k1,v1， 产生k2,v2
+         * @param k1
+         * @param v1
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void map(LongWritable k1, Text v1, Context context)
+                throws IOException, InterruptedException {
+            //  k1代表的是每一行的行首偏移量，v1代表的是每一行内容
+            //  对获取到的每一行数据进行切割，把单词切割出来
+            String[] words = v1.toString().split(" ");
+            //  迭代切割出来的单词数据
+            for (String word:words) {
+                //  把迭代出来的单词封装成<k2,v2>的形式
+                Text k2 = new Text(word);
+                LongWritable v2 = new LongWritable(1L);
+                System.out.println("k2:"+word+"...v2:1");
+                //  把<k2,v2>写出去
+                context.write(k2,v2);
+            }
+        }
+    }
+```
+  
+2).开发Reduce阶段代码
+```
+/**
+     * 创建自定义的reducer类
+     */
+    public static class MyReducer extends Reducer<Text,LongWritable,Text,LongWritable>{
+        /**
+         * 针对v2s的数据进行累加求和 并且最终把数据转化为k3,v3写出去
+         * @param k2
+         * @param v2s
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void reduce(Text k2, Iterable<LongWritable> v2s, Context context)
+                throws IOException, InterruptedException {
+            //  创建一个sum变量，保存v2s的和
+            long sum = 0L;
+            for (LongWritable v2 : v2s) {
+                sum += v2.get();
+            }
+            //  组装k3,v3
+            Text k3 = k2;
+            LongWritable v3 = new LongWritable(sum);
+            System.out.println("k3:"+k3.toString()+".....v3:"+sum);
+            //  把结果写出去
+            context.write(k3,v3);
+        }
+    }
+```
+  
+3).组装Job   
+```
+/**
+     * 组装job=map+reduce
+     * @param args
+     */
+    public static void main(String[] args) {
+        try {
+            if(args.length!=2){
+                //  如果传递的参数不够，程序直接退出
+                System.exit(100);
+            }
+            //  job需要的配置参数
+            Configuration conf = new Configuration();
+            //  创建一个job
+            Job job = Job.getInstance(conf);
+            //  注意：这一行必须设置，否则在集群中执行的是找不到WordCountJob这个类
+            job.setJarByClass(WordCountJob.class);
+            //  指定输入路径(可以是文件，也可以是目录)
+            FileInputFormat.setInputPaths(job,new Path(args[0]));
+            //  指定输出路径(只能指定一个不存在的目录)
+            FileOutputFormat.setOutputPath(job,new Path(args[1]));
+            //  指定map相关的代码
+            job.setMapperClass(MyMapper.class);
+            //  指定k2的类型
+            job.setMapOutputKeyClass(Text.class);
+            //  指定v2的类型
+            job.setMapOutputValueClass(LongWritable.class);
+            //  指定reduce相关的代码
+            job.setReducerClass(MyReducer.class);
+            //  指定k3的类型
+            job.setOutputKeyClass(Text.class);
+            //  指定v3的类型
+            job.setOutputValueClass(LongWritable.class);
+            //  提交job
+            job.waitForCompletion(true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+```  
+
+4).打包：mvn clean package    
+hadoopDemo-1.0-SNAPSHOT-jar-with-dependencies.jar  
+
+5).上传程序 + 提交hello.txt文件到hdfs
+```
+bin/hdfs dfs -put /data/soft/hadoop-3.2.0/hello.txt /test
+```
+
+6).执行job
+ ```
+bin/hadoop jar hadoopDemo-1.0-SNAPSHOT-jar-with-dependencies.jar WordCountJob /test/hello.txt /out
+```
+
+7).查看结果: hdfs dfs -cat /out/part-r-00000  
+ 
+5、MapReduce任务日志查看, 开启yarn的日志聚合功能，把散落在nodemanager节点上的日志收集管理:     
+修改yarn-site.xml中<yarn.log-aggregation-enable>和<yarn.log.server.url>
+```
+<property> 
+ <name>yarn.log-aggregation-enable</name> 
+ <value>true</value>
+</property>
+<property>
+ <name>yarn.log.server.url</name>
+ <value>http://bigdata128:19888/jobhistory/logs/</value>
+</property>
+```
+重启集群：
+```
+sbin/stop-all.sh  sbin/start-all.sh
+```  
+
+启动history进程(每个节点都要)：
+```
+sbin/mr-jobhistory-daemon.sh start historyserver
+或者 sbin/mapred --daemon start historyserver
+```
+
+浏览器查看任务history   
+
+PS: win浏览器访问bigdata129地址时，需要现在win的hosts加映射 
+
+6、停止Hadoop集群中的任务  
+```
+查看任务：yarn application -list  
+停任务：yarn application -kill {application_id}
+```
+
+7、MapReduce程序扩展 
+当数据只需要进行普通的过滤、解析等操作，不需要进行聚合，这个时候就不需要使用reduce阶段了
+```
+//在组装Job的时候设置reduce的task数目为0就可以了。并且Reduce代码也不需要写了。
+public static void main(String[] args) {
+    ......
+    //禁用reduce阶段
+    job.setNumReduceTasks(0);
+    ......
+}
+```
+
+8、hsdoop序列化机制介绍   
+![](../../assets/images/2021/big-data/xlh.png)
+hadoop序列化机制的特点
+- 紧凑：高效使用空间
+- 快速： 读写数据额外开销小
+- 可扩展：可透明读取老格式数据
+- 互操作：支持多语言的交互
+   

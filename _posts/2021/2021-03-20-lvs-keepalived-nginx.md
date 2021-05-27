@@ -30,6 +30,7 @@ keepalived就是为lvs设计的，结合使用，通过keepalived可以配置lvs
 - LVS充当Nginx集群的调度者，负载均衡器
 - Nginx接受请求来回，LVS可以只接受不响应
  
+
 ## 3 LVS的三种模式  
 ![NAT-基于网络地址转换](https://wdsheng0i.github.io/assets/images/2021/lvs/nat.png)  
 ![TUN-ip隧道](https://wdsheng0i.github.io/assets/images/2021/lvs/tun.png)

@@ -13,7 +13,6 @@ SpringBoot 启动原理：https://mp.weixin.qq.com/s/Yr-RKHeR9PFEd_wtYkvLmg
 Spring Boot 启动时，让方法自动执行的 4 种方法：https://mp.weixin.qq.com/s/QLC2YY00-p28pTkOKiK2Gw
 Spring Boot 接口参数加密解密？：https://mp.weixin.qq.com/s/YDR4DxSz0KFbIewQkmwxpw
 
-
 ## 推荐博客
 
 - [纯洁的微笑-Spring Boot系列文章](http://www.ityouknow.com/spring-boot.html)  
@@ -68,7 +67,6 @@ Spring Boot 接口参数加密解密？：https://mp.weixin.qq.com/s/YDR4DxSz0KF
 - [Spring Boot后端 + Vue管理员前端 + 微信小程序用户前端](https://github.com/linlinjava/litemall)
 - [mall-SpringBoot+MyBatis 电商系统](https://github.com/macrozheng/mall)
 - [基于Spring Boot2.0微服务脚手架](https://github.com/Senssic/sc-whorl)
-
 
 ## 网站
 
