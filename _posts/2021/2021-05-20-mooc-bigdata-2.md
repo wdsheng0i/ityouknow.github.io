@@ -340,7 +340,7 @@ main(){
 YARN不仅仅支持MapReduce，还支持Spark、Flink等计算引擎
  
 主要负责集群资源的管理和调度，支持主从结构  
-![](../../assets/images/2021/big-data/yarn.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn.png)  
 - 主节点（ResourceManager）进程主要负责集群资源的管理和分配,并处理客户端请求,启动和监控AppMaster, NodeManager  
 - 从节点（NodeManager）主要负责单节点资源管理,处理ResourceManager, AppMaster 的命令 
 - AppMaster：负责某个具体应用程序的调度和协调,为应用程序申请资源,并对任务进行监控
@@ -353,7 +353,7 @@ YARN资源管理模型
 - yarn.nodemanager.resource.cpu-vcores：单节点可分配的虚拟CPU个数，默认是8
 
 7、YARN中的调度器分析   
-![](../../assets/images/2021/big-data/yarn-schedule.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn-schedule.png)  
 - FIFO Scheduler:先进先出(first in, first out)调度策略
 - CapacityScheduler:可以看作是FifoScheduler的多队列版本。
 - FairScheduler:多队列，多用户共享资源。
@@ -426,7 +426,7 @@ main（String[] args）{
 1、快速了解Flume及应用场景    
 Flume是一个高可用，高可靠，分布式的海量日志采集、聚合和传输的系统，能够有效的收集、聚合、移动大量的日志数据。  
 通俗一点来说就是Flume是一个很靠谱，很方便、很强的日志采集工具。    
-![](../../assets/images/2021/big-data/flume-1.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-1.png)
 
 Flume特性：  
 - 它有一个简单、灵活的基于流的数据流结构，这个其实就是刚才说的Agent内部有三大组件，数据通
@@ -436,11 +436,11 @@ Flume特性：
 
 Flume高级应用场景：  
 - Flume的多路输出： 就是将采集到的一份数据输出到多个目的地中，不同目的地的数据对应不同的业务场景。  
-![](../../assets/images/2021/big-data/flume-2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-2.png)  
 注意了，Flume中多个Agent之间是可以连通的，只需要让前面Agent的sink组件把数据写到下一 个Agent的source组件中即可  
 
 - flume的汇聚功能：就是多个Agent采集到的数据统一汇聚到一 个Agent    
-![](../../assets/images/2021/big-data/flume-3.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-3.png)  
 
 2、Flume的三大核心组件    
 Source：数据源，通过source组件可以指定让Flume读取哪里的数据，然后将数据传递给后面的channel      
@@ -579,7 +579,7 @@ hdfs dfs -ls hdfs://192.168.145.128:9000/flume/studentDir
 - Flume会不会重复读取同一个文件的数据？ 不会，读过的文件被加了一个后缀 .COMPLETED 
 
 6、Flume文件数据采集案例：采集网站日志上传至HDFS
-![](../../assets/images/2021/big-data/flume-example.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-example.png)  
 需求：    
 - 1.将A和B两台机器实时产生的日志数据汇总到机器C中   
 - 2.通过机器C将数据统一上传至HDFS的指定目录中  
@@ -754,7 +754,7 @@ source采集到的数据具体会发送到哪个channel中，会根据event中he
 如果state属性的值是其它值，则发送给c4  
 
 案例一：多Channel之Replicating Channel Selector   
-![](../../assets/images/2021/big-data/flume-channel-1.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-channel-1.png)  
 需求：把一份数据采集过来以后，分别存储到不同的存储介质中，不同存储介质的特点和应用场景是不一样的，典型的就是hdfssink 和kafkasink，
 - 通过hdfssink实现离线数据落盘存储，方便后面进行离线数据计算
 - 通过kafkasink实现实时数据存储，方便后面进行实时计算，在这里先使用loggersink代替
@@ -858,10 +858,10 @@ Sink Processors类型包括这三种：
 - Failover Sink Processor：故障转移处理器，一个channle后可接多个sink，多个sink属于一个sink group，按照sink的优先级，默认先让优先级高的sink来处理数据，如果这个sink出现了故障，则用优先级低一点的sink处理数据
 
 案例一：负载均衡Sink Processor
-![](../../assets/images/2021/big-data/flume-sink-1.pmg.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-sink-1.pmg.png)  
 
 案例一：负载均衡Sink Processor
-![](../../assets/images/2021/big-data/flume-sink-2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/flume-sink-2.png)  
 
 9-2、扩展：Event
 Event是Flume传输数据的基本单位，也是事务的基本单位，在文本文件中，通常一行记录就是一个Event

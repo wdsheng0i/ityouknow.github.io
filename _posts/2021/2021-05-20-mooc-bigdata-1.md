@@ -27,7 +27,7 @@ Cloudera Hadoop 环境搭建（离线安装）：
 [Hadoop 发行版本 Hortonworks 安装详解](https://www.cnblogs.com/pandalee-oct/p/8215298.html)  
 
 ## 阶段一：走进大数据  
-![](../../assets/images/2021/big-data/big-data.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/big-data.png)
 
 ### 第1周   学好大数据先攻克Linux  
 1、掌握Linux虚拟机的安装和配置  
@@ -78,7 +78,7 @@ Hadoop是专为离线和大规模数据分析而设计的，并不适合那种�
 
 3、Hadoop版本演变历史    
 1.X -> 2.X -> 3.X 
-![](../../assets/images/2021/big-data/hadoop-v.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hadoop-v.png)
 
 
 4、Hadoop3.x的细节优化  
@@ -316,7 +316,7 @@ hadoop从节点jsp没有datanode进程？
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html  
  
 8、Hadoop的客户端节点（相同配置即可） 
-![](../../assets/images/2021/big-data/client.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/client.png)  
 直接操作集群节点是不安全的，所以一般在业务机上安装hadoop客户端，再业务机上操作hadoop集群  
 
 建议在业务机器上安装Hadoop，只需要保证业务机器上的Hadoop的配置和集群中的配置保持一致即
@@ -442,7 +442,7 @@ private static void delete(FileSystem fileSystem) throws IOException{
 9、HDFS写数据源码分析  
    
 ### 第4周   Hadoop之HDFS核心进程剖析    
-![](../../assets/images/2021/big-data/hdfs-s.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hdfs-s.png)   
 
 HDFS支持主从结构：
 - 主节点支持多个NameNode；从节点支持多个DataNode
@@ -522,21 +522,21 @@ sh -x uploadLogData.sh 2020_01_01   //补传数据
 ```
 
 8、HDFS的高可用机制分析    
-![](../../assets/images/2021/big-data/hdfs.png)  
-![](../../assets/images/2021/big-data/HA.png)      
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hdfs.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/HA.png)      
 - HDFS的HA，表示一个集群中存在多个NameNode，只有一个NameNode是 Active 状态，其它的是 Standby 状态
 - ActiveNameNode(ANN)负责所有客户端的操作，StandbyNameNode(SNN)用来同步ANN的状态信息，以提供快速故障恢复能力
 - 使用HA的时候，不能启动SecondaryNameNode，会出错
 
 9.HDFS的高扩展
-![](../../assets/images/2021/big-data/F-HA.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/F-HA.png)   
 Federation可解决单一命名空间的一些问题，提供以下特性，使用多个NameNode，每个NameNode负责一个命令空间
 - HDFS集群扩展性 ：多个NameNode分管一部分目录，使得一个集群可以扩展到更多节点，不再因内存的限制制约文件存储数目。
 - 性能更高效 ：多个NameNode管理不同的数据，且同时对外提供服务，将为用户提供更高的读写吞吐率。
 - 良好的隔离性： 用户可根据需要将不同业务数据交由不同NameNode管理，这样不同业务之间影响很小
    
 ### 第5周   Hadoop之初识MapReduce分布式计算  
-![](../../assets/images/2021/big-data/mobile-cal.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/mobile-cal.png)    
 1、MapReduce介绍  
 MapReduce是一个分布式计算模型，主要负责海量数据计算，主要有两个阶段组成：map和reduce  
 - Map阶段是一个独立程序，会在很多节点同时执行，每个节点处理一部分数据
@@ -544,18 +544,18 @@ MapReduce是一个分布式计算模型，主要负责海量数据计算，主�
 - 框架有默认实现，用户只需要覆盖map()和reduce()两个函数，即可实现分布式计算
 
 2、MapReduce执行原理  
-![](../../assets/images/2021/big-data/m-r.png)  
-![](../../assets/images/2021/big-data/map-reduce.png)    
-![](../../assets/images/2021/big-data/map-reduce-2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/m-r.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/map-reduce.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/map-reduce-2.png)  
 
 2-2、shuffle过程分析  
-![](../../assets/images/2021/big-data/shuffle.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/shuffle.png)   
 框架对多个map任务的输出，按照不同的分区，通过网络copy到不同的reduce节点，这个过程称作shuffle
 
 3、实战：WordCount案例图解 
-![](../../assets/images/2021/big-data/word-count.png)  
-![](../../assets/images/2021/big-data/word-count2.png)  
-![](../../assets/images/2021/big-data/word-count3.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/word-count.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/word-count2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/word-count3.png)
 
 4、实战：WordCount案例开发  
 1).开发Map阶段代码
@@ -727,7 +727,7 @@ public static void main(String[] args) {
 ```
 
 8、hsdoop序列化机制介绍   
-![](../../assets/images/2021/big-data/xlh.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/xlh.png)
 hadoop序列化机制的特点
 - 紧凑：高效使用空间
 - 快速： 读写数据额外开销小
