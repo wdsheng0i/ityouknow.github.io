@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段二：Flume + Hive + PB级离线数据计算分析方案 
+title: 《大数据开发工程师》阶段二【慕课网】
 category: big-data
 tags: [big-data]
 ---
@@ -8,6 +8,420 @@ tags: [big-data]
 Flume + Hive + PB级离线数据计算分析方案 
 
 ## 阶段二：Flume + Hive + PB级离线数据计算分析方案  
+### 第6周   Hadoop之初识YARN资源调度（拿来就用的企业级解决方案）
+- Hadoop的HDFS和MapReduce都是针对大数据文件来设计的，在小文件的处理上不但效率低下，而且十分消耗内存资源
+- 针对HDFS而言，每一个小文件在namenode中都会占用150字节的内存空间，最终会导致集群中虽然存储了很多个文件，但是文件的体积并不大，这样就没有意义了。
+- 针对MapReduce而言，每一个小文件都是一个Block，都会产生一个InputSplit，最终每一个小文件都会 产生一个map任务，这样会导致同时启动太多的Map任务，Map任务的启动是非常消耗性能的，但是启动了以后执行了很短时间就停止了，因为小文件的数据量太小了，这样就会造成任务执行消耗的时间还没有启动任务消耗的时间多，这样也会影响MapReduce执行的效率。
+
+针对这个问题,解决办法通常是选择一个容器，将这些小文件组织起来统一存储
+
+1、小文件问题之SequenceFile  
+- SequeceFile是Hadoop 提供的一种二进制文件，这种二进制文件直接将小文件的文件名作为key，文件内容作为value序列化到大文件中
+- 但是这个文件有一个缺点，就是它需要一个合并文件的过程，最终合并的文件会比较大，并且合并后的文件查看起来不方便，必须通过遍历才能查看里面的每一个小文件
+- 所以这个SequenceFile 其实可以理解为把很多小文件压缩成一个大的压缩包了。
+
+```
+/**
+ * 小文件解决方案之SequenceFile
+ * Created by 
+ */
+public class SmallFileSeq {
+    public static void main(String[] args) throws Exception {
+        //生成SequenceFile文件
+        write("D:\\smallFile", "/seqFile");
+        //读取SequenceFile文件
+        read("/seqFile");
+    }
+
+    /**
+     * 生成SequenceFile文件
+     *
+     * @param inputDir   输入目录-windows目录
+     * @param outputFile 输出文件-hdfs文件
+     * @throws Exception
+     */
+    private static void write(String inputDir, String outputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出文件
+        fileSystem.delete(new Path(outputFile), true);
+        //构造opts数组，有三个元素
+         /*
+         第一个是输出路径
+         第二个是key类型
+         第三个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                SequenceFile.Writer.file(new Path(outputFile)),
+                SequenceFile.Writer.keyClass(Text.class),
+                SequenceFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        SequenceFile.Writer writer = SequenceFile.createWriter(conf, opts);
+        //指定要压缩的文件的目录
+        File inputDirPath = new File(inputDir);
+        if (inputDirPath.isDirectory()) {
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key, value);
+            }
+        }
+        writer.close();
+    }
+
+
+     /**
+     * 读取SequenceFile文件
+     *
+     * @param inputFile SequenceFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //创建阅读器
+        SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFi
+                Text key = new Text();
+        Text value = new Text();
+        //循环读取数据
+        while (reader.next(key, value)) {
+            //输出文件名称
+            System.out.print("文件名:" + key.toString() + ",");
+            //输出文件的内容
+            System.out.println("文件内容:" + value.toString());
+        }
+        reader.close();
+    }
+}
+```
+
+2、小文件问题之MapFile  
+- MapFile是排序后的SequenceFile,MapFile由两部分组成，分别是index和data
+- index作为文件的数据索引，记录每个Record的key值，及该Record在文件中的偏移位置。MapFile被访问时,索引文件会被加载到内存，通过索引映射关系可迅速定位到指定Record所在文件位置，因此，相对SequenceFile而言，MapFile的检索效率是高效的，缺点是会消耗一部分内存来存储index数据。
+
+```
+/**
+ * 小文件解决方案之MapFile
+ * Created by 
+ */
+public class SmallFileMap {
+    public static void main(String[] args) throws Exception{
+        //生成MapFile文件
+        write("D:\\smallFile","/mapFile");
+        //读取MapFile文件
+        read("/mapFile");
+    }
+
+    /**
+     * 生成MapFile文件
+     * @param inputDir 输入目录-windows目录
+     * @param outputDir 输出目录-hdfs目录
+     * @throws Exception
+     */
+    private static void write(String inputDir,String outputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出目录
+        fileSystem.delete(new Path(outputDir),true);
+        //构造opts数组，有两个元素
+         /*
+         第一个是key类型
+         第二个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                MapFile.Writer.keyClass(Text.class),
+                MapFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        MapFile.Writer writer = new MapFile.Writer(conf,new Path(outputDir),o
+                //指定要压缩的文件的目录
+                File inputDirPath = new File(inputDir);
+        if(inputDirPath.isDirectory()){
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key,value);
+            }
+        }
+        writer.close();
+    }
+    /**
+     * 读取MapFile文件
+     * @param inputDir MapFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //创建阅读器
+        MapFile.Reader reader = new MapFile.Reader(new Path(inputDir),conf);
+        Text key = new Text();
+        //循环读取数据
+        while(reader.next(key,value)){
+            //输出文件名称
+            System.out.print("文件名:"+key.toString()+",");
+            //输出文件的内容
+            System.out.println("文件内容:"+value.toString());
+        }
+        reader.close();
+    }
+}
+```
+3、案例：小文件存储和计算 
+```
+/**
+ * 需求：读取SequenceFile文件
+ * Created by  
+ */
+public class WordCountJobSeq {
+    public static class MyMapper extends Mapper<Text, Text, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyMapper.class);
+        /**
+         * 需要实现map函数
+         * 这个map函数就是可以接收<k1,v1>，产生<k2，v2>
+         *
+         * @param k1
+         * @param v1
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void map(Text k1, Text v1, Context context)
+                throws IOException, InterruptedException {
+            //输出k1,v1的值
+            System.out.println("<k1,v1>=<" + k1.toString() + "," + v1.toString() + ">
+                    //logger.info("<k1,v1>=<"+k1.get()+","+v1.toString()+">");
+                    //k1 代表的是每一行数据的行首偏移量，v1代表的是每一行内容
+                    //对获取到的每一行数据进行切割，把单词切割出来
+                    String[]words = v1.toString().split(" ");
+            //迭代切割出来的单词数据
+            for (String word : words) {
+                //把迭代出来的单词封装成<k2,v2>的形式
+                Text k2 = new Text(word);
+                LongWritable v2 = new LongWritable(1L);
+                //把<k2,v2>写出去
+                context.write(k2, v2);
+            }
+        }
+    }
+
+    /**
+     * Reduce阶段
+     */
+    public static class MyReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyReducer.class);
+        /**
+         * 针对<k2,{v2...}>的数据进行累加求和，并且最终把数据转化为k3,v3写出去
+         *
+         * @param k2
+         * @param v2s
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void reduce(Text k2, Iterable<LongWritable> v2s, Context cocontext>) throws IOException, InterruptedException {
+            //创建一个sum变量，保存v2s的和
+            long sum = 0L;
+            //对v2s中的数据进行累加求和
+            for (LongWritable v2 : v2s) {
+                //输出k2,v2的值
+                //System.out.println("<k2,v2>=<"+k2.toString()+","+v2.get()+"
+                //logger.info("<k2,v2>=<"+k2.toString()+","+v2.get()+">");
+                sum += v2.get();
+            }
+            //组装k3,v3
+            Text k3 = k2;
+            LongWritable v3 = new LongWritable(sum);
+            //输出k3,v3的值
+            //System.out.println("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            //logger.info("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            context.write(k3, v3);
+        }
+    }
+
+    /**
+     * 组装Job=Map+Reduce
+     */
+    public static void main(String[] args) {
+        try {
+            if (args.length != 2) {
+                //如果传递的参数不够，程序直接退出
+                System.exit(100);
+            }
+            //指定Job需要的配置参数
+            Configuration conf = new Configuration();
+            //创建一个Job
+            Job job = Job.getInstance(conf);
+            //注意了：这一行必须设置，否则在集群中执行的时候是找不到WordCountJob这个
+            job.setJarByClass(WordCountJobSeq.class);
+            //指定输入路径（可以是文件，也可以是目录）
+            FileInputFormat.setInputPaths(job, new Path(args[0]));
+            //指定输出路径(只能指定一个不存在的目录)
+            FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            //指定map相关的代码
+            job.setMapperClass(MyMapper.class);
+            //指定k2的类型
+            job.setMapOutputKeyClass(Text.class);
+            //指定v2的类型
+            job.setMapOutputValueClass(LongWritable.class);
+            //设置输入数据处理类
+            job.setInputFormatClass(SequenceFileInputFormat.class);
+            //指定reduce相关的代码
+            job.setReducerClass(MyReducer.class);
+            //指定k3的类型
+            job.setOutputKeyClass(Text.class);
+            //指定v3的类型
+            job.setOutputValueClass(LongWritable.class);
+            //提交job
+            job.waitForCompletion(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+4、 数据倾斜问题分析  
+提高MapReduce的执行效率  
+- 默认情况下Map任务个数和InputSplit相关，InputSplit个数和Block块有关，所以可认为Map任务个数和数据的block块个数有关
+- 默认情况下reduce的个数是1个，可以考虑增加reduce任务个数，这样就可以实现数据分流了，提高计算效率
+
+5、数据倾斜案例实战 
+思路：把倾斜的数据打散
+```
+//1.map阶段，打散倾斜数据
+map{
+    String key = words[0];
+         if("5".equals(key)){
+         //把倾斜的key打散，分成10份
+         key = "5"+"_"+random.nextInt(10);
+    }
+    
+}
+
+//2.job设置多个reduce任务
+main(){
+    //设置reduce任务个数
+   job.setNumReduceTasks(Integer.parseInt(args[2]));
+}
+
+//3.结果不符合要求：1 10；... 5_1  1000; 5_2  2000;...
+再开发一个map-reduce任务，把5_*的求和下
+
+```
+ 
+6、YARN资源调度器 
+YARN不仅仅支持MapReduce，还支持Spark、Flink等计算引擎
+ 
+主要负责集群资源的管理和调度，支持主从结构  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn.png)  
+- 主节点（ResourceManager）进程主要负责集群资源的管理和分配,并处理客户端请求,启动和监控AppMaster, NodeManager  
+- 从节点（NodeManager）主要负责单节点资源管理,处理ResourceManager, AppMaster 的命令 
+- AppMaster：负责某个具体应用程序的调度和协调,为应用程序申请资源,并对任务进行监控
+- Container：YARN中的一个动态资源分配的概念，其拥有一定的内存，核数 
+
+YARN资源管理模型
+- YARN主要管理内存和CPU这两种资源类型
+- NodeManager启动时会向ResourceManager注册，注册信息中包含该节点可分配的CPU和内存总量
+- yarn.nodemanager.resource.memory-mb：单节点可分配的物理内存总量，默认是8MB*1024，即8G
+- yarn.nodemanager.resource.cpu-vcores：单节点可分配的虚拟CPU个数，默认是8
+
+7、YARN中的调度器分析   
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn-schedule.png)  
+- FIFO Scheduler:先进先出(first in, first out)调度策略
+- CapacityScheduler:可以看作是FifoScheduler的多队列版本。
+- FairScheduler:多队列，多用户共享资源。
+ 
+8、案例：YARN多资源队列配置和使用   
+```
+1：capacity-scheduler.xml 增加online队列和offline队列 ，并根据预估实际使用调整比例
+  <property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>default,online,offline</value>
+    <description>
+      The queues at the this level (root is the root queue).
+    </description>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>70</value>
+    <description>Default queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
+    <value>70</value>
+    <description>
+      The maximum capacity of the default queue. 
+    </description>
+ </property>
+   <!--新增-->
+ <property>
+    <name>yarn.scheduler.capacity.root.online.capacity</name>
+    <value>10</value>
+    <description>online queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.offline.capacity</name>
+    <value>20</value>
+    <description>offline queue target capacity.</description>
+  </property>
+<property>
+    <name>yarn.scheduler.capacity.root.online.maximum-capacity</name>
+    <value>10</value>
+    <description>
+      The maximum capacity of the online queue. 
+    </description>
+ </property>
+<property>
+    <name>yarn.scheduler.capacity.root.offline.maximum-capacity</name>
+    <value>20</value>
+    <description>
+      The maximum capacity of the offline queue. 
+    </description>
+ </property> 
+
+2：向offline队列提交任务
+//组装job
+main（String[] args）{
+    //解析命令行中通过-D传递过来的参数，添加到conf中
+    String[] remainingArgs = new GenericOptionParser(conf, args).getRemainingArgs();
+}
+
+执行命令：hadoop jar db_hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.wds.wordcountQueue -Dmapreduce.job.queuename=offline /hello.dat /out 10
+```
+ 
+9、Hadoop官方文档使用指北
+  
+10、Hadoop在CDH中的使用  
+
+11、Hadoop在HDP中的使用  
+   
 
 ### 第7周   数据采集工具-Flume   
 1、快速了解Flume及应用场景    
@@ -538,10 +952,8 @@ vi /etc/crontab
 ```
   
 
-### 第8周   数据仓库工具-（Hive + Hue）  
+### 第8周   数据仓库工具-Hive从入门到小牛  
 1、快速了解Hive   
-Hive 是基于 Hadoop 个数据仓库工具，可以将类 SQL 语句转换为 MapReduce 务进行运行。其优点是学习成本低，可以通过类 SQL 语句快速实现简单的 MapReduce 统计，不必开发专门的MapReduce 应用。
-
 Hive是建立在Hadoop上的数据仓库基础构架。    
 它提供了一系列的工具，可以用来进行数据提取、转化、加载（简称为ETL）。   
 
@@ -551,7 +963,7 @@ Hive是建立在Hadoop上的数据仓库基础构架。
 
 HQL也允许熟悉MapReduce的开发者开发自定义的mapreduce任务来处理内建的SQL函数无法完成的复杂的分析任务。  
 
-![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive.png)  
+![](../../assets/images/2021/big-data/hive.png)  
 
 Hive 的数据存储在 HDFS 中，大部分的查询由 MapReduce 完成（特例 select * from table 不会生成 MapRedcue 任务，如果在SQL语句后面再增加where过滤条件就会生成MapReduce任务了。）
 
@@ -658,628 +1070,65 @@ export HADOOP_HOME=/data/soft/hadoop-3.2.0
 
 4、Hive使用方式之命令行方式  
 - bin/hive【官方不推荐使用】
-
-```
-1.链接：[root@bigdata04 apache-hive-3.1.2-bin]# bin/hive
-2.查表：show tables;
-3.创建表：create table t1(id int,name string);
-4.插数据：insert into t1(id,name) values(1,"zs");  //实际是执行了一个mapreduce任务
-5.查询：select * from t1;
-6.删表：drop table t1;
-7.退出：quit;
-```
-
-- beeline命令，通过HiveServer2连接hive，轻量级客户端工具：bin/beeline -u jdbc:hive2://localhost:10000 -n root
-
-```
-//开启服务： [root@bigdata04 apache-hive-3.1.2-bin]# bin/hiveserver2 
-1.链接：bin/beeline -u jdbc:hive2://localhost:10000 -n root  //在启动beeline的时候指定一个对这个目录有操作权限的用户
-2.查表：show tables;
-3.创建表：create table t1(id int,name string);
-4.插数据：insert into t1(id,name) values(1,"zs");  //实际是执行了一个mapreduce任务
-5.查询：select * from t1;
-6.删表：drop table t1;
-7.退出：quit;
-```
-
-在工作中我们如果遇到了每天都需要执行的命令，那我肯定想要把具体的执行sql写到脚本中去执行，但是现在这种用法每次都需要开启一个会话，好像还没办法把命令写到脚本中。  
-- hive后面可以使用 -e 命令，就可以放到shell脚本中执行了,这样每次hive都会开启一个新的会话，执行完毕以后再关闭这个会话。
+- bin/beeline -u jdbc:hive2://localhost:10000 -n root
 
 5、Hive使用方式之JDBC方式  
-- 需要先开启Hive 远程服务【端口号默认为10000】, 启动方式：bin/hiveserver2 
+- 需要先开启Hive 远程服务【端口号默认为10000】
+- 启动方式：bin/hiveserver2 
 - 案例：在Java代码中通过Hive的JDBC建立连接
 
-```
-//1.添加hive-jdbc的依赖
-<dependency>
-     <groupId>org.apache.hive</groupId>
-     <artifactId>hive-jdbc</artifactId>
-     <version>3.1.2</version>
-     <exclusions>
-         <!-- 去掉 log4j依赖 -->
-         <exclusion>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         </exclusion>
-     </exclusions>
-</dependency>
-
-//2.实现
-/**
- * JDBC代码操作 Hive
- * 注意：需要先启动hiveserver2服务
- * Created by xuwei
- */
-public class HiveJdbcDemo {
-     public static void main(String[] args) throws Exception{
-     //指定hiveserver2的连接
-     String jdbcUrl = "jdbc:hive2://192.168.182.103:10000";
-     //获取jdbc连接，这里的user使用root，就是linux中的用户名，password随便指定即
-     Connection conn = DriverManager.getConnection(jdbcUrl, "root", "any")
-     //获取Statement
-     Statement stmt = conn.createStatement();
-     //指定查询的sql
-     String sql = "select * from t1";
-     //执行sql
-     ResultSet res = stmt.executeQuery(sql);
-     //循环读取结果
-     while (res.next()){
-     System.out.println(res.getInt("id")+"\t"+res.getString("name"));
-     }
-}
-
-//3.在项目的resources目录中增加log4j2.xml配置文件
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
-     <Appenders>
-         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%
-         </Console>
-     </Appenders>
-     <Loggers>
-         <Root level="info">
-            <AppenderRef ref="Console" />
-         </Root>
-     </Loggers>
-</Configuration>
-```
-
 6、Set命令的使用 
-hive命令行中可以使用set命令临时设置一些参数的值，其实就是临时修改hive-site.xml中参数的值  
 - Hive命令行下执行set命令【仅当前会话有效】
 - Hive脚本 ~/.hiverc 中配置set命令【当前机器有效】 
-- 如何查看Hive历史操作命令：[root@bigdata04 apache-hive-3.1.2-bin]# more ~/.hivehistory 
+- 如何查看Hive历史操作命令？ 
 
 7、Hive的日志配置  
 - Hive运行时日志
 - Hive任务执行日志
 
-``` 
-[root@bigdata04 conf]# mv hive-log4j2.properties.template hive-log4j2.properties
-[root@bigdata04 conf]# mv hive-log4j2.properties.template hive-log4j2.propert
-[root@bigdata04 conf]# vi hive-log4j2.properties
-property.hive.log.level = WARN
-property.hive.root.logger = DRFA
-property.hive.log.dir = /data/hive_repo/log
-property.hive.log.file = hive.log
-property.hive.perflogger.log.level = INFO
-
-修改 hive-exec-log4j2.properties.template 这个文件，去掉 .template 后缀
-[root@bigdata04 conf]# vi hive-exec-log4j2.properties
-property.hive.log.level = WARN
-property.hive.root.logger = FA
-property.hive.query.id = hadoop
-property.hive.log.dir = /data/hive_repo/log
-property.hive.log.file = ${sys:hive.query.id}.log
-```
-
 8、Hive中数据库的操作 
-- 创建数据库 :create database mydb1;
-- 创建数据库的时候通过location来指定hdfs目录的位置:create database mydb2 location '/user/hive/mydb2';
-- 查看数据库列表 :show databases;
-- 选择数据库: use default;
-- 删除数据库: drop database mydb1;
+- 创建数据库 
+- 查看数据库列表 
+- 选择数据库
+- 删除数据库
 
-9、Hive中表的操作 :表中的数据是存储在hdfs中的，但是表的名称、字段信息是存储在metastore中的
-- 创建表:create table t2(id int);
-- 查看表结构信息:   desc t2;
-- 显示当前数据库中所有的表名:show tables;
-- 查看表的创建信息: show create table t2;
-- 修改表名 :alter table t2 rename to t2_bak;
-- 加载数据(批量插数据)： load data local inpath '/data/soft/hivedata/t2.data' into table default.t2_bak 
-- （hdfs命令加载数据）自己手工通过put命令把数据上传到t2_bak目录中：[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/t2.data /user/hive/warehouse/t2_bak/t2_bak-2.data
-- 表增加字段及注释、删除表： alter table t2_bak add columns (name string);
-- 指定列和行的分隔符 ：hive是有默认的分隔符的，默认的行分隔符是 '\n' ，就是换行符，而默认的列分隔符呢，是 \001 。
+9、Hive中表的操作 
+- 创建表
+- 加载数据 
+- 查看表信息
+- 表增加字段及注释、删除表
+- 修改表名 
+- 指定列和行的分隔符 
 
-创建表的时候指定一下分隔符
-``` 
-create table t3_new(
-id int comment 'ID',
-stu_name string comment 'name',
-stu_birthday date comment 'birthday',
-online boolean comment 'is online'
-)row format delimited 
-fields terminated by '\t' 
-lines terminated by '\n';
-```
+10、Hive中数据类型的应用  
 
-10、Hive中数据类型的应用    
-hive作为一个类似数据库的框架，也有自己的数据类型，便于存储、统计、分析。Hive中主要包含两大数据类型   
-- 基本数据类型：常用的有INT,STRING,BOOLEAN,DOUBLE等
-- 复合数据类型：常用的有ARRAY,MAP,STRUCT等
+11、Hive表类型之内部表+外部表  
+Hive中的默认表类型，表数据默认存储在 warehouse 目录中  
+在加载数据的过程中，实际数据会被移动到warehouse目录中  
+删除表时，表中的数据和元数据将会被同时删除  
 
-示例1: 建一张表，指定了一个array数组类型的字段叫favors, 一个map字段score
-``` 
-//建表
-create table stu(
- id int,
- name string,
- favors array<string>,
- scores map<string,int>
-)row format delimited
-fields terminated by '\t'
-collection items terminated by ','
-map keys terminated by ':'
-lines terminated by '\n';
 
-//数据test2.data
-1 zhangsan swing,sing,coding chinese:80,math:90,english:100
-2 lisi music,football chinese:89,english:70,math:88
-
-//load 数据
- load data local inpath '/data/soft/hivedata/test2.data' into table default.stu2
-
-//.查询所有学生的语文和数学成绩
- select id,name,scores['chinese'],scores['math'] from stu2;
-```
-
-示例2：种复合类型struct，某学校有2个实习生，zhangsan、lisi，每个实习生都有地址信息，一个是户籍地所在的城市，一个是公司所在的城市
-``` 
-//建表
-create table stu3(
-id int,
-name string,
-address struct<home_addr:string,office_addr:string>
-)row format delimited
-fields terminated by '\t'
-collection items terminated by ','
-lines terminated by '\n';
-
-//数据test3.data
-1 zhangsan bj,sh
-2 lisi gz,sz
-
-//load 数据
- load data local inpath '/data/soft/hivedata/test3.data' into table default.stu3
-
-//.查询地址
- select id,name,address.home_addr from stu3;
-```
-
-**Struct和Map的区别**
-如果从建表语句上来分析，其实这个Struct和Map还是有一些相似之处的来总结一下：
-``` 
-map中可以随意增加k-v对的个数
-struct中的k-v个数是固定的
-
-map在建表语句中需要指定k-v的类型
-struct在建表语句中需要指定好所有的属性名称和类型
-
-map中通过[]取值
-struct中通过.取值，类似java中的对象属性引用
-
-map的源数据中需要带有k-v
-struct的源数据中只需要有v即可
-```
-
-11、Hive表类型之内部表 + 外部表  
-内部表: 也可以称为受控表, Hive中的默认表类型  
-- 表数据默认存储在 warehouse 目录中    
-- 在加载数据的过程中，实际数据会被移动到 warehouse目录中    
-- 删除表时，表中的数据和元数据将会被同时删除 
-
-外部表 :建表语句中包含 External 的表叫外部表   
-- 外部表在加载数据的时候，实际数据并不会移动到warehouse目录中，只是与外部数据建立一个链接(映射关系)
-- 表的定义和数据的生命周期互相不约束，数据只是表对hdfs上的某一个目录的引用而已，
-- 当删除表定义的时候，只会删除表的元数据, 数据依然是存在的。仅删除表和数据之间引用关系 
-
-``` 
-//主要就是在建表语句中增加了EXTERNAL 以及在最后通过locatin指定了这个表数据的存储位置，注意这个路径是hdfs的路径
-create external table external_table (
-key string
-) location '/data/external';
-
-//此时到hdfs的 /user/hive/warehouse/ 目录下查看，是看不到这个表的目录的，因为这个表的目录是刚才通过location指定的目录
-//metastore中的tbls表，这里看到external_table的类型是外部表
-
-//原始数据文件为 external_table.data
-
-//往这个外部表中加载数据，原始数据文件为 external_table.data
-load data local inpath '/data/soft/hivedata/external_table.dat into table external_t1
-此时加载的数据会存储到hdfs的 /data/external 目录下
-```
-注意：实际上内外部表是可以互相转化的，需要我们做一下简单的设置即可。    
-内部表转外部表  
-alter table tblName set tblproperties (‘external’=‘true’);  
-外部表转内部表  
-alter table tblName set tblproperties (‘external’=‘false’);
-
-**在实际工作中，我们在hive中创建的表95%以上的都是外部表   大致流程:**     
-我们先通过flume采集数据，把数据上传到hdfs中，然后在hive中创建外部表和hdfs上的数据绑定关系，就可以使用sql查询数据了，所以连load数据那一步都可以省略了，因为是先有数据，才创建的表
-![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive-flume.png)  
 
 12、Hive表类型之内部分区表  
-引入 
-``` 
-假设我们的web服务器每天都产生一个日志数据文件，Flume把数据采集到HDFS中，每一天的数据存储 到一个日期目录中。我们如果想查询某一天的数据的话，hive执行的时候默认会对所有文件都扫描一遍，然后再过滤出来我们想要查询的那一天的数据
-如果你已经采集了一年的数据，这样每次计算都需要把一年的数据取出来，再过滤出来某一天的数据，效率就太低了，会非常浪费资源，
-所以我们可以让hive在查询的时候，根据你要查询的日期，直接定位到对应的日期目录。这样就可以直接查询满足条件的数据了，效率提升可不止一点点啊，是质的提升
-```
-分区可以理解为分类，通过分区把不同类型的数据放到不同目录中
-分区的标准就是指定分区字段，分区字段可以有一个或多个，根据咱们刚才举的例子，分区字段就是日期
-分区表的意义在于优化查询，查询时尽量利用分区字段，如果不使用分区字段，就会全表扫描，最典型的一个场景就是把天作为分区字段，查询的时候指定天
-``` 
-//建表
-hive (default)>create table partition_1 (
-id int,
-name string 
-) partitioned by (dt string)
-row format delimited
-fields terminated by '\t';
 
-//data partition_1.data
-1 zhangsan
-2 lisi
+13、Hive表类型之外部分区表  
 
-//load data
-hive (default)>load data local inpath '/data/soft/hivedata/partition_1.data' into table default.partition_1 partition (dt=20200101)
-
-//看一下hdfs中的信息，刚才创建的分区信息在hdfs中的体现是一个目录:/user/hive/warehouse/partition_1/dt=2020-01-01
-
-//手动在表中只创建分区
-hive (default)> alter table partition_1 add partition (dt='2020-01-02');
-
-//向这个新建分区中添加数据，可以使用刚才的load命令或者hdfs的put命令都可以
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_1 partition (dt=20200102)
-
-// 查看表中有哪些分区
-hive (default)>show partitions partition_1;
-```
-创建多个分区  
-某学校，有若干二级学院，每年都招很多学生，学校的统计需求大部分会根据年份和学院名称作为条件
-所以为了提高后期的统计效率，我们最好是使用年份和学院名称作为分区字段
-``` 
-//建分区表
-create table partition_2 (
-id int,
-name string
-) partitioned by (year int, school string)
-row format delimited
-fields terminated by '\t';
-
-// partition_2.data 数据文件中只需要有id和name这两个字段的值就可以了，具体year和school这两个分区字段是在加载分区的时候指定的。
-1 zhangsan
-2 lisi
-3 wangwu
-
-// load
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2020, school=JSJ)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2019, school=JSJ)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2020, school=YY)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2019, school=YY)
-
-//查看分区信息
-hive (default)> show partitions partition_2;
-OK
-partition
-year=2019/school=english
-year=2019/school=xk
-year=2020/school=english
-year=2020/school=xk
-
-//查询
-select * from partition_2; 【全表扫描，没有用到分区的特性】 
-select * from partition_2 where year = 2019;【用到了一个分区字段进行过滤】 
-select * from partition_2 where year = 2019 and school = 'YY';【用到了两个分区字段进行过滤】
-```
-
-13、Hive表类型之外部分区表 
-外部分区表就是在外部表的基础上又增加了分区--工作中最常用的表     
-``` 
-//建分区表
-create external table ex_par (
-id int,
-name string
-) partitioned by (year int, school string)
-row format delimited
-fields terminated by '\t'
-location '/data/ex_par';
-
-//load data
-load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par partation(dt='20200101')
-
-//删除分区：删除后虽然分区目录还在，show partitions 已查不到分区信息了，查询表数据是查不出来的，由于这个是一个分区表，这份数据没有和任何分区绑定，所以就查询不出来
- hive (default)> alter table ex_par drop partition(dt='2020-01-01');
-
-//数据已经上传上去后，需要通过alter add partition命令 ，指定分区目录location
-hive (default)> alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=20200101'
-```
-总结一下：   
-```load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par partation(dt='20200101')```  
-这条命令做了两件事情，上传数据，添加分区(绑定数据和分区之间的关系)  
-
-```
-hdfs dfs -mkdir /data/ex_par/dt=20200101  
-hdfs dfs -put /data/soft/hivedata/ex_par.data /data/ex_par/dt=20200101  
-alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=20200101'
-```  
-上面这三条命令做了两个事情，上传数据，添加分区(绑定数据和分区之间的关系)
-
-14-1、Hive表类型之桶表（实际用的少） 
-- 桶表是对数据进行哈希取值，然后放到不同文件中存储  
-- 物理上，每个桶就是表(或分区）里的一个文件  
-- 桶表的主要作用：1. 数据抽样  2. 提高某些查询效率如join操作
-
-```
-//创建桶表
-create table bucket_tb(
-   id int
-   ) clustered by (id) into 4 buckets; //分到4个桶
-
-往桶中加载数据：不能使用load data的方式，而是需要使用其它表中的数据   
- 
-//1.在插入数据之前需要先设置开启桶操作  
-hive (default)> set hive.enforce.bucketing=true;
-
-//2.初始化一个表b，用于向桶表中加载数据
-more b_source.data
-1
-2
-3
-4 
-
-//3.建b
-hive (default)> create table b_source(id int);
-
-//4.load数据到b
-hive (default)> load data local inpath '/data/soft/hivedata/b_source.data' into table b_source
-
-//5.向桶表中加载数据
-hive (default)> insert into table bucket_tb select id from b_source 
-
-//6.查看桶表中的数据
-hive (default)> select * from bucket_tb;
-```
-14-2、Hive表类型之视图 
-``` 
-//创建视图
-hive (default)>create view v1 as select t3_new.id,t3_new.stu_name from t3_new
-
-//查看到这个视图，但是仓库里么有相应的文件或目录，虚拟的
-hive (default)>show tables
-
-//通过视图查询数据 
-hive (default)> select * from v1;
-
-//查看视图的结构，
-hive (default)> desc v1;
-```
+14、Hive表类型之桶表+视图  
 
 15、Hive数据处理综合案例  
-需求：Flume按天把日志数据采集到HDFS中的对应目录中，使用SQL按天统计每天数据的相关指标   
 
-分析一下：  
-日志采集：Flume按天把日志数据保存到HDFS中的对应目录中  
-针对Flume的source可以使用execsource、channel可以使用基于文件的或者内存的，sink使用hdfssink，  
-在hdfssink的path路径中需要使用%Y%m%d获取日期，将每天的日志数据采集到指定的hdfs目录中   
+16、Hive高级函数之分组排序取TopN  
 
-建表:    
-由于这份数据可能会被多种计算引擎使用，所以建议使用外部表，这样就算我们不小心把表删了，数据也还是在的  
-还有就是这份数据是按天分目录存储的，在实际工作中，离线计算的需求大部分都是按天计算的，所以在这里最好在表中增加日期这个分区字段  
-所以最终决定使用外部分区表。  
+17、Hive高级函数之行转列  
 
-实现思路：  
-1.先基于原始的json数据创建一个外部分区表，表中只有一个字段，保存原始的json字符串即可，分区字段是日期和数据类型   
-2.再创建一个视图，视图中实现的功能就是查询前面创建的外部分区表，在查询的时候会解析json数据中的字段  
+18、Hive高级函数之列转行  
 
-``` 
-//1.创建一个外部分区表
-create external table ex_par_more_type(
-log string
-)partitioned by(dt string,d_type string) 
- row format delimited 
- fields terminated by '\t'
- location '/moreType';
+19、Hive的排序函数  
 
-//2.加载数据:注意，此时数据已经通过flume采集到hdfs中了，不需要使用load命令了，只需要使用一个alter命令添加分区信息就可以
-hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='giftRecord') location '/moreType/20200504/giftRecord'
-hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='userInfo') location '/moreType/20200504/userInfo'
-hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='videoInfo') location '/moreType/20200504/videoInfo'
+20、Hive的分组和去重函数  
 
-//3.创建视图，创建视图时从数据中查询需要的字段信息
-由于这三种类型的数据字段是不一样的，所以创建一个视图还搞不定，只能针对每一种类型创建一个视图
-create view gift_record_view as
-select get_json_object(log,'$.send_id') as se 
-,get_json_object(log,'$.good_id') as good_id
-,get_json_object(log,'$.video_id') as video_id
-,get_json_object(log,'$.gold') as gold
-,dt
-from ex_par_more_type
-where d_type = 'giftRecord';
+21、一个SQL语句分析  
 
-create view user_info_view as select get_json_object(log,'$.uid') as uid
-,get_json_object(log,'$.nickname') as nickname
-,get_json_object(log,'$.usign') as usign
-,get_json_object(log,'$.sex') as sex
-,dt
-from ex_par_more_type
-where d_type = 'userInfo';
-
-create view video_info_view as select get_json_object(log,'$.id') as id
-,get_json_object(log,'$.uid') as uid
-,get_json_object(log,'$.lat') as lat
-,get_json_object(log,'$.lnt') as lnt
-,dt
-from ex_par_more_type 
-where d_type = 'videoInfo';
-
-//4.查询视图，指定日期查询
-hive (default)> select * from gift_record_view where dt = '20200504';
-
-//5.定时任务addPartition.sh：flume每天都会采集新的数据上传到hdfs上面，所以我们需要每天都做一次添加分区的操作。
-00 01 * * * root /bin/bash /data/soft/hivedata/addPartition.sh >> /data/soft/hivedata/addPartition.log
-
-[root@bigdata04 hivedata]# vi addPartition.sh
-#!/bin/bash
-# 每天凌晨1点定时添加当天日期的分区
-if [ "a$1" = "a" ]
-then
-    dt=`date +%Y%m%d`
-else
-    dt=$1
-fi
-# 指定添加分区操作： 如果指定的分区已存在，重复添加分区会报错，所以增加判断if not exists
-hive -e "
-alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='giftRecord') location '/moreType/${dt}/giftRecord'
-alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='userInfo') location '/moreType/${dt}/userInfo'
-alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='videoInfo') location '/moreType/${dt}/videoInfo'
-"
-``` 
-
-16、Hive高级函数
-通过 show functions; 来查看hive中的内置函数,mysql中支持的函数这里面大部分都支持 
-
-16-1、Hive高级函数之分组排序取TopN    
-row_number和over函数通常搭配在一起使用  
-- row_number会对数据编号，编号从1开始
-- over可以理解为把数据划分到一个窗口内，里面可以加上partition by，表示按照字段对数据进行分组，
-- 可以加上order by 表示对每个分组内的数据按照某个字段进行排序
-
-需求：有一份学生的考试分数信息，语文、数学、英语这三门，需要计算出班级中单科排名前三名学生的姓名
-```
-//1.准备数据student_score.data
-[root@bigdata04 hivedata]# more student_score.data 
-1 zs1 chinese 80
-2 zs1 math 90
-3 zs1 english 89
-4 zs2 chinese 60
-5 zs2 math 75
-6 zs2 english 80
-7 zs3 chinese 79
-8 zs3 math 83
-9 zs3 english 72
-10 zs4 chinese 90
-11 zs4 math 76
-12 zs4 english 80
-13 zs5 chinese 98
-14 zs5 math 80
-15 zs5 english 70
-
-//2.建表
-create external table student_score(
-    id int,
-    name string,
-    sub string,
-    score int
-)row format delimited
-fields terminated by '\t'
-location '/data/student_score';
-
-//3.load数据
-[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_score.dat /data/student_score
-
-//4.分组排序查询 
-hive (default)> select *, row_number() over (partition by sub order by score desc) as num from student_score;
-
-//5.分组排序查询, 每科取前三
-hive (default)> select * from（
-select *, row_number() over (partition by sub order by score desc) as num from student_score
-） where num <=3;
-
-//6.排名：rank() over() 是跳跃排序，有两个第一名时接下来就是第三名（在各个分组内）
-hive (default)> select *, rank() over (partition by sub order by score desc) as num from student_score;
-
-//7.排名：dense_rank() over() 是连续排序，有两个第一名时仍然跟着第二名（在各个分组内）
-hive (default)> select *, dense_rank() over (partition by sub order by score desc) as num from student_score;
-```
-
-16-2、Hive高级函数之行转列（把多行数据转为一列数据）    
-行转列这种需求主要需要使用到 
-- CONCAT_WS()：指定的分隔符拼接多个字段的值，最终转化为一个带有分隔符的字符串
-- COLLECT_SET()：返回一个list集合，集合中的元素会重复，一般和group by 结合在一起使用
-- COLLECT_LIST()：  返回一个set集合，集合汇中的元素不重复，一般和group by 结合在一起使用
-
-``` 
-//1.测试数据student_favors.data 
-[root@bigdata04 hivedata]# more student_favors.data 
-zs swing
-zs footbal
-zs sing
-zs codeing
-zs swing
-
-//2.建表
-create external table student_favors(
-    name string,
-    favor string
-)row format delimited
-fields terminated by '\t'
-location '/data/student_favors';
-
-//3.load数据
-[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_favors.data /data/student_favors
-
-//4.分组、聚合、拼接
-hive (default)> select name,concat_ws(',',collect_list(favor)) as favor_list from student_favors group by namep;
-//collect去重
-hive (default)> select name,concat_ws(',',collect_set(favor)) as favor_list from student_favors group by namep;
-```
-
-16-3、Hive高级函数之列转行（把一列数据转成多行）      
-主要使用到 
-- SPLIT()：字串符切割成数组
-- EXPLODE()：数可以接受array或者map
-    - explode(ARRAY)：表示把数组中的每个元素转成一行
-    - explode(MAP) ：表示把map中每个key-value对，转成一行，key为一列，value为一列
-- LATERAL VIEW：  通常和split， explode等函数一起使用，可以对这份数据产生一个支持别名的虚拟表
-
-``` 
-//1.测试数据student_favors_2.data 
-[root@bigdata04 hivedata]# more student_favors_2.data 
-zs swing,footbal,sing
-ls codeing,swing
-
-//2.建表
-create external table student_favors_2(
-    name string, 
-    favorlist string
-)row format delimited 
-fields terminated by '\t'
-location '/data/student_favors_2';
-
-//3.load数据
-[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_favors_2.data /data/student_favors_2
-
-//4.拆分、列转行、拼其他列
-select name,favor_new from student_favors_2 lateral view explode(split(favorlist,',')) from student_favors_2;
-```
-
-16-4、Hive的排序函数  
-- order by跟sql语言中的order by作用是一样的，会对查询的结果做一次全局排序，使用这个语句的时候生成的reduce任务只有一个
-- sort by，如果有多个reduce，在每个reducer端都会做排序，保证了局部有序（每个reducer出来的数据是有序的，但不能保证所有的数据是全局有序的，除非只有一个reducer）
-- ditribute by：只会根据指定的key对数据进行分区，但是不会排序。一般情况下可以和sort by 结合使用，先对数据分区，再进行排序
-- cluster by：的功能就是distribute by和sort by的简写形式（ cluster by id 等于 distribute by id sort by id）
-
-16-5、Hive的分组和去重函数  
-- GROUP BY ：对数据按照指定字段进行分组
-- DISTINCT：对数据中指定字段的重复值进行去重
-
-16-6、一个SQL语句分析-数据倾斜问题  
-![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive-sql.png)  
-
-17、Hive的Web工具-HUE  
-- Hue-非技术人员操作Hive的利器  
-- 在Hue中提交Hive任务，查看任务执行结果  
-
+22、Hive的Web工具-HUE  
 
   
