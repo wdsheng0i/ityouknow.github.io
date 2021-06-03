@@ -24,7 +24,7 @@ CDH应用场景：（节点少，服务器紧张，且使用大数据组件少 �
 - 免费版本不具有弹性升级，所以版本要求稳定
 - 减轻运维工作量
 
-## 基础环境准备（3台主机都做好基础环境设置）  
+## 1.基础环境准备（3台主机都做好基础环境设置）  
 | ip 	|名称	|内存大小|  安装组件|
 | ---- | ---- | ---- | ---- |
 |192.168.145.128	|cdh1	|16G|  server + agent |
@@ -49,13 +49,14 @@ DNS1=192.168.145.2
 
 ### 主机名hostname设置（临时+永久）    
 ```
-[root@bigdata128 hadoop]# hostname bigdata128
-[root@bigdata128 hadoop]# vi /etc/hostname，填写 bigdata128 
+[root@chd1 hadoop]# hostname chd1
+[root@chd1 hadoop]# vi /etc/hostname
+chd1 
 ```
 
 ### hosts文件修改（ip和主机名的映射关系,3台主机都要添加）    
 ```
-[root@bigdata128 hadoop]# vi /etc/hosts
+[root@chd1 hadoop]# vi /etc/hosts
 ip1 hostname1
 ip2 hostname2
 ip3 hostname3
@@ -69,20 +70,21 @@ ip3 hostname3
 
 ### ssh免密登录（3台主机互相做免密）    
 ```
-[root@bigdata128 hadoop]# ssh-keygen -t rsa //一路回车
-[root@bigdata128 hadoop]# cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+[root@chd1 hadoop]# ssh-keygen -t rsa //一路回车
+[root@chd1 hadoop]# cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 //验证
-$ ssh bigdata128
+$ ssh chd1
 
 //配置免密登录从节点
-$ ssh-copy-id -i bigdata129
-$ ssh-copy-id -i bigdata130
+$ ssh-copy-id -i chd2
+$ ssh-copy-id -i chd3
 ```
 
 ### jdk安装:  
 ```
-//1.下载，上传jdk-8u171-linux-x64.tar.gz至目录/opt
+//1.下载：https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html
+上传jdk-8u171-linux-x64.tar.gz至目录/opt
 
 //2.解压
 tar zxvf  jdk1.7.0_80.tar.gz
@@ -94,7 +96,7 @@ export JAVA_HOME=/opt/jdk1.8.0_171
 export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar 
 
-//生效：，让/etc/profile文件修改后立即生效 ,可以使用如下命令:
+//生效
 source /etc/profile
 ``` 
 
@@ -152,7 +154,8 @@ echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled'  >> /etc/rc.loc
 yum -y install httpd
 service httpd start 
 service  httpd status
-直接用ip地址登录，验证一下
+
+//直接用ip地址登录，验证一下
 ```
 
 ### 安装第三方依赖包
@@ -160,7 +163,7 @@ service  httpd status
 yum -y install chkconfig 
 ```
 
-## mysql安装(数据库只在cdh3 上面进行安装)
+## 2.mysql安装(数据库只在cdh3 上面进行安装)
 ```
 官网下载：https://dev.mysql.com/downloads/mysql/  
 1.将下载好的mysql-8.0.17-linux-glibc2.12-x86_64.tar.xz上传到usr/local/mysql目录下(如果没有该目录可以依次建文件夹)
@@ -239,7 +242,7 @@ flush privileges;
 如果直接进入全黑界面，这就代表远程访问成功，或者你也可以用navicat连接尝试
 ```
 
-## CDH安装
+## 3.CDH安装
 Cloudera Manger下载地址为： https://archive.cloudera.com/cm6/6.2.0/redhat7/yum/RPMS/x86_64/  
 cdh6下载：https://archive.cloudera.com/cdh6/6.2.0/parcels/   
 
@@ -247,7 +250,7 @@ cdh6下载：https://archive.cloudera.com/cdh6/6.2.0/parcels/
 链接: https://pan.baidu.com/s/1Dm5Elf9uQqn14BUbgU3AFQ 提取码: mws3 
 
 
-### mysql：创建clouderamanager需要的数据库
+### mysql：创建cloudera manager需要的数据库
 ```
 create database cmf default character set='utf8';
 create database amon default character set='utf8';
@@ -262,7 +265,7 @@ mkdir /usr/share/java
 mysql-connector-java.jar上传到 /usr/share/java 目录下
 ``` 
 
-### CM安装Cloudera Manager
+### 安装Cloudera Manager
 全部节点都安装daemons和agent
 ``` 
 yum localinstall -y cloudera-manager-daemons-6.2.0-968826.el7.x86_64.rpm 
@@ -275,16 +278,17 @@ yum localinstall -y cloudera-manager-server-6.2.0-968826.el7.x86_64.rpm
 ```
 
 ### CDH6.2.0安装/启动
-1.上传  
+1.cdh1上传   
 ```
-CDH-6.2.0-1.cdh6.2.0.p0.967373-el7.parcel* 到目录 /opt/cloudera/parcel-repo/ 下  
+CDH-6.2.0-1.cdh6.2.0.p0.967373-el7.parcel*    到目录 /opt/cloudera/parcel-repo/ 下  
 PHOENIX-5.0.0-cdh6.2.0.p0.1308267-el7.parcel* 到目录 /opt/cloudera/parcel-repo/ 下  
-manifest.json 到目录 /opt/cloudera/parcel-repo/ 下  
-PHOENIX-1.0.jar 到目录 /opt/cloudera/csd/ 下
+manifest.json                                 到目录 /opt/cloudera/parcel-repo/ 下  
+PHOENIX-1.0.jar                               到目录 /opt/cloudera/csd/ 下
 ```  
 
-2.校验：  加密值一直即包下载完整    
+2.校验：  加密值一致即包下载完整    
 ``` 
+//执行命令，对比加密值
 sha1sum CDH-6.2.0-1.cdh6.2.0.p0.967373-el7.parcel
 cat CDH-6.2.0-1.cdh6.2.0.p0.967373-el7.parcel.sha
 
@@ -306,7 +310,7 @@ com.cloudera.cmf.db.setupType=EXTERNAL
 4.修改agent配置文件（所有节点）
 ```  
 vi /etc/cloudera-scm-agent/config.ini
-# server_host=cdh1
+server_host=cdh1
 ```
 
 5.启动
@@ -333,13 +337,13 @@ mkdir -p /usr/java
 ln -s /opt/module/jdk1.8.0_212 /usr/java/default
 ```
 
-### 安装大数据组建服务
-web: http://cdh1:7180/  
-超管：admin/admin  
+## 4.安装大数据组件
+Cloudera Manager web: http://cdh1:7180/  
+默认超管：admin/admin，超管登陆入之后可以根据需要新建"仅查看权限"的账号  
 
 ### 通过Cloudera Manager安装各种大数据组件  
-组件较多，不在赘述，具体参考  
-组件安装步骤基本相同  
+组件较多，不在赘述，具体参考  [CDH6.2.0搭建（史上最全的安装教程）](https://blog.csdn.net/weixin_38201936/article/details/106006335)  
+各组件安装步骤基本相同  
 
 |服务类型|	说明|
 | ---- | ---- |
@@ -363,7 +367,7 @@ web: http://cdh1:7180/
 |Solr				|Solr 是一个分布式服务，用于编制存储在 HDFS 中的数据的索引并搜索这些数据。|
 |Spark				|Apache Spark is an open source cluster computing system. This service runs Spark as an application on YARN.|
 |Sqoop 1 Client		|Configuration and connector management for Sqoop 1.|
-|YARN  		    	|Apache Hadoop MapReduce 2.0 (MRv2) 或 YARN 是支持 MapReduce 应用程序的数据计算框架（需要 HDFS）。|
+| YARN (MR2 Included)  		    	|	Apache Hadoop MapReduce 2.0 (MRv2) 或 YARN 是支持 MapReduce 应用程序的数据计算框架（需要 HDFS）。|
 |ZooKeeper			|Apache ZooKeeper 是用于维护和同步配置数据的集中服务。|
 
 

@@ -8,32 +8,13 @@ tags: [big-data]
 ## 资料
 - [快速入门Hadoop3.0大数据处理-【慕课网】](https://www.imooc.com/learn/1159) 
 - [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)  
-- [黑马程序员-大数据教程](https://www.bilibili.com/video/BV1wr4y1c7p7?p=22)   
-https://study.163.com/course/introduction.htm?courseId=1210098904#/courseDetail?tab=1  
-https://www.iqiyi.com/v_19rxzuycx0.html
 - [尚学堂-大数据](https://www.shsxt.com/dashujushipin.html)
 - [大数据视频，hadoop,hive,hbase合集](https://www.bilibili.com/video/av47114104?p=1)
 
 
 - 官网：https://hadoop.apache.org 
 - Hadoop文档: http://hadoop.apache.org/docs/r1.0.4/cn/index.html  
-- 《HADOOP权威指南》  
-
-
-- [史上最详细的Hadoop环境搭建](https://blog.csdn.net/hliq5399/article/details/78193113/)  
-- [使用docker搭建hadoop分布式集群](https://blog.csdn.net/xu470438000/article/details/50512442)  
-
-
-Cloudera Hadoop 环境搭建（离线安装）：  
-- [Cloudera Hadoop 环境搭建（离线安装）](https://www.cnblogs.com/nbfujx/p/7826037.html)  
-- [CDH搭建Hadoop集群(Centos7)](https://www.cnblogs.com/frankdeng/p/10136230.html)    
-- [Hadoop系列之（三）：使用Cloudera部署，管理Hadoop集群](https://www.cnblogs.com/ee900222/p/hadoop_3.html)  
-
-基于hortonworks的大数据集群环境部署  
-- [基于hortonworks的大数据集群环境部署流水](https://www.cnblogs.com/wcwen1990/p/9743536.html)    
-- [hortonworks data platform 安装配置文档](https://blog.csdn.net/houxusen123/article/details/40984521)  
-- [hortonworks测试环境离线安装与配置](https://max.book118.com/html/2017/0522/108258870.shtm)  
-- [Hadoop 发行版本 Hortonworks 安装详解](https://www.cnblogs.com/pandalee-oct/p/8215298.html)  
+- 《HADOOP权威指南》      
 
 ## 阶段一：走进大数据 + Hadoop 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/big-data.png)

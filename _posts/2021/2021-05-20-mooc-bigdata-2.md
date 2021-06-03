@@ -954,6 +954,8 @@ vi /etc/crontab
 
 ### 第8周   数据仓库工具-Hive从入门到小牛  
 1、快速了解Hive   
+Hive 是基于 Hadoop 个数据仓库工具，可以将类 SQL 语句转换为 MapReduce 务进行运行。其优点是学习成本低，可以通过类 SQL 语句快速实现简单的 MapReduce 统计，不必开发专门的MapReduce 应用。
+
 Hive是建立在Hadoop上的数据仓库基础构架。    
 它提供了一系列的工具，可以用来进行数据提取、转化、加载（简称为ETL）。   
 
