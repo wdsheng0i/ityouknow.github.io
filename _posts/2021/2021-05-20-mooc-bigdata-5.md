@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段五：推荐系统 + 数据中台 
+title: 《大数据开发工程师》阶段五 
 category: big-data
 tags: [big-data]
 ---
@@ -103,8 +103,7 @@ tags: [big-data]
 
   
   
-
 ### 推荐系统项目框架
-![](https://wdsheng0i.github.io/assets/images/2021/big-data/tjxt.png)  
+![](../../assets/images/2021/big-data/tjxt.png)  
 
 

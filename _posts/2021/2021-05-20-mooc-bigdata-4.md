@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段四【慕课网】
+title: 《大数据开发工程师》阶段四 
 category: big-data
 tags: [big-data]
 ---

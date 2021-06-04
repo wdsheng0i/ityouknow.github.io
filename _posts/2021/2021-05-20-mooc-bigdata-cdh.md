@@ -7,6 +7,7 @@ tags: [big-data]
 
 Cloudera Hadoop: 大数据之CDH安装与部署
 
+- [官网文档](https://docs.cloudera.com/documentation/enterprise/6/6.0/topics/cdh_intro.html)
 - [也许是你见过最详细的CDH6安装](https://www.bilibili.com/video/BV17k4y1k7w7?from=search&seid=12272889522580209950)
 - [CDH6.2.0搭建（史上最全的安装教程）](https://blog.csdn.net/weixin_38201936/article/details/106006335)
 - https://study.163.com/course/courseLearn.htm?courseId=1210098904#/learn/video?lessonId=1280947250&courseId=1210098904

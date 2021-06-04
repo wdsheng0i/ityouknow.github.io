@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段二【慕课网】
+title: 《大数据开发工程师》阶段二 
 category: big-data
 tags: [big-data]
 ---
@@ -1072,48 +1072,363 @@ export HADOOP_HOME=/data/soft/hadoop-3.2.0
 
 4、Hive使用方式之命令行方式  
 - bin/hive【官方不推荐使用】
-- bin/beeline -u jdbc:hive2://localhost:10000 -n root
+
+```
+1.链接：[root@bigdata04 apache-hive-3.1.2-bin]# bin/hive
+2.查表：show tables;
+3.创建表：create table t1(id int,name string);
+4.插数据：insert into t1(id,name) values(1,"zs");  //实际是执行了一个mapreduce任务
+5.查询：select * from t1;
+6.删表：drop table t1;
+7.退出：quit;
+```
+
+- beeline命令，通过HiveServer2连接hive，轻量级客户端工具：bin/beeline -u jdbc:hive2://localhost:10000 -n root
+
+```
+//开启服务： [root@bigdata04 apache-hive-3.1.2-bin]# bin/hiveserver2 
+1.链接：bin/beeline -u jdbc:hive2://localhost:10000 -n root  //在启动beeline的时候指定一个对这个目录有操作权限的用户
+2.查表：show tables;
+3.创建表：create table t1(id int,name string);
+4.插数据：insert into t1(id,name) values(1,"zs");  //实际是执行了一个mapreduce任务
+5.查询：select * from t1;
+6.删表：drop table t1;
+7.退出：quit;
+```
+
+在工作中我们如果遇到了每天都需要执行的命令，那我肯定想要把具体的执行sql写到脚本中去执行，但是现在这种用法每次都需要开启一个会话，好像还没办法把命令写到脚本中。  
+- hive后面可以使用 -e 命令，就可以放到shell脚本中执行了,这样每次hive都会开启一个新的会话，执行完毕以后再关闭这个会话。
 
 5、Hive使用方式之JDBC方式  
-- 需要先开启Hive 远程服务【端口号默认为10000】
-- 启动方式：bin/hiveserver2 
+- 需要先开启Hive 远程服务【端口号默认为10000】, 启动方式：bin/hiveserver2 
 - 案例：在Java代码中通过Hive的JDBC建立连接
 
+```
+//1.添加hive-jdbc的依赖
+<dependency>
+     <groupId>org.apache.hive</groupId>
+     <artifactId>hive-jdbc</artifactId>
+     <version>3.1.2</version>
+     <exclusions>
+         <!-- 去掉 log4j依赖 -->
+         <exclusion>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-log4j12</artifactId>
+         </exclusion>
+     </exclusions>
+</dependency>
+
+//2.实现
+/**
+ * JDBC代码操作 Hive
+ * 注意：需要先启动hiveserver2服务
+ * Created by xuwei
+ */
+public class HiveJdbcDemo {
+     public static void main(String[] args) throws Exception{
+     //指定hiveserver2的连接
+     String jdbcUrl = "jdbc:hive2://192.168.182.103:10000";
+     //获取jdbc连接，这里的user使用root，就是linux中的用户名，password随便指定即
+     Connection conn = DriverManager.getConnection(jdbcUrl, "root", "any")
+     //获取Statement
+     Statement stmt = conn.createStatement();
+     //指定查询的sql
+     String sql = "select * from t1";
+     //执行sql
+     ResultSet res = stmt.executeQuery(sql);
+     //循环读取结果
+     while (res.next()){
+     System.out.println(res.getInt("id")+"\t"+res.getString("name"));
+     }
+}
+
+//3.在项目的resources目录中增加log4j2.xml配置文件
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+     <Appenders>
+         <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%
+         </Console>
+     </Appenders>
+     <Loggers>
+         <Root level="info">
+            <AppenderRef ref="Console" />
+         </Root>
+     </Loggers>
+</Configuration>
+```
+
 6、Set命令的使用 
+hive命令行中可以使用set命令临时设置一些参数的值，其实就是临时修改hive-site.xml中参数的值  
 - Hive命令行下执行set命令【仅当前会话有效】
 - Hive脚本 ~/.hiverc 中配置set命令【当前机器有效】 
-- 如何查看Hive历史操作命令？ 
+- 如何查看Hive历史操作命令：[root@bigdata04 apache-hive-3.1.2-bin]# more ~/.hivehistory 
 
 7、Hive的日志配置  
 - Hive运行时日志
 - Hive任务执行日志
 
+``` 
+[root@bigdata04 conf]# mv hive-log4j2.properties.template hive-log4j2.properties
+[root@bigdata04 conf]# mv hive-log4j2.properties.template hive-log4j2.propert
+[root@bigdata04 conf]# vi hive-log4j2.properties
+property.hive.log.level = WARN
+property.hive.root.logger = DRFA
+property.hive.log.dir = /data/hive_repo/log
+property.hive.log.file = hive.log
+property.hive.perflogger.log.level = INFO
+
+修改 hive-exec-log4j2.properties.template 这个文件，去掉 .template 后缀
+[root@bigdata04 conf]# vi hive-exec-log4j2.properties
+property.hive.log.level = WARN
+property.hive.root.logger = FA
+property.hive.query.id = hadoop
+property.hive.log.dir = /data/hive_repo/log
+property.hive.log.file = ${sys:hive.query.id}.log
+```
+
 8、Hive中数据库的操作 
-- 创建数据库 
-- 查看数据库列表 
-- 选择数据库
-- 删除数据库
+- 创建数据库 :create database mydb1;
+- 创建数据库的时候通过location来指定hdfs目录的位置:create database mydb2 location '/user/hive/mydb2';
+- 查看数据库列表 :show databases;
+- 选择数据库: use default;
+- 删除数据库: drop database mydb1;
 
-9、Hive中表的操作 
-- 创建表
-- 加载数据 
-- 查看表信息
-- 表增加字段及注释、删除表
-- 修改表名 
-- 指定列和行的分隔符 
+9、Hive中表的操作 :表中的数据是存储在hdfs中的，但是表的名称、字段信息是存储在metastore中的
+- 创建表:create table t2(id int);
+- 查看表结构信息:   desc t2;
+- 显示当前数据库中所有的表名:show tables;
+- 查看表的创建信息: show create table t2;
+- 修改表名 :alter table t2 rename to t2_bak;
+- 加载数据(批量插数据)： load data local inpath '/data/soft/hivedata/t2.data' into table default.t2_bak 
+- （hdfs命令加载数据）自己手工通过put命令把数据上传到t2_bak目录中：[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/t2.data /user/hive/warehouse/t2_bak/t2_bak-2.data
+- 表增加字段及注释、删除表： alter table t2_bak add columns (name string);
+- 指定列和行的分隔符 ：hive是有默认的分隔符的，默认的行分隔符是 '\n' ，就是换行符，而默认的列分隔符呢，是 \001 。
 
-10、Hive中数据类型的应用  
+创建表的时候指定一下分隔符
+``` 
+create table t3_new(
+id int comment 'ID',
+stu_name string comment 'name',
+stu_birthday date comment 'birthday',
+online boolean comment 'is online'
+)row format delimited 
+fields terminated by '\t' 
+lines terminated by '\n';
+```
 
-11、Hive表类型之内部表+外部表  
-Hive中的默认表类型，表数据默认存储在 warehouse 目录中  
-在加载数据的过程中，实际数据会被移动到warehouse目录中  
-删除表时，表中的数据和元数据将会被同时删除  
+10、Hive中数据类型的应用    
+hive作为一个类似数据库的框架，也有自己的数据类型，便于存储、统计、分析。Hive中主要包含两大数据类型   
+- 基本数据类型：常用的有INT,STRING,BOOLEAN,DOUBLE等
+- 复合数据类型：常用的有ARRAY,MAP,STRUCT等
 
+示例1: 建一张表，指定了一个array数组类型的字段叫favors, 一个map字段score
+``` 
+//建表
+create table stu(
+ id int,
+ name string,
+ favors array<string>,
+ scores map<string,int>
+)row format delimited
+fields terminated by '\t'
+collection items terminated by ','
+map keys terminated by ':'
+lines terminated by '\n';
 
+//数据test2.data
+1 zhangsan swing,sing,coding chinese:80,math:90,english:100
+2 lisi music,football chinese:89,english:70,math:88
+
+//load 数据
+ load data local inpath '/data/soft/hivedata/test2.data' into table default.stu2
+
+//.查询所有学生的语文和数学成绩
+ select id,name,scores['chinese'],scores['math'] from stu2;
+```
+
+示例2：种复合类型struct，某学校有2个实习生，zhangsan、lisi，每个实习生都有地址信息，一个是户籍地所在的城市，一个是公司所在的城市
+``` 
+//建表
+create table stu3(
+id int,
+name string,
+address struct<home_addr:string,office_addr:string>
+)row format delimited
+fields terminated by '\t'
+collection items terminated by ','
+lines terminated by '\n';
+
+//数据test3.data
+1 zhangsan bj,sh
+2 lisi gz,sz
+
+//load 数据
+ load data local inpath '/data/soft/hivedata/test3.data' into table default.stu3
+
+//.查询地址
+ select id,name,address.home_addr from stu3;
+```
+
+**Struct和Map的区别**
+如果从建表语句上来分析，其实这个Struct和Map还是有一些相似之处的来总结一下：
+``` 
+map中可以随意增加k-v对的个数
+struct中的k-v个数是固定的
+
+map在建表语句中需要指定k-v的类型
+struct在建表语句中需要指定好所有的属性名称和类型
+
+map中通过[]取值
+struct中通过.取值，类似java中的对象属性引用
+
+map的源数据中需要带有k-v
+struct的源数据中只需要有v即可
+```
+
+11、Hive表类型之内部表 + 外部表  
+内部表: 也可以称为受控表, Hive中的默认表类型  
+- 表数据默认存储在 warehouse 目录中    
+- 在加载数据的过程中，实际数据会被移动到 warehouse目录中    
+- 删除表时，表中的数据和元数据将会被同时删除 
+
+外部表 :建表语句中包含 External 的表叫外部表   
+- 外部表在加载数据的时候，实际数据并不会移动到warehouse目录中，只是与外部数据建立一个链接(映射关系)
+- 表的定义和数据的生命周期互相不约束，数据只是表对hdfs上的某一个目录的引用而已，
+- 当删除表定义的时候，只会删除表的元数据, 数据依然是存在的。仅删除表和数据之间引用关系 
+
+``` 
+//主要就是在建表语句中增加了EXTERNAL 以及在最后通过locatin指定了这个表数据的存储位置，注意这个路径是hdfs的路径
+create external table external_table (
+key string
+) location '/data/external';
+
+//此时到hdfs的 /user/hive/warehouse/ 目录下查看，是看不到这个表的目录的，因为这个表的目录是刚才通过location指定的目录
+//metastore中的tbls表，这里看到external_table的类型是外部表
+
+//原始数据文件为 external_table.data
+
+//往这个外部表中加载数据，原始数据文件为 external_table.data
+load data local inpath '/data/soft/hivedata/external_table.dat into table external_t1
+此时加载的数据会存储到hdfs的 /data/external 目录下
+```
+注意：实际上内外部表是可以互相转化的，需要我们做一下简单的设置即可。    
+内部表转外部表  
+alter table tblName set tblproperties (‘external’=‘true’);  
+外部表转内部表  
+alter table tblName set tblproperties (‘external’=‘false’);
+
+在实际工作中，我们在hive中创建的表95%以上的都是外部表   
+大致流程:    
+我们先通过flume采集数据，把数据上传到hdfs中，然后在hive中创建外部表和hdfs上的数据绑定关系，就可以使用sql查询数据了，所以连load数据那一步都可以省略了，因为是先有数据，才创建的表
+![](../../assets/images/2021/big-data/hive-flume.png)  
 
 12、Hive表类型之内部分区表  
+引入 
+``` 
+假设我们的web服务器每天都产生一个日志数据文件，Flume把数据采集到HDFS中，每一天的数据存储 到一个日期目录中。我们如果想查询某一天的数据的话，hive执行的时候默认会对所有文件都扫描一遍，然后再过滤出来我们想要查询的那一天的数据
+如果你已经采集了一年的数据，这样每次计算都需要把一年的数据取出来，再过滤出来某一天的数据，效率就太低了，会非常浪费资源，
+所以我们可以让hive在查询的时候，根据你要查询的日期，直接定位到对应的日期目录。这样就可以直接查询满足条件的数据了，效率提升可不止一点点啊，是质的提升
+```
+分区可以理解为分类，通过分区把不同类型的数据放到不同目录中
+分区的标准就是指定分区字段，分区字段可以有一个或多个，根据咱们刚才举的例子，分区字段就是日期
+分区表的意义在于优化查询，查询时尽量利用分区字段，如果不使用分区字段，就会全表扫描，最典型的一个场景就是把天作为分区字段，查询的时候指定天
+``` 
+//建表
+hive (default)>create table partition_1 (
+id int,
+name string 
+) partitioned by (dt string)
+row format delimited
+fields terminated by '\t';
 
-13、Hive表类型之外部分区表  
+//data partition_1.data
+1 zhangsan
+2 lisi
+
+//load data
+hive (default)>load data local inpath '/data/soft/hivedata/partition_1.data'  into table default.partition_1 partition (dt=20200101)
+
+//看一下hdfs中的信息，刚才创建的分区信息在hdfs中的体现是一个目录:/user/hive/warehouse/partition_1/dt=2020-01-01
+
+//手动在表中只创建分区
+hive (default)> alter table partition_1 add partition (dt='2020-01-02');
+
+//向这个新建分区中添加数据，可以使用刚才的load命令或者hdfs的put命令都可以
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_1 partition (dt=20200102)
+
+// 查看表中有哪些分区
+hive (default)>show partitions partition_1;
+```
+创建多个分区  
+某学校，有若干二级学院，每年都招很多学生，学校的统计需求大部分会根据年份和学院名称作为条件
+所以为了提高后期的统计效率，我们最好是使用年份和学院名称作为分区字段
+``` 
+//建分区表
+create table partition_2 (
+id int,
+name string
+) partitioned by (year int, school string)
+row format delimited
+fields terminated by '\t';
+
+// partition_2.data 数据文件中只需要有id和name这两个字段的值就可以了，具体year和school这两个分区字段是在加载分区的时候指定的。
+1 zhangsan
+2 lisi
+3 wangwu
+
+// load
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2020, school=JSJ)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2019, school=JSJ)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2020, school=YY)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2019, school=YY)
+
+//查看分区信息
+hive (default)> show partitions partition_2;
+OK
+partition
+year=2019/school=english
+year=2019/school=xk
+year=2020/school=english
+year=2020/school=xk
+
+//查询
+select * from partition_2; 【全表扫描，没有用到分区的特性】 
+select * from partition_2 where year = 2019;【用到了一个分区字段进行过滤】 
+select * from partition_2 where year = 2019 and school = 'YY';【用到了两个分区字段进行过滤】
+```
+
+13、Hive表类型之外部分区表 
+外部分区表就是在外部表的基础上又增加了分区--工作中最常用的表     
+``` 
+//建分区表
+create external table ex_par (
+id int,
+name string
+) partitioned by (year int, school string)
+row format delimited
+fields terminated by '\t'
+location '/data/ex_par';
+
+//load data
+load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par partation(dt='20200101')
+
+//删除分区：删除后虽然分区目录还在，show partitions 已查不到分区信息了，查询表数据是查不出来的，由于这个是一个分区表，这份数据没有和任何分区绑定，所以就查询不出来
+ hive (default)> alter table ex_par drop partition(dt='2020-01-01');
+
+//数据已经上传上去后，需要通过alter add partition命令 ，指定分区目录location
+hive (default)> alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=20200101'
+```
+总结一下：  
+```load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par partation(dt='20200101')```  
+这条命令做了两件事情，上传数据，添加分区(绑定数据和分区之间的关系)  
+
+```
+hdfs dfs -mkdir /data/ex_par/dt=20200101  
+hdfs dfs -put /data/soft/hivedata/ex_par.data /data/ex_par/dt=20200101  
+alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=20200101'
+```  
+上面这三条命令做了两个事情，上传数据，添加分区(绑定数据和分区之间的关系)
 
 14、Hive表类型之桶表+视图  
 
@@ -1132,5 +1447,7 @@ Hive中的默认表类型，表数据默认存储在 warehouse 目录中
 21、一个SQL语句分析  
 
 22、Hive的Web工具-HUE  
+
+
 
   
