@@ -19,7 +19,7 @@ tags: [big-data]
 ## 阶段一：走进大数据 + Hadoop 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/big-data.png)
 
-![](../../assets/images/2021/big-data/static.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/static.png)
 
 ### 第1周   学好大数据先攻克Linux  
 1、掌握Linux虚拟机的安装和配置  
