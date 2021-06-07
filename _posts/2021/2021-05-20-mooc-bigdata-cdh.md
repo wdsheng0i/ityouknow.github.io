@@ -10,7 +10,9 @@ Cloudera Hadoop: 大数据之CDH安装与部署
 - [官网文档](https://docs.cloudera.com/documentation/enterprise/6/6.0/topics/cdh_intro.html)
 - [也许是你见过最详细的CDH6安装](https://www.bilibili.com/video/BV17k4y1k7w7?from=search&seid=12272889522580209950)
 - [CDH6.2.0搭建（史上最全的安装教程）](https://blog.csdn.net/weixin_38201936/article/details/106006335)
-- https://study.163.com/course/courseLearn.htm?courseId=1210098904#/learn/video?lessonId=1280947250&courseId=1210098904
+- [小白快速掌握CDH安装](https://study.163.com/course/courseLearn.htm?courseId=1210098904#/learn/video?lessonId=1280947250&courseId=1210098904)
+- 《Cloudera Hadoop大数据平台实战指南》_宋立桓
+- 实战指南配套： https://pan.baidu.com/s/1-P7Go5gdJLim33_Iju1rfg#list/path=%2F    d1tk 
 
 CDH优点：  
 - 统一化的可视化界面、服务主机和集群实时监控

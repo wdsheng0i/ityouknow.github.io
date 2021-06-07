@@ -8,6 +8,7 @@ tags: [big-data]
 ## 资料
 - [快速入门Hadoop3.0大数据处理-【慕课网】](https://www.imooc.com/learn/1159) 
 - [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)  
+- [尚硅谷-大数据](http://www.atguigu.com/bigdata/)
 - [尚学堂-大数据](https://www.shsxt.com/dashujushipin.html)
 - [大数据视频，hadoop,hive,hbase合集](https://www.bilibili.com/video/av47114104?p=1)
 
