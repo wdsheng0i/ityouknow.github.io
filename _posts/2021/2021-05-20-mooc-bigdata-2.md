@@ -952,7 +952,7 @@ vi /etc/crontab
 ```
   
 
-### 第8周   数据仓库工具-Hive从入门到小牛  
+### 第8周   数据仓库工具-（Hive + Hue）  
 1、快速了解Hive   
 Hive 是基于 Hadoop 个数据仓库工具，可以将类 SQL 语句转换为 MapReduce 务进行运行。其优点是学习成本低，可以通过类 SQL 语句快速实现简单的 MapReduce 统计，不必开发专门的MapReduce 应用。
 
@@ -1318,8 +1318,7 @@ alter table tblName set tblproperties (‘external’=‘true’);
 外部表转内部表  
 alter table tblName set tblproperties (‘external’=‘false’);
 
-在实际工作中，我们在hive中创建的表95%以上的都是外部表   
-大致流程:    
+**在实际工作中，我们在hive中创建的表95%以上的都是外部表   大致流程:**     
 我们先通过flume采集数据，把数据上传到hdfs中，然后在hive中创建外部表和hdfs上的数据绑定关系，就可以使用sql查询数据了，所以连load数据那一步都可以省略了，因为是先有数据，才创建的表
 ![](../../assets/images/2021/big-data/hive-flume.png)  
 
