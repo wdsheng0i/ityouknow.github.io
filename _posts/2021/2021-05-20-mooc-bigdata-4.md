@@ -155,7 +155,7 @@ Flink + 高频实时数据处理方案
 
   
 
-### 第17周   Flink高级进阶之路   
+### 第17周   SparkStreaming + Flink高级进阶之路   
 1、Window的概念和类型  
 
 2、TimeWindow的使用  
@@ -201,3 +201,4 @@ Flink + 高频实时数据处理方案
 22、SparkStreaming整合Kafka  
 
   
+

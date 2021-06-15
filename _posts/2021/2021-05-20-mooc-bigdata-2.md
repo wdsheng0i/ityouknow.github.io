@@ -1346,7 +1346,7 @@ fields terminated by '\t';
 2 lisi
 
 //load data
-hive (default)>load data local inpath '/data/soft/hivedata/partition_1.data'  into table default.partition_1 partition (dt=20200101)
+hive (default)>load data local inpath '/data/soft/hivedata/partition_1.data' into table default.partition_1 partition (dt=20200101)
 
 //看一下hdfs中的信息，刚才创建的分区信息在hdfs中的体现是一个目录:/user/hive/warehouse/partition_1/dt=2020-01-01
 
@@ -1377,10 +1377,10 @@ fields terminated by '\t';
 3 wangwu
 
 // load
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2020, school=JSJ)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2019, school=JSJ)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2020, school=YY)
-hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into to table default.partition_2 partition (year=2019, school=YY)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2020, school=JSJ)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2019, school=JSJ)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2020, school=YY)
+hive (default)> load data local inpath '/data/soft/hivedata/partition_2.data' into table default.partition_2 partition (year=2019, school=YY)
 
 //查看分区信息
 hive (default)> show partitions partition_2;
@@ -1418,7 +1418,7 @@ load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par parta
 //数据已经上传上去后，需要通过alter add partition命令 ，指定分区目录location
 hive (default)> alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=20200101'
 ```
-总结一下：  
+总结一下：   
 ```load data local inpath '/data/soft/hivedata/ex_par.data' into table ex_par partation(dt='20200101')```  
 这条命令做了两件事情，上传数据，添加分区(绑定数据和分区之间的关系)  
 
@@ -1429,24 +1429,271 @@ alter table ex_par add partition(dt='20200101') location '/data/ex_par/dt=202001
 ```  
 上面这三条命令做了两个事情，上传数据，添加分区(绑定数据和分区之间的关系)
 
-14、Hive表类型之桶表+视图  
+14-1、Hive表类型之桶表（实际用的少） 
+- 桶表是对数据进行哈希取值，然后放到不同文件中存储  
+- 物理上，每个桶就是表(或分区）里的一个文件  
+- 桶表的主要作用：1. 数据抽样  2. 提高某些查询效率如join操作
+
+```
+//创建桶表
+create table bucket_tb(
+   id int
+   ) clustered by (id) into 4 buckets; //分到4个桶
+
+往桶中加载数据：不能使用load data的方式，而是需要使用其它表中的数据   
+ 
+//1.在插入数据之前需要先设置开启桶操作  
+hive (default)> set hive.enforce.bucketing=true;
+
+//2.初始化一个表b，用于向桶表中加载数据
+more b_source.data
+1
+2
+3
+4 
+
+//3.建b
+hive (default)> create table b_source(id int);
+
+//4.load数据到b
+hive (default)> load data local inpath '/data/soft/hivedata/b_source.data' into table b_source
+
+//5.向桶表中加载数据
+hive (default)> insert into table bucket_tb select id from b_source 
+
+//6.查看桶表中的数据
+hive (default)> select * from bucket_tb;
+```
+14-2、Hive表类型之视图 
+``` 
+//创建视图
+hive (default)>create view v1 as select t3_new.id,t3_new.stu_name from t3_new
+
+//查看到这个视图，但是仓库里么有相应的文件或目录，虚拟的
+hive (default)>show tables
+
+//通过视图查询数据 
+hive (default)> select * from v1;
+
+//查看视图的结构，
+hive (default)> desc v1;
+```
 
 15、Hive数据处理综合案例  
+需求：Flume按天把日志数据采集到HDFS中的对应目录中，使用SQL按天统计每天数据的相关指标   
 
-16、Hive高级函数之分组排序取TopN  
+分析一下：  
+日志采集：Flume按天把日志数据保存到HDFS中的对应目录中  
+针对Flume的source可以使用execsource、channel可以使用基于文件的或者内存的，sink使用hdfssink，  
+在hdfssink的path路径中需要使用%Y%m%d获取日期，将每天的日志数据采集到指定的hdfs目录中   
 
-17、Hive高级函数之行转列  
+建表:    
+由于这份数据可能会被多种计算引擎使用，所以建议使用外部表，这样就算我们不小心把表删了，数据也还是在的  
+还有就是这份数据是按天分目录存储的，在实际工作中，离线计算的需求大部分都是按天计算的，所以在这里最好在表中增加日期这个分区字段  
+所以最终决定使用外部分区表。  
 
-18、Hive高级函数之列转行  
+实现思路：  
+1.先基于原始的json数据创建一个外部分区表，表中只有一个字段，保存原始的json字符串即可，分区字段是日期和数据类型   
+2.再创建一个视图，视图中实现的功能就是查询前面创建的外部分区表，在查询的时候会解析json数据中的字段  
 
-19、Hive的排序函数  
+``` 
+//1.创建一个外部分区表
+create external table ex_par_more_type(
+log string
+)partitioned by(dt string,d_type string) 
+ row format delimited 
+ fields terminated by '\t'
+ location '/moreType';
 
-20、Hive的分组和去重函数  
+//2.加载数据:注意，此时数据已经通过flume采集到hdfs中了，不需要使用load命令了，只需要使用一个alter命令添加分区信息就可以
+hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='giftRecord') location '/moreType/20200504/giftRecord'
+hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='userInfo') location '/moreType/20200504/userInfo'
+hive (default)> alter table ex_par_more_type add partition(dt='20200504',d_type='videoInfo') location '/moreType/20200504/videoInfo'
 
-21、一个SQL语句分析  
+//3.创建视图，创建视图时从数据中查询需要的字段信息
+由于这三种类型的数据字段是不一样的，所以创建一个视图还搞不定，只能针对每一种类型创建一个视图
+create view gift_record_view as
+select get_json_object(log,'$.send_id') as se 
+,get_json_object(log,'$.good_id') as good_id
+,get_json_object(log,'$.video_id') as video_id
+,get_json_object(log,'$.gold') as gold
+,dt
+from ex_par_more_type
+where d_type = 'giftRecord';
 
-22、Hive的Web工具-HUE  
+create view user_info_view as select get_json_object(log,'$.uid') as uid
+,get_json_object(log,'$.nickname') as nickname
+,get_json_object(log,'$.usign') as usign
+,get_json_object(log,'$.sex') as sex
+,dt
+from ex_par_more_type
+where d_type = 'userInfo';
 
+create view video_info_view as select get_json_object(log,'$.id') as id
+,get_json_object(log,'$.uid') as uid
+,get_json_object(log,'$.lat') as lat
+,get_json_object(log,'$.lnt') as lnt
+,dt
+from ex_par_more_type 
+where d_type = 'videoInfo';
+
+//4.查询视图，指定日期查询
+hive (default)> select * from gift_record_view where dt = '20200504';
+
+//5.定时任务addPartition.sh：flume每天都会采集新的数据上传到hdfs上面，所以我们需要每天都做一次添加分区的操作。
+00 01 * * * root /bin/bash /data/soft/hivedata/addPartition.sh >> /data/soft/hivedata/addPartition.log
+
+[root@bigdata04 hivedata]# vi addPartition.sh
+#!/bin/bash
+# 每天凌晨1点定时添加当天日期的分区
+if [ "a$1" = "a" ]
+then
+    dt=`date +%Y%m%d`
+else
+    dt=$1
+fi
+# 指定添加分区操作： 如果指定的分区已存在，重复添加分区会报错，所以增加判断if not exists
+hive -e "
+alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='giftRecord') location '/moreType/${dt}/giftRecord'
+alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='userInfo') location '/moreType/${dt}/userInfo'
+alter table ex_par_more_type add if not exists partition(dt='${dt}',d_type='videoInfo') location '/moreType/${dt}/videoInfo'
+"
+``` 
+
+16、Hive高级函数
+通过 show functions; 来查看hive中的内置函数,mysql中支持的函数这里面大部分都支持 
+
+16-1、Hive高级函数之分组排序取TopN    
+row_number和over函数通常搭配在一起使用  
+- row_number会对数据编号，编号从1开始
+- over可以理解为把数据划分到一个窗口内，里面可以加上partition by，表示按照字段对数据进行分组，
+- 可以加上order by 表示对每个分组内的数据按照某个字段进行排序
+
+需求：有一份学生的考试分数信息，语文、数学、英语这三门，需要计算出班级中单科排名前三名学生的姓名
+```
+//1.准备数据student_score.data
+[root@bigdata04 hivedata]# more student_score.data 
+1 zs1 chinese 80
+2 zs1 math 90
+3 zs1 english 89
+4 zs2 chinese 60
+5 zs2 math 75
+6 zs2 english 80
+7 zs3 chinese 79
+8 zs3 math 83
+9 zs3 english 72
+10 zs4 chinese 90
+11 zs4 math 76
+12 zs4 english 80
+13 zs5 chinese 98
+14 zs5 math 80
+15 zs5 english 70
+
+//2.建表
+create external table student_score(
+    id int,
+    name string,
+    sub string,
+    score int
+)row format delimited
+fields terminated by '\t'
+location '/data/student_score';
+
+//3.load数据
+[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_score.dat /data/student_score
+
+//4.分组排序查询 
+hive (default)> select *, row_number() over (partition by sub order by score desc) as num from student_score;
+
+//5.分组排序查询, 每科取前三
+hive (default)> select * from（
+select *, row_number() over (partition by sub order by score desc) as num from student_score
+） where num <=3;
+
+//6.排名：rank() over() 是跳跃排序，有两个第一名时接下来就是第三名（在各个分组内）
+hive (default)> select *, rank() over (partition by sub order by score desc) as num from student_score;
+
+//7.排名：dense_rank() over() 是连续排序，有两个第一名时仍然跟着第二名（在各个分组内）
+hive (default)> select *, dense_rank() over (partition by sub order by score desc) as num from student_score;
+```
+
+16-2、Hive高级函数之行转列（把多行数据转为一列数据）    
+行转列这种需求主要需要使用到 
+- CONCAT_WS()：指定的分隔符拼接多个字段的值，最终转化为一个带有分隔符的字符串
+- COLLECT_SET()：返回一个list集合，集合中的元素会重复，一般和group by 结合在一起使用
+- COLLECT_LIST()：  返回一个set集合，集合汇中的元素不重复，一般和group by 结合在一起使用
+
+``` 
+//1.测试数据student_favors.data 
+[root@bigdata04 hivedata]# more student_favors.data 
+zs swing
+zs footbal
+zs sing
+zs codeing
+zs swing
+
+//2.建表
+create external table student_favors(
+    name string,
+    favor string
+)row format delimited
+fields terminated by '\t'
+location '/data/student_favors';
+
+//3.load数据
+[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_favors.data /data/student_favors
+
+//4.分组、聚合、拼接
+hive (default)> select name,concat_ws(',',collect_list(favor)) as favor_list from student_favors group by namep;
+//collect去重
+hive (default)> select name,concat_ws(',',collect_set(favor)) as favor_list from student_favors group by namep;
+```
+
+16-3、Hive高级函数之列转行（把一列数据转成多行）      
+主要使用到 
+- SPLIT()：字串符切割成数组
+- EXPLODE()：数可以接受array或者map
+    - explode(ARRAY)：表示把数组中的每个元素转成一行
+    - explode(MAP) ：表示把map中每个key-value对，转成一行，key为一列，value为一列
+- LATERAL VIEW：  通常和split， explode等函数一起使用，可以对这份数据产生一个支持别名的虚拟表
+
+``` 
+//1.测试数据student_favors_2.data 
+[root@bigdata04 hivedata]# more student_favors_2.data 
+zs swing,footbal,sing
+ls codeing,swing
+
+//2.建表
+create external table student_favors_2(
+    name string, 
+    favorlist string
+)row format delimited 
+fields terminated by '\t'
+location '/data/student_favors_2';
+
+//3.load数据
+[root@bigdata04 hivedata]# hdfs dfs -put /data/soft/hivedata/student_favors_2.data /data/student_favors_2
+
+//4.拆分、列转行、拼其他列
+select name,favor_new from student_favors_2 lateral view explode(split(favorlist,',')) from student_favors_2;
+```
+
+16-4、Hive的排序函数  
+- order by跟sql语言中的order by作用是一样的，会对查询的结果做一次全局排序，使用这个语句的时候生成的reduce任务只有一个
+- sort by，如果有多个reduce，在每个reducer端都会做排序，保证了局部有序（每个reducer出来的数据是有序的，但不能保证所有的数据是全局有序的，除非只有一个reducer）
+- ditribute by：只会根据指定的key对数据进行分区，但是不会排序。一般情况下可以和sort by 结合使用，先对数据分区，再进行排序
+- cluster by：的功能就是distribute by和sort by的简写形式（ cluster by id 等于 distribute by id sort by id）
+
+16-5、Hive的分组和去重函数  
+- GROUP BY ：对数据按照指定字段进行分组
+- DISTINCT：对数据中指定字段的重复值进行去重
+
+16-6、一个SQL语句分析-数据倾斜问题  
+![](../../assets/images/2021/big-data/hive-sql.png)  
+
+17、Hive的Web工具-HUE  
+- Hue-非技术人员操作Hive的利器  
+- 在Hue中提交Hive任务，查看任务执行结果  
 
 
   
