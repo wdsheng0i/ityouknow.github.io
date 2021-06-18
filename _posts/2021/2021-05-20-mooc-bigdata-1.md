@@ -509,7 +509,7 @@ hdfs dfs -put ${logPath} ${hdfsPath}
 第五步：配置crontab任务
 ```
 vi /etc/crontab 
-0 1 * * * root sh /data/shell/uploadLogData.sh >> /data/shell/uploadLogData.l
+0 1 * * * root sh /data/shell/uploadLogData.sh >> /data/shell/uploadLogData.log
 ```
 第六步：手动执行任务：
 ```
