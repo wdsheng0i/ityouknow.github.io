@@ -1,33 +1,26 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段一【慕课网】
+title: 《大数据开发工程师》阶段一 
 category: big-data
 tags: [big-data]
 ---
 
 ## 资料
 - [快速入门Hadoop3.0大数据处理-【慕课网】](https://www.imooc.com/learn/1159) 
-- [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)
-- [大数据开发工程师-【慕课网】](https://class.imooc.com/sale/bigdata) 
+- [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)  
+- [尚硅谷-大数据](http://www.atguigu.com/bigdata/)
+- [尚学堂-大数据](https://www.shsxt.com/dashujushipin.html)
+- [大数据视频，hadoop,hive,hbase合集](https://www.bilibili.com/video/av47114104?p=1)
+
+
 - 官网：https://hadoop.apache.org 
 - Hadoop文档: http://hadoop.apache.org/docs/r1.0.4/cn/index.html  
-- 《HADOOP权威指南》  
-- [史上最详细的Hadoop环境搭建](https://blog.csdn.net/hliq5399/article/details/78193113/)  
-- [使用docker搭建hadoop分布式集群](https://blog.csdn.net/xu470438000/article/details/50512442)  
+- 《HADOOP权威指南》      
 
-Cloudera Hadoop 环境搭建（离线安装）：  
-[Cloudera Hadoop 环境搭建（离线安装）](https://www.cnblogs.com/nbfujx/p/7826037.html)  
-[CDH搭建Hadoop集群(Centos7)](https://www.cnblogs.com/frankdeng/p/10136230.html)    
-[Hadoop系列之（三）：使用Cloudera部署，管理Hadoop集群](https://www.cnblogs.com/ee900222/p/hadoop_3.html)  
-
-基于hortonworks的大数据集群环境部署  
-[基于hortonworks的大数据集群环境部署流水](https://www.cnblogs.com/wcwen1990/p/9743536.html)    
-[hortonworks data platform 安装配置文档](https://blog.csdn.net/houxusen123/article/details/40984521)  
-[hortonworks测试环境离线安装与配置](https://max.book118.com/html/2017/0522/108258870.shtm)  
-[Hadoop 发行版本 Hortonworks 安装详解](https://www.cnblogs.com/pandalee-oct/p/8215298.html)  
-
-## 阶段一：走进大数据  
+## 阶段一：走进大数据 + Hadoop 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/big-data.png)
+
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/static.png)
 
 ### 第1周   学好大数据先攻克Linux  
 1、掌握Linux虚拟机的安装和配置  
@@ -55,6 +48,7 @@ Cloudera Hadoop 环境搭建（离线安装）：
 
 13、大数据的行业应用  
   
+
 ### 第2周   大数据起源之初识Hadoop  
 1、什么是[Hadoop](https://baike.baidu.com/item/Hadoop/3526507?fr=aladdin)  
 PB级别海量数据存储和计算的平台;  
@@ -326,7 +320,8 @@ Hadoop的客户端节点可能会有多个，理论上是我们想要在哪台�
 器配置为hadoop集群的客户端节点。
 
    
-### 第3周   Hadoop之HDFS（hadoop distributed file system）分布式存储  
+
+### 第3周   分布式存储HDFS（hadoop distributed file system）  
 1、Hadoop中的分布式存储架构 -- 生活场景引入：”小明租房”案例一步一步引入    
 HDFS是一种允许文件通过网络在多台主机上分享的文件系统，可以让多机器上多用户分享文件和存储空间;  
 - 通透性
@@ -441,7 +436,8 @@ private static void delete(FileSystem fileSystem) throws IOException{
 
 9、HDFS写数据源码分析  
    
-### 第4周   Hadoop之HDFS核心进程剖析    
+
+### 第4周   HDFS核心进程剖析    
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/hdfs-s.png)   
 
 HDFS支持主从结构：
@@ -513,7 +509,7 @@ hdfs dfs -put ${logPath} ${hdfsPath}
 第五步：配置crontab任务
 ```
 vi /etc/crontab 
-0 1 * * * root sh /data/shell/uploadLogData.sh >> /data/shell/uploadLogData.l
+0 1 * * * root sh /data/shell/uploadLogData.sh >> /data/shell/uploadLogData.log
 ```
 第六步：手动执行任务：
 ```
@@ -535,7 +531,8 @@ Federation可解决单一命名空间的一些问题，提供以下特性，使�
 - 性能更高效 ：多个NameNode管理不同的数据，且同时对外提供服务，将为用户提供更高的读写吞吐率。
 - 良好的隔离性： 用户可根据需要将不同业务数据交由不同NameNode管理，这样不同业务之间影响很小
    
-### 第5周   Hadoop之初识MapReduce分布式计算  
+
+### 第5周   分布式（离线）计算MapReduce 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/mobile-cal.png)    
 1、MapReduce介绍  
 MapReduce是一个分布式计算模型，主要负责海量数据计算，主要有两个阶段组成：map和reduce  
@@ -733,4 +730,420 @@ hadoop序列化机制的特点
 - 快速： 读写数据额外开销小
 - 可扩展：可透明读取老格式数据
 - 互操作：支持多语言的交互
+  
+
+### 第6周   YARN资源调度（拿来就用的企业级解决方案）
+- Hadoop的HDFS和MapReduce都是针对大数据文件来设计的，在小文件的处理上不但效率低下，而且十分消耗内存资源
+- 针对HDFS而言，每一个小文件在namenode中都会占用150字节的内存空间，最终会导致集群中虽然存储了很多个文件，但是文件的体积并不大，这样就没有意义了。
+- 针对MapReduce而言，每一个小文件都是一个Block，都会产生一个InputSplit，最终每一个小文件都会 产生一个map任务，这样会导致同时启动太多的Map任务，Map任务的启动是非常消耗性能的，但是启动了以后执行了很短时间就停止了，因为小文件的数据量太小了，这样就会造成任务执行消耗的时间还没有启动任务消耗的时间多，这样也会影响MapReduce执行的效率。
+
+针对这个问题,解决办法通常是选择一个容器，将这些小文件组织起来统一存储
+
+1、小文件问题之SequenceFile  
+- SequeceFile是Hadoop 提供的一种二进制文件，这种二进制文件直接将小文件的文件名作为key，文件内容作为value序列化到大文件中
+- 但是这个文件有一个缺点，就是它需要一个合并文件的过程，最终合并的文件会比较大，并且合并后的文件查看起来不方便，必须通过遍历才能查看里面的每一个小文件
+- 所以这个SequenceFile 其实可以理解为把很多小文件压缩成一个大的压缩包了。
+
+```
+/**
+ * 小文件解决方案之SequenceFile
+ * Created by 
+ */
+public class SmallFileSeq {
+    public static void main(String[] args) throws Exception {
+        //生成SequenceFile文件
+        write("D:\\smallFile", "/seqFile");
+        //读取SequenceFile文件
+        read("/seqFile");
+    }
+
+    /**
+     * 生成SequenceFile文件
+     *
+     * @param inputDir   输入目录-windows目录
+     * @param outputFile 输出文件-hdfs文件
+     * @throws Exception
+     */
+    private static void write(String inputDir, String outputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出文件
+        fileSystem.delete(new Path(outputFile), true);
+        //构造opts数组，有三个元素
+         /*
+         第一个是输出路径
+         第二个是key类型
+         第三个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                SequenceFile.Writer.file(new Path(outputFile)),
+                SequenceFile.Writer.keyClass(Text.class),
+                SequenceFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        SequenceFile.Writer writer = SequenceFile.createWriter(conf, opts);
+        //指定要压缩的文件的目录
+        File inputDirPath = new File(inputDir);
+        if (inputDirPath.isDirectory()) {
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key, value);
+            }
+        }
+        writer.close();
+    }
+
+
+     /**
+     * 读取SequenceFile文件
+     *
+     * @param inputFile SequenceFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputFile)
+            throws Exception {
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS", "hdfs://bigdata01:9000");
+        //创建阅读器
+        SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFi
+                Text key = new Text();
+        Text value = new Text();
+        //循环读取数据
+        while (reader.next(key, value)) {
+            //输出文件名称
+            System.out.print("文件名:" + key.toString() + ",");
+            //输出文件的内容
+            System.out.println("文件内容:" + value.toString());
+        }
+        reader.close();
+    }
+}
+```
+
+2、小文件问题之MapFile  
+- MapFile是排序后的SequenceFile,MapFile由两部分组成，分别是index和data
+- index作为文件的数据索引，记录每个Record的key值，及该Record在文件中的偏移位置。MapFile被访问时,索引文件会被加载到内存，通过索引映射关系可迅速定位到指定Record所在文件位置，因此，相对SequenceFile而言，MapFile的检索效率是高效的，缺点是会消耗一部分内存来存储index数据。
+
+```
+/**
+ * 小文件解决方案之MapFile
+ * Created by 
+ */
+public class SmallFileMap {
+    public static void main(String[] args) throws Exception{
+        //生成MapFile文件
+        write("D:\\smallFile","/mapFile");
+        //读取MapFile文件
+        read("/mapFile");
+    }
+
+    /**
+     * 生成MapFile文件
+     * @param inputDir 输入目录-windows目录
+     * @param outputDir 输出目录-hdfs目录
+     * @throws Exception
+     */
+    private static void write(String inputDir,String outputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //获取操作HDFS的对象
+        FileSystem fileSystem = FileSystem.get(conf);
+        //删除输出目录
+        fileSystem.delete(new Path(outputDir),true);
+        //构造opts数组，有两个元素
+         /*
+         第一个是key类型
+         第二个是value类型
+         */
+        SequenceFile.Writer.Option[] opts = new SequenceFile.Writer.Option[]{
+                MapFile.Writer.keyClass(Text.class),
+                MapFile.Writer.valueClass(Text.class)};
+        //创建一个writer实例
+        MapFile.Writer writer = new MapFile.Writer(conf,new Path(outputDir),o
+                //指定要压缩的文件的目录
+                File inputDirPath = new File(inputDir);
+        if(inputDirPath.isDirectory()){
+            File[] files = inputDirPath.listFiles();
+            for (File file : files) {
+                //获取文件全部内容
+                String content = FileUtils.readFileToString(file, "UTF-8");
+                //文件名作为key
+                Text key = new Text(file.getName());
+                //文件内容作为value
+                Text value = new Text(content);
+                writer.append(key,value);
+            }
+        }
+        writer.close();
+    }
+    /**
+     * 读取MapFile文件
+     * @param inputDir MapFile文件路径
+     * @throws Exception
+     */
+    private static void read(String inputDir)
+            throws Exception{
+        //创建一个配置对象
+        Configuration conf = new Configuration();
+        //指定HDFS的地址
+        conf.set("fs.defaultFS","hdfs://bigdata01:9000");
+        //创建阅读器
+        MapFile.Reader reader = new MapFile.Reader(new Path(inputDir),conf);
+        Text key = new Text();
+        //循环读取数据
+        while(reader.next(key,value)){
+            //输出文件名称
+            System.out.print("文件名:"+key.toString()+",");
+            //输出文件的内容
+            System.out.println("文件内容:"+value.toString());
+        }
+        reader.close();
+    }
+}
+```
+3、案例：小文件存储和计算 
+```
+/**
+ * 需求：读取SequenceFile文件
+ * Created by  
+ */
+public class WordCountJobSeq {
+    public static class MyMapper extends Mapper<Text, Text, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyMapper.class);
+        /**
+         * 需要实现map函数
+         * 这个map函数就是可以接收<k1,v1>，产生<k2，v2>
+         *
+         * @param k1
+         * @param v1
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void map(Text k1, Text v1, Context context)
+                throws IOException, InterruptedException {
+            //输出k1,v1的值
+            System.out.println("<k1,v1>=<" + k1.toString() + "," + v1.toString() + ">
+                    //logger.info("<k1,v1>=<"+k1.get()+","+v1.toString()+">");
+                    //k1 代表的是每一行数据的行首偏移量，v1代表的是每一行内容
+                    //对获取到的每一行数据进行切割，把单词切割出来
+                    String[]words = v1.toString().split(" ");
+            //迭代切割出来的单词数据
+            for (String word : words) {
+                //把迭代出来的单词封装成<k2,v2>的形式
+                Text k2 = new Text(word);
+                LongWritable v2 = new LongWritable(1L);
+                //把<k2,v2>写出去
+                context.write(k2, v2);
+            }
+        }
+    }
+
+    /**
+     * Reduce阶段
+     */
+    public static class MyReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+        Logger logger = LoggerFactory.getLogger(MyReducer.class);
+        /**
+         * 针对<k2,{v2...}>的数据进行累加求和，并且最终把数据转化为k3,v3写出去
+         *
+         * @param k2
+         * @param v2s
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void reduce(Text k2, Iterable<LongWritable> v2s, Context cocontext>) throws IOException, InterruptedException {
+            //创建一个sum变量，保存v2s的和
+            long sum = 0L;
+            //对v2s中的数据进行累加求和
+            for (LongWritable v2 : v2s) {
+                //输出k2,v2的值
+                //System.out.println("<k2,v2>=<"+k2.toString()+","+v2.get()+"
+                //logger.info("<k2,v2>=<"+k2.toString()+","+v2.get()+">");
+                sum += v2.get();
+            }
+            //组装k3,v3
+            Text k3 = k2;
+            LongWritable v3 = new LongWritable(sum);
+            //输出k3,v3的值
+            //System.out.println("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            //logger.info("<k3,v3>=<"+k3.toString()+","+v3.get()+">");
+            context.write(k3, v3);
+        }
+    }
+
+    /**
+     * 组装Job=Map+Reduce
+     */
+    public static void main(String[] args) {
+        try {
+            if (args.length != 2) {
+                //如果传递的参数不够，程序直接退出
+                System.exit(100);
+            }
+            //指定Job需要的配置参数
+            Configuration conf = new Configuration();
+            //创建一个Job
+            Job job = Job.getInstance(conf);
+            //注意了：这一行必须设置，否则在集群中执行的时候是找不到WordCountJob这个
+            job.setJarByClass(WordCountJobSeq.class);
+            //指定输入路径（可以是文件，也可以是目录）
+            FileInputFormat.setInputPaths(job, new Path(args[0]));
+            //指定输出路径(只能指定一个不存在的目录)
+            FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            //指定map相关的代码
+            job.setMapperClass(MyMapper.class);
+            //指定k2的类型
+            job.setMapOutputKeyClass(Text.class);
+            //指定v2的类型
+            job.setMapOutputValueClass(LongWritable.class);
+            //设置输入数据处理类
+            job.setInputFormatClass(SequenceFileInputFormat.class);
+            //指定reduce相关的代码
+            job.setReducerClass(MyReducer.class);
+            //指定k3的类型
+            job.setOutputKeyClass(Text.class);
+            //指定v3的类型
+            job.setOutputValueClass(LongWritable.class);
+            //提交job
+            job.waitForCompletion(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+4、 数据倾斜问题分析  
+提高MapReduce的执行效率  
+- 默认情况下Map任务个数和InputSplit相关，InputSplit个数和Block块有关，所以可认为Map任务个数和数据的block块个数有关
+- 默认情况下reduce的个数是1个，可以考虑增加reduce任务个数，这样就可以实现数据分流了，提高计算效率
+
+5、数据倾斜案例实战 
+思路：把倾斜的数据打散
+```
+//1.map阶段，打散倾斜数据
+map{
+    String key = words[0];
+         if("5".equals(key)){
+         //把倾斜的key打散，分成10份
+         key = "5"+"_"+random.nextInt(10);
+    }
+    
+}
+
+//2.job设置多个reduce任务
+main(){
+    //设置reduce任务个数
+   job.setNumReduceTasks(Integer.parseInt(args[2]));
+}
+
+//3.结果不符合要求：1 10；... 5_1  1000; 5_2  2000;...
+再开发一个map-reduce任务，把5_*的求和下
+
+```
+ 
+6、YARN资源调度器 
+YARN不仅仅支持MapReduce，还支持Spark、Flink等计算引擎
+ 
+主要负责集群资源的管理和调度，支持主从结构  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn.png)  
+- 主节点（ResourceManager）进程主要负责集群资源的管理和分配,并处理客户端请求,启动和监控AppMaster, NodeManager  
+- 从节点（NodeManager）主要负责单节点资源管理,处理ResourceManager, AppMaster 的命令 
+- AppMaster：负责某个具体应用程序的调度和协调,为应用程序申请资源,并对任务进行监控
+- Container：YARN中的一个动态资源分配的概念，其拥有一定的内存，核数 
+
+YARN资源管理模型
+- YARN主要管理内存和CPU这两种资源类型
+- NodeManager启动时会向ResourceManager注册，注册信息中包含该节点可分配的CPU和内存总量
+- yarn.nodemanager.resource.memory-mb：单节点可分配的物理内存总量，默认是8MB*1024，即8G
+- yarn.nodemanager.resource.cpu-vcores：单节点可分配的虚拟CPU个数，默认是8
+
+7、YARN中的调度器分析   
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/yarn-schedule.png)  
+- FIFO Scheduler:先进先出(first in, first out)调度策略
+- CapacityScheduler:可以看作是FifoScheduler的多队列版本。
+- FairScheduler:多队列，多用户共享资源。
+ 
+8、案例：YARN多资源队列配置和使用   
+```
+1：capacity-scheduler.xml 增加online队列和offline队列 ，并根据预估实际使用调整比例
+  <property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>default,online,offline</value>
+    <description>
+      The queues at the this level (root is the root queue).
+    </description>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>70</value>
+    <description>Default queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
+    <value>70</value>
+    <description>
+      The maximum capacity of the default queue. 
+    </description>
+ </property>
+   <!--新增-->
+ <property>
+    <name>yarn.scheduler.capacity.root.online.capacity</name>
+    <value>10</value>
+    <description>online queue target capacity.</description>
+  </property> 
+ <property>
+    <name>yarn.scheduler.capacity.root.offline.capacity</name>
+    <value>20</value>
+    <description>offline queue target capacity.</description>
+  </property>
+<property>
+    <name>yarn.scheduler.capacity.root.online.maximum-capacity</name>
+    <value>10</value>
+    <description>
+      The maximum capacity of the online queue. 
+    </description>
+ </property>
+<property>
+    <name>yarn.scheduler.capacity.root.offline.maximum-capacity</name>
+    <value>20</value>
+    <description>
+      The maximum capacity of the offline queue. 
+    </description>
+ </property> 
+
+2：向offline队列提交任务
+//组装job
+main（String[] args）{
+    //解析命令行中通过-D传递过来的参数，添加到conf中
+    String[] remainingArgs = new GenericOptionParser(conf, args).getRemainingArgs();
+}
+
+执行命令：hadoop jar db_hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.wds.wordcountQueue -Dmapreduce.job.queuename=offline /hello.dat /out 10
+```
+ 
+9、Hadoop官方文档使用指北
+  
+10、Hadoop在CDH中的使用  
+
+11、Hadoop在HDP中的使用  
+   
    

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段四【慕课网】
+title: 《大数据开发工程师》阶段四 
 category: big-data
 tags: [big-data]
 ---
@@ -60,7 +60,8 @@ Flink + 高频实时数据处理方案
 25、实战：Kafka集群平滑升级  
 
   
-### 第15周   极速上手内存数据库Redis   
+
+### 第15周   内存数据库Redis-极速上手   
 1、快速了解Redis  
 
 2、Redis的安装部署  
@@ -104,7 +105,8 @@ Flink + 高频实时数据处理方案
 21、Redis架构演进过程  
 
   
-### 第16周   Flink快速上手篇   
+
+### 第16周   实时计算Flink-快速上手篇   
 1、快速了解Flink  
 
 2、Flink Streaming程序开发  
@@ -152,7 +154,8 @@ Flink + 高频实时数据处理方案
 22、将表转换成DataSet  
 
   
-### 第17周   Flink高级进阶之路   
+
+### 第17周   SparkStreaming + Flink高级进阶之路   
 1、Window的概念和类型  
 
 2、TimeWindow的使用  
@@ -198,3 +201,4 @@ Flink + 高频实时数据处理方案
 22、SparkStreaming整合Kafka  
 
   
+

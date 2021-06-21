@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段五【慕课网】
+title: 《大数据开发工程师》阶段五 
 category: big-data
 tags: [big-data]
 ---
@@ -42,6 +42,7 @@ tags: [big-data]
 16、项目总结  
 
   
+
 ### 第19周   直播平台三度关系推荐V2.0   
 1、现有V1.0技术架构分析  
 
@@ -70,6 +71,7 @@ tags: [big-data]
 13、项目总结  
 
   
+
 ### 第20周   数据中台大屏   
 1、什么是中台  
 
@@ -100,4 +102,9 @@ tags: [big-data]
 15、支持流式SQL中的自定义函数返回多列字段  
 
   
+  
+
+### 推荐系统项目框架
+![](../../assets/images/2021/big-data/tjxt.png)  
+
 

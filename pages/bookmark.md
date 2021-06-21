@@ -7,12 +7,6 @@ menu: bookmark
 permalink: /bookmark
 ---
 
-## 书签
-- [百度网盘](https://pan.baidu.com/)
-- [teambition网盘](https://www.teambition.com/)  
-    cymm3 = cymm1 + 首字母大写
-- [阿里网盘](https://aliyundrive.com/)   
-
 ## 社区
 - [GitHub](https://github.com/wdsheng0i)  
     wdsheng0i/cymm1    
