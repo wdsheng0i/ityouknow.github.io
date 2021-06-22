@@ -551,7 +551,7 @@ Hive是建立在Hadoop上的数据仓库基础构架。
 
 HQL也允许熟悉MapReduce的开发者开发自定义的mapreduce任务来处理内建的SQL函数无法完成的复杂的分析任务。  
 
-![](../../assets/images/2021/big-data/hive.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive.png)  
 
 Hive 的数据存储在 HDFS 中，大部分的查询由 MapReduce 完成（特例 select * from table 不会生成 MapRedcue 任务，如果在SQL语句后面再增加where过滤条件就会生成MapReduce任务了。）
 
@@ -906,7 +906,7 @@ alter table tblName set tblproperties (‘external’=‘false’);
 
 **在实际工作中，我们在hive中创建的表95%以上的都是外部表   大致流程:**     
 我们先通过flume采集数据，把数据上传到hdfs中，然后在hive中创建外部表和hdfs上的数据绑定关系，就可以使用sql查询数据了，所以连load数据那一步都可以省略了，因为是先有数据，才创建的表
-![](../../assets/images/2021/big-data/hive-flume.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive-flume.png)  
 
 12、Hive表类型之内部分区表  
 引入 
@@ -1275,7 +1275,7 @@ select name,favor_new from student_favors_2 lateral view explode(split(favorlist
 - DISTINCT：对数据中指定字段的重复值进行去重
 
 16-6、一个SQL语句分析-数据倾斜问题  
-![](../../assets/images/2021/big-data/hive-sql.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/hive-sql.png)  
 
 17、Hive的Web工具-HUE  
 - Hue-非技术人员操作Hive的利器  

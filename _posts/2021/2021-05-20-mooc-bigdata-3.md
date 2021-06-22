@@ -64,7 +64,7 @@ Spark vs Hadoop:
     - Spark 任务的数据是基于内存的，计算速度很快; Hadoop中MapReduce 任务是基于磁盘的，速度较慢
 
 Spark+Hadoop：    
-![](../../assets/images/2021/big-data/spark-hadoop.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/spark-hadoop.png)    
 - 底层是Hadoop的HDFS和YARN
 - Spark core指的是Spark的离线批处理
 - Spark Streaming指的是Spark的实时流计算
@@ -167,7 +167,7 @@ export HADOOP_CONF_DIR=/data/soft/hadoop-3.2.0/etc/hadoop
 ```
 
 3、Spark工作原理分析  
-![](../../assets/images/2021/big-data/spark-yuanli.png)      
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/spark-yuanli.png)      
 - 首先通过Spark客户端提交任务到Spark集群，
 - 然后Spark任务在执行的时候会读取数据源HDFS中的数据，
 - 将数据加载到内存中，转化为RDD（RDD其实是一个弹性分布式数据集，是一个逻辑概念，可以先理解为是一个数据集合），
@@ -193,7 +193,7 @@ RDD的特点:
 - Worker：集群的从节点中启动的进程，主要负责启动其它进程来执行具体数据的处理和计算任务
 - Executor：此进程由Worker负责启动，主要为了执行数据处理和计算
 - Task：是一个线程 由Executor负责启动，它是真正干活的  
-![](../../assets/images/2021/big-data/spark-arch.png)     
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/spark-arch.png)     
 1).首先在spark的客户端机器上通过driver进程执行我们的Spark代码，当我们通过spark-submit脚本提交Spark任务的时候Driver进程就启动了。  
 2).Driver进程启动之后，会做一些初始化的操作，会找到集群master进程，对Spark应用程序进行注册  
 3).当Master收到Spark程序的注册申请之后，会发送请求给Worker，进行资源的调度和分配  
@@ -298,8 +298,8 @@ RDD的特点:
 12、采集用户行为数据【客户端数据】  
 
 13、数据转换工具-Sqoop安装部署  
-![](../../assets/images/2021/big-data/sqoop1.png)  
-![](../../assets/images/2021/big-data/sqoop2.png)
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/sqoop1.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/sqoop2.png)
 
 14、Sqoop之数据导入功能  
 
