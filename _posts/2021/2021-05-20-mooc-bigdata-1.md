@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段一 
+title: 《大数据开发工程师》阶段一：走进大数据Hadoop 
 category: big-data
 tags: [big-data]
 ---
@@ -17,7 +17,7 @@ tags: [big-data]
 - Hadoop文档: http://hadoop.apache.org/docs/r1.0.4/cn/index.html  
 - 《HADOOP权威指南》      
 
-## 阶段一：走进大数据 + Hadoop 
+## 阶段一：走进大数据Hadoop 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/big-data.png)
 
 ![](https://wdsheng0i.github.io/assets/images/2021/big-data/static.png)

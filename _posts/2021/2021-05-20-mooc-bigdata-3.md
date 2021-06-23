@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《大数据开发工程师》阶段三 
+title: 《大数据开发工程师》阶段三：Spark + Sqoop + 数据仓库项目 
 category: big-data
 tags: [big-data]
 ---
