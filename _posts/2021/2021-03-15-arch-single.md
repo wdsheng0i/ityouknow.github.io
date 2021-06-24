@@ -7,7 +7,7 @@ tags: [arch]
 
 单体架构-技术选型
 
-## 一、前端框架（） 
+## 一、前端框架
 Requirejs：动态资源加载，模块化定义与加载  
 bootstrap：响应式栅布局  
 Freemarker：模板+数据 后端渲染  
@@ -18,7 +18,7 @@ Freemarker：模板+数据 后端渲染
 - angular.js 技术栈  
 - react.js 技术栈  
 
-## 二、前后交互（）
+## 二、前后交互
 - 集中部署: tomcat  
 AJAX请求,  JSON交互数据
 - 前后分离部署：  tomcat + nginx  
@@ -61,14 +61,14 @@ mapper
 entity/model/pojo
 ```
 
-## 四、存储选型（）
-### 结构化存储：
+## 四、存储选型
+- 结构化存储：  
 数据库 Oracle、Mysql、postgresql、SqlServer
 
-### 非结构化存储：
+- 非结构化存储：  
 文件服务 FTP、Minio、ElasticSearch、OSS
 
-## 五、 服务器（）
+## 五、 服务器
 - 服务器：Linux/WindowServer
 
 - 服务器中间件：Tomact/Jetty/Jboss
