@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Spring SpringMVC 学习资料汇总
-category: springboot
+category: spring
 tags: [spring]
 ---
 
