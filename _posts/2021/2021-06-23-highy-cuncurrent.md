@@ -99,7 +99,7 @@ QPS: 单个进程每秒请求服务器的成功次数
 只要增加服务器数量，就能线性扩充系统性能。水平扩展对系统架构设计是有要求的，如何在架构各层进行可水平扩展的设计，以及互联网公司架构各层常见的水平扩展实践，是本文重点讨论的内容。
 
 ### 什么样的架构才支持一直加服务器扩展
-![](http://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/B625006DF12748A5A339533ED2CC5E97/50044)  
+![](../../assets/images/2021/ha/fc.jpeg)    
 
 常见互联网分布式架构如上，分为：  
 - （1）客户端层：典型调用方是浏览器browser或者手机应用APP
@@ -112,7 +112,7 @@ QPS: 单个进程每秒请求服务器的成功次数
 
  
 ### 分层水平扩展架构实践  
-![](http://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/FFE6A44007BF48ADBECBF8E2FE42F699/50046)
+![](../../assets/images/2021/ha/sp.jpeg)  
 
 - 1).反向代理层的水平扩展  
 是通过“DNS轮询”实现的：dns-server对于一个域名配置了多个解析ip，每次DNS解析请求来访问dns-server，会轮询返回这些ip。
