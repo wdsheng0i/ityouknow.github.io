@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 架构能力总结
+title: 架构师能力总结
 category: arch
 tags: [arch]
 ---
 
-架构能力总结
+架构师能力总结
 
-## 1. 架构基本理论
+## 一. 架构基本理论
 ### 1.1 架构设计方法
 ![](../../assets/images/2021/micro/5v.png)  
 - 4+1视图法
@@ -21,6 +21,7 @@ tags: [arch]
 - DODAF
 - 架构风格： 数据流风格、复制风格、分层风格、移动代码风格、点对点风格、分布式风格
 	
+
 ### 1.2 数据一致性[设计](https://www.jianshu.com/p/ac0a8363c23d)  
 
 ####  CAP定理
@@ -56,6 +57,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - DoCommit
 
 #### 事务ACID：原子性、一致性、隔离性、持久性
+
 ### 1.3 可用性设计
 - MTBF
 - MTTR
@@ -66,8 +68,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 分布式
 
 ### 1.5 扩展性设计
-    
-    
+
 ### 架构设计其他属性
 - 可伸缩
 - 简单性
@@ -112,7 +113,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
     - 开发团队管理人员
     - 开发团队维护人员
 
-## 2. 架构设计能力
+## 二. 架构设计能力
 ### 2.1 面向对象程序设计（类设计原则、设计模式）
 - 设计原则（类设计）
 - 设计模式
@@ -188,12 +189,11 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 6.应用容灾及机房规划
 - 7.系统扩容机制
 
-### 2.7 技术架构选型
-- [1.常规单体架构-技术选型]()  
-- [2.微服务架构-技术栈选型]()  
-- [3.DevOps-技术选型]()
+### 2.7 技术选型
+- [1.单体架构-技术选型]()  
+- [2.微服务架构-技术栈选型]() 
 
-#### 选型参照因素
+**选型参照因素**
 - 切合业务
 - 社区活跃度
 - 团队技术水平
@@ -203,7 +203,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 成功案例
 - 开源精神
 
-## 3. 设计文档
+## 三. 设计文档
 ### 3.1 系统总体（架构）设计文档
 
 ### 3.2 概要设计文档
@@ -222,36 +222,36 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 构件图(组件图)：描述代码构件的物理结构及各种构建间依赖关系。 
 - 部署(配置图)：用来建模系统的物理部署。 
 
-## 4. 分布式架构
+## 四. 分布式架构
 ### 4.1 分布式中间件
-#### 分布式消息中间件：kafka
-#### 分布式缓存：Redis
-#### 分布式数据库:　mycat
-#### 分布式服务：Dubbo
-#### 注册中心: zookeeper
-#### 分布式文件系统：MongoDB
-#### 分布式文件存储服务：Minio/Fastdfs
-#### 负载均衡、限流：Nginx
-#### 高性能NIO框架：Netty
-#### 分布式日志搜索引擎：ELK
+- 分布式消息中间件：kafka
+- 分布式缓存：Redis
+- 分布式数据库:　mycat
+- 分布式服务：Dubbo
+- 注册中心: zookeeper
+- 分布式文件系统：MongoDB
+- 分布式文件存储服务：Minio/Fastdfs
+- 负载均衡、限流：Nginx
+- 高性能NIO框架：Netty
+- 分布式日志搜索引擎：ELK
 
 ### 4.2 分布式解决方案
-#### 分布式session会话保持方案、跨域共享、企业级单点登录方案
+**分布式session会话保持方案、跨域共享、企业级单点登录方案**  
 - 代理
 - session复制
 - session绑定
 - 客户端缓存
 - session服务器-靠谱
 
-#### 分布式全局id生成方案
+**分布式全局id生成方案**  
 
-#### 分布式事务解决方案 & 数据一致性
+**分布式事务解决方案 & 数据一致性**    
 - 分布式事务框架LCN
 - 阿里开源分布式事务框架FESCR
 - 柔性事务和刚性事务
 - TCC补偿机制
 
-#### 分布式锁解决方案
+**分布式锁解决方案**  
 - 基于数据库
     - 基于表字段版本号做分布式锁
     - 基于数据库排他锁做分布式锁
@@ -261,18 +261,18 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
     - 基于 REDLOCK 做集群模式的 Redis 分布式锁
 - 基于zookeeper实现
 
-#### 分布式负载均衡方案
+**分布式负载均衡方案**  
 - 硬件: F5
 - 软件: LVS、Nginx、HAProxy、Ribbon
 
-#### 分布式任务调度方案
+**分布式任务调度方案**  
 - Quartz
 - xxl-job
 - elastic-job
 - saturn
 - TBSchedule
 
-#### 分布式RPC通信解决方案：
+**分布式RPC通信解决方案：**  
 - 基于消息方式的系统间通信
 - 基于框架RPC通信
 	- Webservice-CXF实现
@@ -282,9 +282,9 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 理解通信协议传输过程中的序列化反序列化
 - 传统RPC技术在分布式下面临的问题
 
-#### 分布式接口幂等性,分布式限流-Guava RateLimiter
+**分布式接口幂等性,分布式限流-Guava RateLimiter**  
 
-## 5. 微服务架构
+## 五. 微服务架构
 ### 5.1 微服务本质：适当粒度服务拆分下的分布式开发
 - 主流架构模型：SOA架构和微服务架构
 - 领域驱动设计及业务驱动划分
@@ -328,9 +328,9 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 服务网格（Service Mesh）
 
 ### 5.3 微服务架构实践-框架
-#### springboot集成通用功能组件
+**springboot集成通用功能组件**  
 
-#### springcloud组件集成
+**springcloud组件集成**  
 - Eureka注册中心
 - Ribbon集成Rest试下负载均衡
 - Feign声明式服务调用
@@ -341,40 +341,39 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - Sieuth调用链路跟踪
 - BUS消息总线 
 
-#### Docker与虚拟化
+**Docker与虚拟化**  
 
-## 7.并发编程 && JVM
-
-### JAVA内存模型（JMM）
+## 六.并发编程 && JVM
+**JAVA内存模型（JMM）**  
 - java当中的线程通讯和消息传递  
 - 什么是重排序和顺序一致性？
 - Happens-Before？
 - As-If-Serial？
 
-### Synchronized的概念和分析
+**Synchronized的概念和分析**  
 - 同步、重量级锁以及Synchronized的原理分析  
 - 自旋锁、偏向锁、轻量级锁、重量级锁的概念、使用以及如何来优化他们
 
-### Volatile和DCL的知识
+**Volatile和DCL的知识**  
 - Volatile的使用场景和Volatile实现机制、内存语义、内存模型  
 - DCL的单例模式，什么是DCL？如何来解决DCL的问题
 
-### 并发基础之AQS的深度分析
+**并发基础之AQS的深度分析**  
 - AbstractAueuedSynchronizer同步器的概念、CLH同步队列是什么？  
 - 同步状态的获取和释放、线程阻塞和唤醒
 
-### Lock和并发常用工具类
+**Lock和并发常用工具类**  
 - 锁：Lock、ReentrantLock、ReentrantReadWriteLock、Condition  
 - 并发工具类CyclicBarrier、CountDownLatch、Semphore  
 - 并发集合类ConcurrentHashMap、ConcurrentLinkedQueue......
 
-### 原子操作常用知识讲解
+**原子操作常用知识讲解**  
 - 基本类型的原子操作比如经典的AtomicBoolean、AtomicLnteger、AtomicLong  
 - 数组类型的原子操作代表几个类AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray  
 - 引用类型的原子操作的典型AtomicReference、AtomicReferenceFieldUpdater......  
 - CAS的概念和知识、Compare And Swap 以及他的缺陷
 
-### 线程池和并发并行
+**线程池和并发并行**  
 - Executor
 - ThreadPoolExecutor
 - Callable & Future
@@ -384,7 +383,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 什么是并行？
 - 线程池如何保证核心线程不被销毁？
 
-## 8.框架和源码
+## 七.框架和源码
 ### 设计模式 & 设计原则
 
 ### spring源码分析 
@@ -397,7 +396,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 
 ### redis源码分析
 
-## 9.性能调优
+## 八.性能调优
 ### Mysql性能调优  
 
 ### JVM性能调优  
@@ -406,17 +405,18 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 
 ### Web调优
 
+### 系统架构优化
+
 ### Tomcat调优
 
 ### Linux服务器调优
 
-## 10.工程化Dev & Ops
+## 九.工程化Dev & Ops
 ### Nexus搭建maven私服
 
 ### Gitlab 部署、Gitflow、CI/CD 配置
 
 ### jenkins部署、配置项目自动化构建
-部署 Spring Boot：http://www.ityouknow.com/springboot/2017/11/11/spring-boot-jenkins.html
 
 ### Sonar部署、配置项目git、配置静态代码检查规则
 
@@ -433,26 +433,18 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 ### APM 部署、使用
 
 ### Linux服务器 & 中间件
+- centos 系统安装
+- jdk 安装、配置
+- tomcat 安装、配置
+- Mysql 安装、配置
+- zookeeper 安装、配置
+- redis 安装、配置
+- kafka 安装、配置
+- mongodb 安装、配置
+- nginx 安装、配置
 
-#### centos 系统安装
 
-#### jdk 安装、配置
-
-#### tomcat 安装、配置
-
-#### Mysql 安装、配置
-
-#### zookeeper 安装、配置
-
-#### redis 安装、配置
-
-#### kafka 安装、配置
-
-#### mongodb 安装、配置
-
-#### nginx 安装、配置
-
-## 11、架构师主要工作
+## 十.架构师主要工作
 ### 设计、搭建
 软件系统架构（平台、数据库、接口和应用架构等），解决开发中各种系统架构问题。
 
@@ -480,7 +472,7 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 ### 团队责任
 责任心强，有团队合作精神，工作认真负责高效并具有一定抗压能力。
 
-## 12、架构师能力要求
+## 十一.架构师能力要求
 ### 架构能力
 
 ### 工程能力
@@ -489,13 +481,17 @@ Eventual Consistency -- 最终一致性， 也是是 ACID 的最终目的。
 - 行业业务
 - 需求捕获、分析
 - 总结归纳
-- 汇报
+- 汇报、演示
 
 ### 研发管理能力 
 
 ### 文档阅读、编写能力
+
 ### 发现、解决问题能力
+
 ### 沟通能力
+
 ### 学习能力
+
 ### 影响力
 
