@@ -5,7 +5,7 @@ category: springcloud
 tags: [springcloud]
 ---
 
-[《深入理解spring cloud与微服务构建》-方志朋](https://www.fangzhipeng.com/spring-cloud.html)
+[《深入理解spring cloud与微服务构建》-方志朋](https://www.fangzhipeng.com/spring-cloud.html)   
 
 ## 第1章 微服务简介
 ### 1.1 单体架构及其存在的不足
@@ -15,8 +15,10 @@ tags: [springcloud]
 - 单体应用的业务都在同1个程序中，随着业务的扩张、复杂度的增加, 测试的难度越来越大  
 
 #### 1.1.3 单体架构使用服务器集群部署
-![单体架构使用服务器集群部署](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCE7aa2f3c58c21eee4345d00f8730fd30b/43438)
+![单体架构使用服务器集群部署](../../assets/images/2021/micro/micro6.png)  
+
 > 负载均衡服务器 + 应用服务器集群 + 缓存服务器集群 + 文件服务器 + 数据库读写分离
+
 - 优点：
     - 有一定的并发能力，能应对一定的复杂业务，改善了系统性能.
 - 不足：
@@ -66,12 +68,16 @@ tags: [springcloud]
 
 #### 1.3.2 分布式事务
 > CAP理论
+
 - Consistency ：指数据的强一致性。如果写入某个数据成功，之后读取，读到的都是新写入的数据：如果写入失败，之后读取的都不是写入失败的数据。
 - Availability ：指服务的可用性
 - Partition-tolerance ：指分区容错  
-单体架构服务是CA系统；微服务系统通常是AP系统（即同时满足可用性和分区容错性）    
-![](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCEa5a7c366ce148b568421c46dc33d0e27/43440)
+单体架构服务是CA系统；微服务系统通常是AP系统（即同时满足可用性和分区容错性）
+    
+![](../../assets/images/2021/micro/micro1.png)  
+
 > 分布式系统中如何保证数据一致性？使用分布式事务（两阶段提交）
+
 - 第一阶段：
     - A发起事务并交给事务协调器TC处理
     - TC向所有参与事务的节点发送处理事务操作的准备操作
@@ -91,11 +97,13 @@ ESB：企业服务总线
 
 ### 1.5 微服务的设计原则
 > 软件设计应该是渐进式发展，根据业务需求选择：
+
 - 业务需求量小->单体架构
 - 业务扩展，用户增加->(负载均衡服务器 + 应用服务器集群 + 缓存 +  数据库读写分离)
 - 业务继续扩展发展->微服务架构  
 
 > 微服务设计的三大难题：
+
 - 服务故障传播性：容错、熔断机制组件
 - 服务的划分：根据业务划分服务，领域驱动设计具有指导作用
 - 分布式事务：两阶段、三阶段提交(事务失败时，人工恢复数据)
@@ -117,19 +125,23 @@ ESB：企业服务总线
 当网络延迟或者故障等因素导致某个服务无响应，高并发下会导致服务器线程资源耗尽，造成服务瘫痪，即雪崩效应
 > 熔断器机制  
 
-![熔断器机制](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCE8808d7c94a69c3e6a3ed546a31f42270/43352)  
+![](../../assets/images/2021/micro/micro2.png)  
+
 > 熔断器机制作用
+
 - 资源隔离：问题API隔离，防止请求阻塞
 - 服务降级：短时大量请求，熔断打开，防止服务器故障
 - 自我检测、监控、修复：短时网络故障导致服务不可用，半打开状态尝试成功后恢复服务可用
 
 #### 2.1.4 服务网关(Zuul、Nginx)
 微服务系统通过将资源以 API接口的形式暴露给外界来提供服务。在微服务系统中，API接口资源通常是由服务网关（也称 API 关）统一暴露，内部服务不直接对外提供API资源的暴露  
-![1](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCEeb167054379355fd44f799f73f94f48e/43400)  
+![](../../assets/images/2021/micro/micro3.png)       
 1) 网关层需要做到高可用，一般以集群的形式存在。  
 2) 在服务网关层之前，有可能需要加上负载均衡层，通常为Nginx双机热备，通过一定的路由策略将请求转发到网关层。  
 2) 经过网关层一系列的用户身份验证、权限判断 最终转发到具体的服务。
+
 > 网关层具有很重要的意义
+
 - 网关将所有服务的API接口资源统一聚合，对外统一暴露，保护了内部微服务单元的 API 接口，防止被外界调用以及服务的敏感息对外暴露
 - 可以做些 用户身份认证、权限认证，防止非法请求操作API接口，对内部服务起到保护作用
 - 网关可以实现监控功能，实时日志输出，对请求进行记录
@@ -142,7 +154,7 @@ ESB：企业服务总线
 - 配置服务启动后，读取配置文件信息，读取完成的配置信息存放在配置服务的内存中。
 - 当启动服务A、B时，由于服务A、B指定了向配置服务读取配置信息，服向配置服务读取配置信息。
 - 当服务的配置信息需要修改且修改完成后，向配置服务发送Post请求进行刷新，这时服务A、B会向配置服务重写读取配置文件。  
-![](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCEfb86a53c552ea5e0ed86759fd0a83a2c/43456)  
+![](../../assets/images/2021/micro/micro4.png)      
 如果服务数量较多，对配置中心需要考虑集群化部署，从而使配置中心高可用，做分布式集群
 
 #### 2.1.6 服务链路追踪(Dapper、Zipkin、Eagleeye、SpringCloudSleuth)
@@ -158,6 +170,7 @@ Spring Cloud 的首要目标是通过提供一系列开发组件和框架，帮�
 Spring Cloud 是通过包装其他技术框架来实现的。  
 
 > 常用组件
+
 - SpringCloudNetflix ：包装了Netflix公司的微服务组件实现的，是Spring Cloud 核心的核心组件，包括 Eureka Hystrix Zuul Archaius 等。
 - Eureka ：服务注册和发现组件
 - Hystrix ：熔断器组件 Hystrix 防止微服务系统发生雪崩效应。限流、降级、监控
@@ -184,7 +197,7 @@ Dubbo是一个分布式服务框架；提供高性能和透明化的 RPC 远程�
 - 服务发现：集成了 Apache Zookeeper 组件，用于服务的注册和发现
 
 流程如下。  
-![](https://note.youdao.com/yws/public/resource/e1dd6b6f249f03865026a9935f82a4bb/xmlnote/WEBRESOURCEa80fd557cd02229b62159802b7f7ce42/43540)
+![](../../assets/images/2021/micro/micro5.png)  
 - 服务提供者向服务中心注册服务
 - 服务消费者订阅服务。
 - 服务消费者发现服务。
@@ -217,9 +230,11 @@ JDK、IDEA、MAVEN 安装、配置、使用
 
 ### 4.1 SpringBoot简介 
 > Springboot特点  
+
 - 自动配置、起步依赖 和 Actuator 运行状态的监控。
 
 > Springboot优点
+
 - 安全、度量、健康检查、内置Servlet容器 和 外置配置
 
 ### 4.3 Springboot配置文件详解

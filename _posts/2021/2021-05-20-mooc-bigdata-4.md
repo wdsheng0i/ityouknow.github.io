@@ -7,6 +7,8 @@ tags: [big-data]
 
 Flink + 高频实时数据处理方案 
 
+[入门必读！Apache Flink 零基础系列教程](https://developer.aliyun.com/article/753999?utm_content=g_1000138786)
+
 ## 阶段四：Flink + 高频实时数据处理方案  
 ### 第14周   消息队列之Kafka从入门到小牛   
 1、什么是消息队列  
