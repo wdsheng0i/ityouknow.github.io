@@ -6,6 +6,7 @@ tags: [arch]
 ---
 
 LVS + keepalived + Nginx实现负载均衡、高可用集群  
+
 [java架构直通车-第6周 LVS+keepalived+Nginx实现高可用集群](https://class.imooc.com/sale/javaarchitect)  
 keepalived就是为lvs设计的，结合使用，通过keepalived可以配置lvs和nginx关系：实现主备高可用、负载均衡算法、健康检查、持久化链接
 
