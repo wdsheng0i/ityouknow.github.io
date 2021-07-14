@@ -143,9 +143,9 @@ public class WordCountJob {
             //  job需要的配置参数
             Configuration conf = new Configuration();
             //设置hdfs的通讯地址, 本地联调时指明hdfs和yarn
-            conf.set("fs.defaultFS", "hdfs://172.16.1.196");
+            conf.set("fs.defaultFS", "hdfs://192.168.1.196");
             //设置RN的主机, 本地联调时指明hdfs和yarn
-            conf.set("yarn.resourcemanager.hostname", "172.16.1.197");
+            conf.set("yarn.resourcemanager.hostname", "192.168.1.197");
             //  创建一个job
             Job job = Job.getInstance(conf);
 
@@ -186,8 +186,8 @@ public class WordCountJob {
 6.使用本地文件夹作为输入输出路径，不连接集群环境hdfs    
 a.组装job代码里注释掉配置的远端hdfs配置    
 ```
-//conf.set("fs.defaultFS", "hdfs://172.16.1.196");  
-//conf.set("yarn.resourcemanager.hostname", "172.16.1.197");  
+//conf.set("fs.defaultFS", "hdfs://192.168.1.196");  
+//conf.set("yarn.resourcemanager.hostname", "192.168.1.197");  
 ```
 
 b.program argumets添加本地路径参数，run运行    
