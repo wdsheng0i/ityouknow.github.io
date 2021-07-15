@@ -23,7 +23,7 @@ tags: [dev-manage]
 
 ### 2.1瀑布模型
 瀑布模型（waterfall model）可以说是最早使用的软件生命周期模型之一。该模型描述的活动从一个阶段到另一个阶段逐次下降，它的工作流程形式上又很想瀑布，该模型如下图所示：  
-![](../../assets/images/2021/dev-manage/pb.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/pb.png)    
 
 特点:
 - 阶段间具有顺序性和依赖性:  
@@ -49,7 +49,7 @@ tags: [dev-manage]
 
 #### 1). 产品需求定义
 产品需求定义的目标是：“清楚地描述要做的产品是什么样的？不涉及具体实现方法。”，其定义过程如下图所示。  
-![](../../assets/images/2021/dev-manage/pb-1.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/pb-1.png)  
 
  此产品需求定义包括：软件+硬件
  
@@ -102,7 +102,7 @@ tags: [dev-manage]
 
 ### 2.2原型模型
 原型模型（prototype model）又称快速原型。由于瀑布模型的缺点，人们借助建筑师、工程师建造原型的经验，提出了原型模型。原型模型主要有两个阶段，如下图所示：  
-![](../../assets/images/2021/dev-manage/yx.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/yx.png)    
 
 - 原型开发阶段：根据用户提出的软件系统定义，快速地开发一个原型。
 利用模拟软件系统的人机界面和人机交互方式。
@@ -118,7 +118,7 @@ tags: [dev-manage]
 
 ### 2.3螺旋模型
 螺旋模型（Spiral Model）是在快速原型的基础上扩展而成，实际上，它是软件生命周期模型与原型模型的一个结合，如下图所示：  
-![](../../assets/images/2021/dev-manage/lx.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/lx.png)    
 
 该模型将整个软件开发流程分为多个阶段，每个阶段都由4部分组成：
 - 目标设定
@@ -141,7 +141,7 @@ tags: [dev-manage]
 
 ### 2.4 增量模型
 增量模型（Incremental Model）把待开发的软件系统模块化，将每个模块作为一个增量组件，从而分批次地分析、设计、编码和测试这些增量组件，如下图所示：  
-![](../../assets/images/2021/dev-manage/zl.jpeg)    
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/zl.jpeg)    
 
 困难:
 每个新的构件集成到现有的软件结构中必须破坏原来以开发的产品，所以必须定义很好的接口。
@@ -157,7 +157,7 @@ tags: [dev-manage]
 
 ### 2.5 喷泉模型
 喷泉模型（fountain model）是一种以用户需求为动力，以对象为驱动的模型，主要用于描述面向对象的软件开发过程。该模型认为软件开发过程自下而上周期的各阶段是相互迭代和无间隙的特性，该模型如下图所示：  
-![](../../assets/images/2021/dev-manage/pq.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/pq.png)  
   
 优点:
 - 喷泉模型不像瀑布模型那样，需要分析活动结束后才开始设计活动，设计活动结束后才开始编码活动。
@@ -175,7 +175,7 @@ tags: [dev-manage]
 - 迭代增量式的开发过程。
 
 敏捷开发知识体系整体框架  
-![](../../assets/images/2021/dev-manage/mj.png)    
+![](https://wdsheng0i.github.io/assets/images/2021/dev-manage/mj.png)    
 
 敏捷软件开发宣言
 - 个体和交互胜过过程和工具。

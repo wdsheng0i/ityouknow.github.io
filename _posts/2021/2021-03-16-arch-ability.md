@@ -9,7 +9,7 @@ tags: [arch]
 
 ## 一. 架构基本理论
 ### 1.1 架构设计方法
-![](../../assets/images/2021/micro/5v.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/micro/5v.png)  
 - 4+1视图法
 - 5视图法
     - "逻辑架构"（业务架构、应用架构）

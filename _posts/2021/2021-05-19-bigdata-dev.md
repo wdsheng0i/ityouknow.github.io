@@ -181,7 +181,7 @@ public class WordCountJob {
 ```
 
 5.启动参数program argumets指定远端hdfs输入、输出路径，run运行         
-![](../../assets/images/2021/big-data/debug-1.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/debug-1.png)  
 
 6.使用本地文件夹作为输入输出路径，不连接集群环境hdfs    
 a.组装job代码里注释掉配置的远端hdfs配置    
@@ -191,9 +191,9 @@ a.组装job代码里注释掉配置的远端hdfs配置
 ```
 
 b.program argumets添加本地路径参数，run运行    
-![](../../assets/images/2021/big-data/debug-2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/debug-2.png)  
   
-![](../../assets/images/2021/big-data/debug-3.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/big-data/debug-3.png)  
 		
 ## 问题
 - 教程：http://kaimingwan.com/post/da-shu-ju/ideazhong-diao-shi-hadoop-mapreducecheng-xu-windows

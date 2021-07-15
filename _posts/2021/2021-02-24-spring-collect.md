@@ -10,7 +10,7 @@ tags: [spring]
 [死牛胖子的技术随笔](https://blog.csdn.net/gongm24/category_6742927_2.html)：https://blog.csdn.net/gongm24/category_6742927_2.html
 
 ## 一、Spring framework体系结构
-![](../../assets/images/2021/spring/springfrm.png)   
+![](https://wdsheng0i.github.io/assets/images/2021/spring/springfrm.png)   
 - 1.spring-core：依赖注入IoC与DI的最基本实现
 - 2.spring-beans：Bean工厂与bean的装配
 - 3.spring-context：spring的context上下文即IoC容器
