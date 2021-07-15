@@ -15,7 +15,7 @@ tags: [springcloud]
 - 单体应用的业务都在同1个程序中，随着业务的扩张、复杂度的增加, 测试的难度越来越大  
 
 #### 1.1.3 单体架构使用服务器集群部署
-![单体架构使用服务器集群部署](../../assets/images/2021/micro/micro6.png)  
+![单体架构使用服务器集群部署](https://wdsheng0i.github.io/assets/images/2021/micro/micro6.png)  
 
 > 负载均衡服务器 + 应用服务器集群 + 缓存服务器集群 + 文件服务器 + 数据库读写分离
 
@@ -74,7 +74,7 @@ tags: [springcloud]
 - Partition-tolerance ：指分区容错  
 单体架构服务是CA系统；微服务系统通常是AP系统（即同时满足可用性和分区容错性）
     
-![](../../assets/images/2021/micro/micro1.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/micro/micro1.png)  
 
 > 分布式系统中如何保证数据一致性？使用分布式事务（两阶段提交）
 
@@ -125,7 +125,7 @@ ESB：企业服务总线
 当网络延迟或者故障等因素导致某个服务无响应，高并发下会导致服务器线程资源耗尽，造成服务瘫痪，即雪崩效应
 > 熔断器机制  
 
-![](../../assets/images/2021/micro/micro2.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/micro/micro2.png)  
 
 > 熔断器机制作用
 
@@ -135,7 +135,7 @@ ESB：企业服务总线
 
 #### 2.1.4 服务网关(Zuul、Nginx)
 微服务系统通过将资源以 API接口的形式暴露给外界来提供服务。在微服务系统中，API接口资源通常是由服务网关（也称 API 关）统一暴露，内部服务不直接对外提供API资源的暴露  
-![](../../assets/images/2021/micro/micro3.png)       
+![](https://wdsheng0i.github.io/assets/images/2021/micro/micro3.png)       
 1) 网关层需要做到高可用，一般以集群的形式存在。  
 2) 在服务网关层之前，有可能需要加上负载均衡层，通常为Nginx双机热备，通过一定的路由策略将请求转发到网关层。  
 2) 经过网关层一系列的用户身份验证、权限判断 最终转发到具体的服务。
@@ -154,7 +154,7 @@ ESB：企业服务总线
 - 配置服务启动后，读取配置文件信息，读取完成的配置信息存放在配置服务的内存中。
 - 当启动服务A、B时，由于服务A、B指定了向配置服务读取配置信息，服向配置服务读取配置信息。
 - 当服务的配置信息需要修改且修改完成后，向配置服务发送Post请求进行刷新，这时服务A、B会向配置服务重写读取配置文件。  
-![](../../assets/images/2021/micro/micro4.png)      
+![](https://wdsheng0i.github.io/assets/images/2021/micro/micro4.png)      
 如果服务数量较多，对配置中心需要考虑集群化部署，从而使配置中心高可用，做分布式集群
 
 #### 2.1.6 服务链路追踪(Dapper、Zipkin、Eagleeye、SpringCloudSleuth)
@@ -197,7 +197,7 @@ Dubbo是一个分布式服务框架；提供高性能和透明化的 RPC 远程�
 - 服务发现：集成了 Apache Zookeeper 组件，用于服务的注册和发现
 
 流程如下。  
-![](../../assets/images/2021/micro/micro5.png)  
+![](https://wdsheng0i.github.io/assets/images/2021/micro/micro5.png)  
 - 服务提供者向服务中心注册服务
 - 服务消费者订阅服务。
 - 服务消费者发现服务。
