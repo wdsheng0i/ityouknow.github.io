@@ -5,7 +5,7 @@ category: dev-manage
 tags: [dev-manage]
 ---
 
-## 资料 
+## 参考资料
 
 
 ## 一、软件开发生命周期

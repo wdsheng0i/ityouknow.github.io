@@ -5,6 +5,7 @@ category: big-data
 tags: [big-data]
 ---
 
+## 参考资料
 Cloudera Hadoop: 大数据之CDH安装与部署
 
 - [官网文档](https://docs.cloudera.com/documentation/enterprise/6/6.0/topics/cdh_intro.html)

@@ -5,7 +5,9 @@ category: springcloud
 tags: [springcloud]
 ---
 
+## 参考资料
 [《深入理解spring cloud与微服务构建》-方志朋](https://www.fangzhipeng.com/spring-cloud.html)   
+
 
 ## 第1章 微服务简介
 ### 1.1 单体架构及其存在的不足

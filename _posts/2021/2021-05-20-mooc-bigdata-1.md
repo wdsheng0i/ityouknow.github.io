@@ -5,7 +5,7 @@ category: big-data
 tags: [big-data]
 ---
 
-## 资料
+## 参考资料
 - [快速入门Hadoop3.0大数据处理-【慕课网】](https://www.imooc.com/learn/1159) 
 - [3小时开启大数据之门-【慕课网】](https://www.imooc.com/learn/1275)  
 - [尚硅谷-大数据](http://www.atguigu.com/bigdata/)

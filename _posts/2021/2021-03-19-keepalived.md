@@ -5,10 +5,9 @@ category: component
 tags: [component]
 ---
 
+## 参考资料
 Keepalived 原理与实战、双机主备、双主热备  
 [java架构直通车-第6周 LVS+Nginx实现高可用集群](https://class.imooc.com/sale/javaarchitect)
-
-## 推荐资料 
 
 ## keepalived和Nginx高可用
 ![](https://wdsheng0i.github.io/assets/images/2021/keepalived/ha.png)   
